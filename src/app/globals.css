@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/** Modern School Management System Styles **/
+
+@layer base {
+  :root {
+    --primary-color: theme('colors.primary.500');
+    --secondary-color: theme('colors.secondary.500');
+    --accent-color: theme('colors.accent.500');
+    --neutral-color: theme('colors.neutral.500');
+    --background-color: theme('colors.background.default');
+    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-extra: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+  
+  * {
+    border-color: theme('colors.neutral.200');
+  }
+  
+  body {
+    background-color: var(--background-color);
+    @apply bg-background-default text-secondary-900 font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-secondary-100;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-secondary-300 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary-400;
+  }
+}
+
+@layer components {
+  /* Interactive Elements */
+  .interactive-element {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .interactive-element:hover {
+    @apply transform scale-105;
+  }
+  
+  /* Glass Effect */
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20;
+  }
+  
+  /* Gradient Background */
+  .gradient-bg {
+    background: linear-gradient(135deg, theme('colors.primary.50') 0%, theme('colors.accent.50') 100%);
+  }
+  
+  /* Card Hover Effects */
+  .card-hover {
+    @apply transition-all duration-300 ease-in-out hover:shadow-strong hover:-translate-y-1;
+  }
+  
+  /* Button Focus Ring */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  /* Status Indicators */
+  .status-active {
+    @apply bg-success-50 text-success-600 border-success-200;
+  }
+  
+  .status-inactive {
+    @apply bg-secondary-50 text-secondary-600 border-secondary-200;
+  }
+  
+  .status-warning {
+    @apply bg-warning-50 text-warning-600 border-warning-200;
+  }
+  
+  .status-error {
+    @apply bg-error-50 text-error-600 border-error-200;
+  }
+}
+
+/** Enhanced Calendar Styles **/
+.react-calendar {
+  width: 100%;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  @apply bg-white rounded-xl shadow-medium border border-secondary-200;
+}
+
+.react-calendar__navigation {
+    @apply bg-primary-200 rounded-t-xl p-4;
+}
+
+.react-calendar__navigation__label {
+  @apply text-primary-700 font-semibold;
+}
+
+.react-calendar__navigation__arrow {
+  @apply text-primary-600 hover:text-primary-700 p-2 rounded-lg hover:bg-primary-100;
+}
+
+.react-calendar__month-view__weekdays {
+  @apply bg-secondary-50 text-secondary-600 font-medium text-sm;
+}
+
+.react-calendar__tile {
+  @apply hover:bg-primary-50 transition-colors duration-200 border-none p-3;
+}
+
+.react-calendar__tile--active {
+  @apply bg-primary-500 text-white;
+}
+
+.react-calendar__tile--now {
+  @apply bg-accent-100 text-accent-700;
+}
+
+/** Enhanced Big Calendar Styles **/
+.rbc-toolbar {
+  @apply bg-white border-b border-secondary-200 p-4 flex-wrap gap-4;
+}
+
+.rbc-toolbar-label {
+  @apply text-xl font-bold text-secondary-900 flex-1 text-center;
+}
+
+.rbc-btn-group {
+  @apply flex rounded-lg overflow-hidden border border-secondary-200;
+}
+
+.rbc-btn-group button {
+  @apply px-4 py-2 bg-white hover:bg-primary-50 text-secondary-700 border-r border-secondary-200 last:border-r-0 transition-colors duration-200;
+}
+
+.rbc-btn-group button.rbc-active {
+  @apply bg-primary-500 text-white;
+}
+
+.rbc-event {
+  @apply rounded-lg border-none text-white font-medium text-sm px-2 py-1 shadow-soft;
+}
+
+.rbc-event:nth-child(4n+1) {
+  @apply bg-primary-500;
+}
+
+.rbc-event:nth-child(4n+2) {
+  @apply bg-accent-500;
+}
+
+.rbc-event:nth-child(4n+3) {
+  @apply bg-warning-500;
+}
+
+.rbc-event:nth-child(4n+4) {
+  @apply bg-error-500;
+}
+
+.rbc-event-label {
+  @apply text-white/80 text-xs;
+}
+
+.rbc-day-bg:hover {
+  @apply bg-primary-50;
+}
+
+.rbc-today {
+  @apply bg-accent-50;
+}
+
+/** Form Animations **/
+.form-slide-in {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.form-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/** Loading Animations **/
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/** Table Enhancements **/
+.table-row-hover {
+  @apply hover:bg-primary-50 transition-colors duration-150;
+}
+
+.table-header {
+  @apply bg-secondary-50 text-secondary-700 font-semibold text-sm border-b border-secondary-200;
+}
+
+/** Modal Enhancements **/
+.modal-backdrop {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

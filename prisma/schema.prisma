@@ -1,0 +1,356 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       String @id
+  username String @unique
+}
+
+model Student {
+  id          String       @id
+  username    String       @unique
+  name        String
+  surname     String
+  email       String?      @unique
+  phone       String?      @unique
+  address     String
+  img         String?
+  bloodType   String
+  sex         UserSex
+  createdAt   DateTime     @default(now())
+  parentId    String
+  parent      Parent       @relation(fields: [parentId], references: [id])
+  classId     Int
+  class       Class        @relation(fields: [classId], references: [id])
+  gradeId     Int
+  grade       Grade        @relation(fields: [gradeId], references: [id])
+  attendances Attendance[]
+  results     Result[]
+  birthday    DateTime
+  fees        Fee[]
+}
+
+model Teacher {
+  id        String    @id
+  username  String    @unique
+  name      String
+  surname   String
+  email     String?   @unique
+  phone     String?   @unique
+  address   String
+  img       String?
+  bloodType String
+  sex       UserSex
+  createdAt DateTime  @default(now())
+  subjects  Subject[]
+  lessons   Lesson[]
+  classes   Class[]
+  birthday  DateTime
+}
+
+model Parent {
+  id        String    @id
+  username  String    @unique
+  name      String
+  surname   String
+  email     String?   @unique
+  phone     String    @unique
+  address   String
+  createdAt DateTime  @default(now())
+  students  Student[]
+}
+
+model Grade {
+  id    Int @id @default(autoincrement())
+  level Int @unique
+
+  students Student[]
+  classess Class[]
+}
+
+model Class {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  capacity Int
+
+  supervisorId  String?
+  supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])
+  lessons       Lesson[]
+  students      Student[]
+  gradeId       Int
+  grade         Grade          @relation(fields: [gradeId], references: [id])
+  events        Event[]
+  announcements Announcement[]
+}
+
+model Subject {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  teachers Teacher[]
+  lessons  Lesson[]
+}
+
+model Lesson {
+  id        Int      @id @default(autoincrement())
+  name      String
+  day       Day
+  startTime DateTime
+  endTime   DateTime
+
+  subjectId   Int
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  classId     Int
+  class       Class        @relation(fields: [classId], references: [id])
+  teacherId   String
+  teacher     Teacher      @relation(fields: [teacherId], references: [id])
+  exams       Exam[]
+  assignments Assignment[]
+  attendances Attendance[]
+}
+
+model Exam {
+  id        Int      @id @default(autoincrement())
+  title     String
+  startTime DateTime
+  endTime   DateTime
+
+  lessonId Int
+  lesson   Lesson   @relation(fields: [lessonId], references: [id])
+  results  Result[]
+}
+
+model Assignment {
+  id        Int      @id @default(autoincrement())
+  title     String
+  startDate DateTime
+  dueDate   DateTime
+
+  lessonId Int
+  lesson   Lesson   @relation(fields: [lessonId], references: [id])
+  results  Result[]
+}
+
+model Result {
+  id    Int @id @default(autoincrement())
+  score Int
+
+  examId       Int?
+  exam         Exam?       @relation(fields: [examId], references: [id])
+  assignmentId Int?
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  studentId    String
+  student      Student     @relation(fields: [studentId], references: [id])
+}
+
+model Attendance {
+  id      Int      @id @default(autoincrement())
+  date    DateTime
+  present Boolean
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+  lessonId  Int
+  lesson    Lesson  @relation(fields: [lessonId], references: [id])
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  startTime   DateTime
+  endTime     DateTime
+
+  classId Int?
+  class   Class? @relation(fields: [classId], references: [id])
+}
+
+model Announcement {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  date        DateTime
+
+  classId Int?
+  class   Class? @relation(fields: [classId], references: [id])
+}
+
+enum UserSex {
+  MALE
+  FEMALE
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+}
+
+model Fee {
+  id          Int      @id @default(autoincrement())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id])
+  amount      Float
+  dueDate     DateTime
+  status      FeeStatus @default(PAID)
+  createdAt   DateTime @default(now())
+  invoices    Invoice[]
+}
+
+model Invoice {
+  id        Int      @id @default(autoincrement())
+  feeId     Int
+  fee       Fee      @relation(fields: [feeId], references: [id])
+  amount    Float
+  issuedAt  DateTime @default(now())
+  paidAt    DateTime?
+  payments  Payment[]
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  invoiceId Int
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+  amount    Float
+  paymentDate DateTime @default(now())
+  method    String // e.g., 'Credit Card', 'Bank Transfer'
+}
+
+enum FeeStatus {
+  PAID
+  UNPAID
+  OVERDUE
+}
+
+// Authentication & Security Models
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  userType  UserType
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  lastActive DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  userType  UserType
+  action    String
+  entity    String
+  entityId  String?
+  changes   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
+
+model UserPreferences {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  userType        UserType
+  theme           String   @default("light")
+  language        String   @default("en")
+  emailNotifications Boolean @default(true)
+  smsNotifications Boolean @default(false)
+  twoFactorEnabled Boolean @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum UserType {
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+// Messaging System Models
+model Message {
+  id          String    @id @default(cuid())
+  senderId    String
+  senderType  UserType
+  senderName  String    // Store sender name for easy display
+  content     String
+  subject     String?
+  messageType MessageType @default(DIRECT)
+  priority    MessagePriority @default(NORMAL)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  recipients  MessageRecipient[]
+  attachments MessageAttachment[]
+  thread      MessageThread? @relation(fields: [threadId], references: [id])
+  threadId    String?
+  parentId    String?   // For replies
+  parent      Message?  @relation("MessageReplies", fields: [parentId], references: [id])
+  replies     Message[] @relation("MessageReplies")
+}
+
+model MessageRecipient {
+  id         String   @id @default(cuid())
+  messageId  String
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId     String
+  userType   UserType
+  userName   String   // Store recipient name for easy display
+  readAt     DateTime?
+  deletedAt  DateTime?
+  createdAt  DateTime @default(now())
+  
+  @@unique([messageId, userId])
+}
+
+model MessageThread {
+  id        String    @id @default(cuid())
+  subject   String
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isActive  Boolean   @default(true)
+}
+
+model MessageAttachment {
+  id        String   @id @default(cuid())
+  messageId String
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  fileName  String
+  fileUrl   String
+  fileSize  Int
+  mimeType  String
+  uploadedAt DateTime @default(now())
+}
+
+model MessageDraft {
+  id         String   @id @default(cuid())
+  userId     String
+  userType   UserType
+  content    String
+  subject    String?
+  recipients Json     // Store recipient data as JSON
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum MessageType {
+  DIRECT
+  BROADCAST
+  ANNOUNCEMENT
+  SYSTEM
+}
+
+enum MessagePriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}

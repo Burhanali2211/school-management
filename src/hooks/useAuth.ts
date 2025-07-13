@@ -1,0 +1,120 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { User } from "@prisma/client";
+
+interface AuthState {
+  user: User | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export const useAuth = () => {
+  const [authState, setAuthState] = useState<AuthState>({
+    user: null,
+    isLoading: true,
+    error: null,
+  });
+
+  const fetchUser = async () => {
+    try {
+      const response = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const user = await response.json();
+        setAuthState({
+          user,
+          isLoading: false,
+          error: null,
+        });
+      } else {
+        setAuthState({
+          user: null,
+          isLoading: false,
+          error: null,
+        });
+      }
+    } catch (error) {
+      setAuthState({
+        user: null,
+        isLoading: false,
+        error: "Failed to fetch user",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        await fetchUser();
+        return { success: true };
+      } else {
+        const error = await response.text();
+        return { success: false, error };
+      }
+    } catch (error) {
+      return { success: false, error: "Login failed" };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      setAuthState({
+        user: null,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  return {
+    user: authState.user,
+    isLoading: authState.isLoading,
+    error: authState.error,
+    login,
+    logout,
+    refetch: fetchUser,
+  };
+};
+
+// Helper hook for user data (similar to Clerk's useUser)
+export const useUser = () => {
+  const { user, isLoading, error } = useAuth();
+  
+  return {
+    user: user ? {
+      id: user.id,
+      fullName: `${user.firstName} ${user.lastName}`,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      primaryEmailAddress: {
+        emailAddress: user.email,
+      },
+      email: user.email,
+      role: user.role,
+    } : null,
+    isLoaded: !isLoading,
+    isSignedIn: !!user,
+  };
+};
