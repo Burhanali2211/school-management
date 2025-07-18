@@ -194,17 +194,29 @@ const Menu = () => {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
-                      ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg transform scale-105'
-                      : 'text-neutral-700 hover:bg-primary-50 hover:text-primary-700'
+                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 relative overflow-hidden focus-visible-ring ${isActive
+                      ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                      : 'text-neutral-700 hover:bg-primary-50 hover:text-primary-700 hover:shadow-md'
                     }`}
+                  aria-current={isActive ? 'page' : undefined}
                 >
-                  <item.icon className={`w-5 h-5 mr-3 ${isActive ? 'text-white' : 'text-neutral-500 group-hover:text-primary-600'}`} />
-                  <span className="flex-1">{item.label}</span>
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                  )}
+
+                  <item.icon className={`w-5 h-5 mr-3 transition-colors duration-200 ${
+                    isActive ? 'text-white' : 'text-neutral-500 group-hover:text-primary-600'
+                  }`} />
+                  <span className="flex-1 font-medium">{item.label}</span>
                   {item.badge && (
-                    <Badge 
+                    <Badge
                       variant={isActive ? "secondary" : "default"}
-                      className={isActive ? "bg-white text-primary-500" : ""}
+                      className={`text-xs ${
+                        isActive
+                          ? "bg-white/20 text-white border-white/30"
+                          : "bg-primary-100 text-primary-700 border-primary-200"
+                      }`}
                     >
                       {item.badge}
                     </Badge>

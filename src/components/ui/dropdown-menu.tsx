@@ -24,15 +24,16 @@ const DropdownMenu = ({ trigger, children, className }: DropdownMenuProps) => {
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      <div onClick={() => setIsOpen(!isOpen)}>
+      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
         {trigger}
       </div>
       {isOpen && (
         <div className={cn(
-          "absolute right-0 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50",
+          "absolute right-0 mt-2 w-56 rounded-xl bg-white shadow-strong border border-secondary-200 focus:outline-none z-50",
+          "animate-in fade-in-0 zoom-in-95 duration-200",
           className
         )}>
-          <div className="py-1">
+          <div className="py-2">
             {children}
           </div>
         </div>
@@ -41,19 +42,20 @@ const DropdownMenu = ({ trigger, children, className }: DropdownMenuProps) => {
   );
 };
 
-const DropdownMenuItem = ({ 
-  children, 
-  onClick, 
-  className 
-}: { 
-  children: React.ReactNode; 
-  onClick?: () => void; 
-  className?: string; 
+const DropdownMenuItem = ({
+  children,
+  onClick,
+  className
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
 }) => {
   return (
     <button
       className={cn(
-        "block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900",
+        "block w-full px-4 py-2 text-left text-sm text-secondary-700 hover:bg-primary-50 hover:text-primary-700",
+        "transition-colors duration-150 rounded-lg mx-2 focus-visible-ring",
         className
       )}
       onClick={onClick}
@@ -64,7 +66,7 @@ const DropdownMenuItem = ({
 };
 
 const DropdownMenuSeparator = () => {
-  return <div className="my-1 h-px bg-gray-200" />;
+  return <div className="my-2 h-px bg-secondary-200 mx-2" />;
 };
 
 const DropdownMenuTrigger = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -76,7 +78,7 @@ const DropdownMenuContent = ({ children, className, ...props }: React.HTMLAttrib
 };
 
 const DropdownMenuLabel = ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-  return <div className={cn("px-4 py-2 text-sm font-medium text-gray-900", className)} {...props}>{children}</div>;
+  return <div className={cn("px-4 py-2 text-sm font-semibold text-secondary-900", className)} {...props}>{children}</div>;
 };
 
 const DropdownMenuGroup = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => {

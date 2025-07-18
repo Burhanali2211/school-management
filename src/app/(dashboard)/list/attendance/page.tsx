@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useUser } from "@/hooks/useAuth";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import { Button } from "@/components/ui/button";
+import { Filter, SortAsc } from "lucide-react";
 
 
 
@@ -239,12 +241,14 @@ const AttendancePage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <img src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <img src="/sort.png" alt="" width={14} height={14} />
-            </button>
+            <Button variant="outline" size="sm" onClick={() => console.log('Filter attendance')}>
+              <Filter className="w-4 h-4 mr-2" />
+              Filter
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => console.log('Sort attendance')}>
+              <SortAsc className="w-4 h-4 mr-2" />
+              Sort
+            </Button>
                         {isAdmin && <button
               onClick={() => setIsModalOpen(true)}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow"

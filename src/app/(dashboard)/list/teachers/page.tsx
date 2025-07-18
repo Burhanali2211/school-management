@@ -1,11 +1,10 @@
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Card from "@/components/ui/card";
-import { Search, Filter, SortAsc, Plus, Eye, Edit, Trash2, GraduationCap, BookOpen, Phone, MapPin, Mail } from "lucide-react";
+import TeachersPageClient from "@/components/teachers/TeachersPageClient";
+import { Eye, GraduationCap, Phone, MapPin, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import prisma from "@/lib/prisma";
 import { Class, Prisma, Subject, Teacher } from "@prisma/client";
@@ -138,12 +137,11 @@ const TeacherListPage = async ({
       </TableCell>
     </TableRow>
   );
-  const { page, ...queryParams } = searchParams;
+  const { page, sortBy, sortOrder, subjects, classes, status, ...queryParams } = searchParams;
 
   const p = page ? parseInt(page) : 1;
 
-  // URL PARAMS CONDITION
-
+  // Build query conditions
   const query: Prisma.TeacherWhereInput = {};
 
   if (queryParams) {
@@ -158,7 +156,11 @@ const TeacherListPage = async ({
             };
             break;
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { email: { contains: value, mode: "insensitive" } },
+              { username: { contains: value, mode: "insensitive" } },
+            ];
             break;
           default:
             break;
@@ -167,58 +169,86 @@ const TeacherListPage = async ({
     }
   }
 
-  const [data, count] = await prisma.$transaction([
+  // Handle subjects filter
+  if (subjects) {
+    const subjectIds = subjects.split(",").map(id => parseInt(id)).filter(id => !isNaN(id));
+    if (subjectIds.length > 0) {
+      query.subjects = {
+        some: {
+          id: { in: subjectIds }
+        }
+      };
+    }
+  }
+
+  // Handle classes filter
+  if (classes) {
+    const classIds = classes.split(",").map(id => parseInt(id)).filter(id => !isNaN(id));
+    if (classIds.length > 0) {
+      query.classes = {
+        some: {
+          id: { in: classIds }
+        }
+      };
+    }
+  }
+
+  // Build order by clause
+  let orderBy: Prisma.TeacherOrderByWithRelationInput = { createdAt: "desc" };
+
+  if (sortBy && sortOrder) {
+    switch (sortBy) {
+      case "name":
+        orderBy = { name: sortOrder as "asc" | "desc" };
+        break;
+      case "username":
+        orderBy = { username: sortOrder as "asc" | "desc" };
+        break;
+      case "email":
+        orderBy = { email: sortOrder as "asc" | "desc" };
+        break;
+      case "createdAt":
+        orderBy = { createdAt: sortOrder as "asc" | "desc" };
+        break;
+      case "subjects":
+        orderBy = { subjects: { _count: sortOrder as "asc" | "desc" } };
+        break;
+      case "classes":
+        orderBy = { classes: { _count: sortOrder as "asc" | "desc" } };
+        break;
+      default:
+        orderBy = { createdAt: "desc" };
+    }
+  }
+
+  const [data, count, availableSubjects, availableClasses] = await prisma.$transaction([
     prisma.teacher.findMany({
       where: query,
       include: {
         subjects: true,
         classes: true,
       },
+      orderBy,
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.teacher.count({ where: query }),
+    prisma.subject.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: "asc" }
+    }),
+    prisma.class.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: "asc" }
+    }),
   ]);
 
   return (
-    <Card className="space-y-6">
-      {/* TOP */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <GraduationCap className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-secondary-900">All Teachers</h1>
-            <p className="text-secondary-500 text-sm">Manage your teaching staff</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 border border-secondary-200 rounded-lg px-3 py-2">
-            <Search className="w-4 h-4 text-secondary-500" />
-            <Input 
-              type="text" 
-              placeholder="Search teachers..." 
-              className="border-none p-0 focus:ring-0 w-48" 
-            />
-          </div>
-          <Button variant="outline" size="sm">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline" size="sm">
-            <SortAsc className="w-4 h-4 mr-2" />
-            Sort
-          </Button>
-          {isAdmin && (
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Teacher
-            </Button>
-          )}
-        </div>
-      </div>
-      
+    <TeachersPageClient
+      isAdmin={isAdmin}
+      availableSubjects={availableSubjects}
+      availableClasses={availableClasses}
+    >
       {/* LIST */}
       <Table>
         <TableHeader>
@@ -234,10 +264,10 @@ const TeacherListPage = async ({
           {data.map(renderRow)}
         </TableBody>
       </Table>
-      
+
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
-    </Card>
+    </TeachersPageClient>
   );
 };
 

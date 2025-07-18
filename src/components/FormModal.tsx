@@ -179,11 +179,12 @@ const FormModal = ({
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
     type === "create"
-      ? "bg-lamaYellow"
+      ? "bg-success-500 hover:bg-success-600"
       : type === "update"
-      ? "bg-lamaSky"
-      : "bg-lamaPurple";
+      ? "bg-primary-500 hover:bg-primary-600"
+      : "bg-error-500 hover:bg-error-600";
 
+  const iconColor = "text-white";
   const [open, setOpen] = useState(false);
 
   const Form = () => {
@@ -203,44 +204,79 @@ const FormModal = ({
     }, [state, router]);
 
     return type === "delete" && id ? (
-      <form action={formAction} className="p-4 flex flex-col gap-4">
+      <form action={formAction} className="p-6 flex flex-col gap-6">
         <input type="text" name="id" value={id} hidden />
-        <span className="text-center font-medium">
-          All data will be lost. Are you sure you want to delete this {table}?
-        </span>
-        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
-          Delete
-        </button>
+        <div className="text-center">
+          <div className="w-12 h-12 bg-error-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-error-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-neutral-900 mb-2">Delete {table}</h3>
+          <p className="text-neutral-600">
+            All data will be lost. Are you sure you want to delete this {table}?
+          </p>
+        </div>
+        <div className="flex gap-3 justify-end">
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-sm font-medium text-white bg-error-600 rounded-lg hover:bg-error-700 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
       </form>
     ) : type === "create" || type === "update" ? (
       forms[table] ? forms[table](setOpen, type, data, relatedData) : (
-        <div className="p-4 text-center">
-          <p>Form for {table} is not yet implemented</p>
+        <div className="p-6 text-center">
+          <div className="w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-neutral-900 mb-2">Form Not Available</h3>
+          <p className="text-neutral-600">Form for {table} is not yet implemented</p>
         </div>
       )
     ) : (
-      "Form not found!"
+      <div className="p-6 text-center">
+        <p className="text-neutral-600">Form not found!</p>
+      </div>
     );
   };
 
   return (
     <>
       <button
-        className={`${size} flex items-center justify-center rounded-full ${bgColor} cursor-pointer hover:opacity-80`}
+        className={`${size} flex items-center justify-center rounded-full ${bgColor} cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105`}
         onClick={() => setOpen(true)}
+        title={`${type.charAt(0).toUpperCase() + type.slice(1)} ${table}`}
       >
-        <Image src={`/${type}.png`} alt="" width={16} height={16} />
+        <Image src={`/${type}.png`} alt="" width={16} height={16} className={iconColor} />
       </button>
       {open && (
-        <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={() => setOpen(false)}
+          />
+          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <Form />
-            <div
-              className="absolute top-4 right-4 cursor-pointer hover:opacity-70"
+            <button
+              className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
               onClick={() => setOpen(false)}
             >
-              <Image src="/close.png" alt="" width={14} height={14} />
-            </div>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
       )}

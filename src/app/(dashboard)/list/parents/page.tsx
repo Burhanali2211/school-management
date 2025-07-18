@@ -170,11 +170,11 @@ const renderRow = (item: ParentList) => (
                 <TableSearch />
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => console.log('Filter parents')}>
                   <Filter className="w-4 h-4" />
                   Filter
                 </Button>
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => console.log('Sort parents')}>
                   <ArrowUpDown className="w-4 h-4" />
                   Sort
                 </Button>

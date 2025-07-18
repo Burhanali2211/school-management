@@ -56,7 +56,7 @@ const QuickActions = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setShowActions(!showActions)}
-        className="bg-gradient-to-r from-white to-white/90 border-2 border-white/30 text-white px-6 py-3 rounded-xl flex items-center gap-3 shadow-lg backdrop-blur-sm transition-all duration-200 hover:shadow-xl"
+        className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl flex items-center gap-3 shadow-lg backdrop-blur-sm transition-all duration-200 hover:shadow-xl hover:from-primary-600 hover:to-primary-700"
       >
         <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
           <Zap className="w-4 h-4" />

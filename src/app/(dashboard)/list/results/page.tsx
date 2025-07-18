@@ -2,6 +2,8 @@ import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import { Button } from "@/components/ui/button";
+import { Filter, SortAsc } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Prisma } from "@prisma/client";
@@ -215,12 +217,14 @@ const renderRow = (item: ResultList) => (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </div>
-            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </div>
+            <Button variant="outline" size="sm" onClick={() => console.log('Filter results')}>
+              <Filter className="w-4 h-4 mr-2" />
+              Filter
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => console.log('Sort results')}>
+              <SortAsc className="w-4 h-4 mr-2" />
+              Sort
+            </Button>
             {(isAdmin || role === "teacher") && (
               <FormContainer table="result" type="create" />
             )}

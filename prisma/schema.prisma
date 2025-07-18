@@ -30,6 +30,10 @@ model Student {
   class       Class        @relation(fields: [classId], references: [id])
   gradeId     Int
   grade       Grade        @relation(fields: [gradeId], references: [id])
+  sectionId   Int?
+  section     Section?     @relation(fields: [sectionId], references: [id])
+  schoolId    Int?
+  school      School?      @relation(fields: [schoolId], references: [id])
   attendances Attendance[]
   results     Result[]
   birthday    DateTime
@@ -66,12 +70,28 @@ model Parent {
   students  Student[]
 }
 
+model School {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  address     String
+  phone       String?
+  email       String?
+  createdAt   DateTime @default(now())
+
+  grades      Grade[]
+  classes     Class[]
+  sections    Section[]
+  students    Student[]
+}
+
 model Grade {
   id    Int @id @default(autoincrement())
   level Int @unique
 
   students Student[]
-  classess Class[]
+  classes  Class[]
+  schoolId Int?
+  school   School? @relation(fields: [schoolId], references: [id])
 }
 
 model Class {
@@ -85,8 +105,27 @@ model Class {
   students      Student[]
   gradeId       Int
   grade         Grade          @relation(fields: [gradeId], references: [id])
+  schoolId      Int?
+  school        School?        @relation(fields: [schoolId], references: [id])
+  sections      Section[]
   events        Event[]
   announcements Announcement[]
+}
+
+model Section {
+  id          Int      @id @default(autoincrement())
+  name        String   // e.g., "Section A", "Section B"
+  capacity    Int
+  createdAt   DateTime @default(now())
+
+  schoolId    Int
+  school      School   @relation(fields: [schoolId], references: [id])
+  classId     Int
+  class       Class    @relation(fields: [classId], references: [id])
+
+  students    Student[]
+
+  @@unique([classId, name])
 }
 
 model Subject {

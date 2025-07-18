@@ -1,11 +1,9 @@
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Card from "@/components/ui/card";
-import { Search, Filter, SortAsc, Plus, Edit, Trash2, Users, User, School, Building } from "lucide-react";
+import ClassesPageClient from "@/components/classes/ClassesPageClient";
+import { Users, User, School } from "lucide-react";
 
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
@@ -102,12 +100,11 @@ const renderRow = (item: ClassList) => (
   </TableRow>
 );
 
-  const { page, ...queryParams } = searchParams;
+  const { page, sortBy, sortOrder, grade, supervisor, capacity, status, ...queryParams } = searchParams;
 
   const p = page ? parseInt(page) : 1;
 
-  // URL PARAMS CONDITION
-
+  // Build query conditions
   const query: Prisma.ClassWhereInput = {};
 
   if (queryParams) {
@@ -118,7 +115,10 @@ const renderRow = (item: ClassList) => (
             query.supervisorId = value;
             break;
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { supervisor: { name: { contains: value, mode: "insensitive" } } },
+            ];
             break;
           default:
             break;
@@ -127,57 +127,93 @@ const renderRow = (item: ClassList) => (
     }
   }
 
-  const [data, count] = await prisma.$transaction([
+  // Handle grade filter
+  if (grade) {
+    const grades = grade.split(",").map(g => parseInt(g)).filter(g => !isNaN(g));
+    if (grades.length > 0) {
+      query.grade = { in: grades };
+    }
+  }
+
+  // Handle supervisor filter
+  if (supervisor) {
+    query.supervisorId = supervisor;
+  }
+
+  // Handle capacity filter
+  if (capacity) {
+    switch (capacity) {
+      case "small":
+        query.capacity = { lte: 20 };
+        break;
+      case "medium":
+        query.capacity = { gte: 21, lte: 30 };
+        break;
+      case "large":
+        query.capacity = { gte: 31 };
+        break;
+    }
+  }
+
+  // Build order by clause
+  let orderBy: Prisma.ClassOrderByWithRelationInput = { createdAt: "desc" };
+
+  if (sortBy && sortOrder) {
+    switch (sortBy) {
+      case "name":
+        orderBy = { name: sortOrder as "asc" | "desc" };
+        break;
+      case "grade":
+        orderBy = { grade: sortOrder as "asc" | "desc" };
+        break;
+      case "capacity":
+        orderBy = { capacity: sortOrder as "asc" | "desc" };
+        break;
+      case "supervisor":
+        orderBy = { supervisor: { name: sortOrder as "asc" | "desc" } };
+        break;
+      case "createdAt":
+        orderBy = { createdAt: sortOrder as "asc" | "desc" };
+        break;
+      case "studentCount":
+        orderBy = { students: { _count: sortOrder as "asc" | "desc" } };
+        break;
+      default:
+        orderBy = { createdAt: "desc" };
+    }
+  }
+
+  const [data, count, availableGrades, availableTeachers] = await prisma.$transaction([
     prisma.class.findMany({
       where: query,
       include: {
         supervisor: true,
+        _count: {
+          select: { students: true }
+        }
       },
+      orderBy,
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.class.count({ where: query }),
+    prisma.class.findMany({
+      select: { grade: true },
+      distinct: ['grade'],
+      orderBy: { grade: "asc" }
+    }),
+    prisma.teacher.findMany({
+      select: { id: true, name: true },
+      orderBy: { name: "asc" }
+    }),
   ]);
 
   return (
-    <Card className="space-y-6">
-      {/* TOP */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-purple-100 rounded-lg">
-            <Building className="w-6 h-6 text-purple-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-secondary-900">All Classes</h1>
-            <p className="text-secondary-500 text-sm">Manage classroom assignments and capacity</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 border border-secondary-200 rounded-lg px-3 py-2">
-            <Search className="w-4 h-4 text-secondary-500" />
-            <Input 
-              type="text" 
-              placeholder="Search classes..." 
-              className="border-none p-0 focus:ring-0 w-48" 
-            />
-          </div>
-          <Button variant="outline" size="sm">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline" size="sm">
-            <SortAsc className="w-4 h-4 mr-2" />
-            Sort
-          </Button>
-          {isAdmin && (
-            <Button className="bg-purple-600 hover:bg-purple-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Class
-            </Button>
-          )}
-        </div>
-      </div>
-      
+    <ClassesPageClient
+      isAdmin={isAdmin}
+      availableGrades={availableGrades.map(g => ({ level: g.grade }))}
+      availableTeachers={availableTeachers}
+    >
       {/* LIST */}
       <Table>
         <TableHeader>
@@ -193,10 +229,10 @@ const renderRow = (item: ClassList) => (
           {data.map(renderRow)}
         </TableBody>
       </Table>
-      
+
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
-    </Card>
+    </ClassesPageClient>
   );
 };
 

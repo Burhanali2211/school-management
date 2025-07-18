@@ -27,7 +27,19 @@ export default function RootLayout({
           <ErrorBoundary>
             {children}
           </ErrorBoundary>
-          <ToastContainer position="bottom-right" theme="dark" />
+          <ToastContainer
+            position="bottom-right"
+            theme="light"
+            autoClose={4000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            className="toast-container"
+          />
         </body>
       </html>
     </AuthProvider>

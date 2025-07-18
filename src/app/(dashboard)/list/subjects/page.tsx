@@ -139,11 +139,11 @@ const SubjectListPage = async ({
               className="border-none p-0 focus:ring-0 w-48" 
             />
           </div>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => console.log('Filter subjects')}>
             <Filter className="w-4 h-4 mr-2" />
             Filter
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => console.log('Sort subjects')}>
             <SortAsc className="w-4 h-4 mr-2" />
             Sort
           </Button>

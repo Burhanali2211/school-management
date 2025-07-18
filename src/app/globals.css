@@ -31,17 +31,34 @@
   ::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-secondary-100;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     @apply bg-secondary-300 rounded-full;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-secondary-400;
+  }
+
+  /* Thin scrollbar for sidebar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-primary-300 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-400;
   }
 }
 
@@ -70,9 +87,25 @@
     @apply transition-all duration-300 ease-in-out hover:shadow-strong hover:-translate-y-1;
   }
   
-  /* Button Focus Ring */
+  /* Enhanced Focus States */
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* Improved focus visibility for better accessibility */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+  }
+
+  /* High contrast focus for critical elements */
+  .focus-high-contrast {
+    @apply focus:outline-none focus:ring-4 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-white;
+  }
+
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    @apply absolute -top-10 left-4 bg-primary-600 text-white px-4 py-2 rounded-md z-50 transition-all duration-200;
+    @apply focus:top-4;
   }
   
   /* Status Indicators */
@@ -266,4 +299,127 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/** Enhanced Animations **/
+.animate-in {
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+
+.fade-in-0 {
+  animation-name: fadeIn;
+}
+
+.zoom-in-95 {
+  animation-name: zoomIn95;
+}
+
+@keyframes zoomIn95 {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/** Improved Focus States **/
+.focus-visible-ring:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+/** Responsive Utilities **/
+.touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+/** Layout Utilities **/
+.sidebar-fixed {
+  @apply fixed inset-y-0 left-0 z-40;
+}
+
+.main-content-offset {
+  @apply lg:ml-64;
+}
+
+/** Mobile Optimizations **/
+@media (max-width: 768px) {
+  .mobile-padding {
+    @apply px-4 py-3;
+  }
+
+  .mobile-text {
+    @apply text-sm;
+  }
+
+  .mobile-hidden {
+    @apply hidden;
+  }
+
+  .mobile-full-width {
+    @apply w-full;
+  }
+}
+
+/** Improved Transitions **/
+.smooth-transition {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.hover-lift {
+  @apply hover:-translate-y-1 hover:shadow-strong transition-all duration-200;
+}
+
+/** Better Focus States **/
+.focus-ring-inset {
+  @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500;
+}
+
+/** Accessibility Improvements **/
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+.not-sr-only {
+  @apply static w-auto h-auto p-0 m-0 overflow-visible whitespace-normal;
+}
+
+/** Toast Notifications **/
+.toast-container .Toastify__toast {
+  @apply rounded-xl shadow-strong border border-secondary-200;
+}
+
+.toast-container .Toastify__toast--success {
+  @apply bg-white border-success-200;
+}
+
+.toast-container .Toastify__toast--error {
+  @apply bg-white border-error-200;
+}
+
+.toast-container .Toastify__toast--warning {
+  @apply bg-white border-warning-200;
+}
+
+.toast-container .Toastify__toast--info {
+  @apply bg-white border-primary-200;
+}
+
+.toast-container .Toastify__progress-bar--success {
+  @apply bg-success-500;
+}
+
+.toast-container .Toastify__progress-bar--error {
+  @apply bg-error-500;
+}
+
+.toast-container .Toastify__progress-bar--warning {
+  @apply bg-warning-500;
+}
+
+.toast-container .Toastify__progress-bar--info {
+  @apply bg-primary-500;
 }
