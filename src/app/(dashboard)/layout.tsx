@@ -79,8 +79,8 @@ export default function DashboardLayout({
       {/* MAIN CONTENT - Adjusted for fixed sidebar */}
       <div className="flex-1 flex flex-col lg:ml-64">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />
-        <main id="main-content" className="flex-1 py-6 overflow-y-auto bg-gradient-to-br from-primary-50/30 via-white to-accent-50/30" role="main">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <main id="main-content" className="flex-1 overflow-y-auto bg-gradient-to-br from-primary-50/30 via-white to-accent-50/30" role="main">
+          <div className="h-full">
             {children}
           </div>
         </main>

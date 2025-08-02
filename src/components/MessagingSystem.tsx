@@ -270,7 +270,7 @@ const MessagingSystem = ({ className = "" }: MessagingSystemProps) => {
   const MessageRow = ({ message }: { message: Message }) => (
     <tr
       key={message.id}
-      className={`border-b border-gray-200 text-sm hover:bg-lamaPurpleLight cursor-pointer ${
+      className={`border-b border-gray-200 text-sm hover:bg-primary-50 cursor-pointer ${
         message.status === 'unread' ? 'bg-blue-50 font-semibold' : 'even:bg-slate-50'
       }`}
       onClick={() => {
@@ -377,7 +377,7 @@ const MessagingSystem = ({ className = "" }: MessagingSystemProps) => {
   }
 
   return (
-    <div className={`bg-white p-4 rounded-md flex-1 ${className}`}>
+    <div className={`bg-gradient-to-br from-white to-primary-50/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex-1 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
@@ -455,7 +455,7 @@ const MessagingSystem = ({ className = "" }: MessagingSystemProps) => {
       {/* New Message Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 shadow-strong border border-neutral-200">
             <h2 className="text-xl font-semibold mb-4">New Message</h2>
             
             <UserSelector />
@@ -522,7 +522,7 @@ const MessagingSystem = ({ className = "" }: MessagingSystemProps) => {
       {/* Message View Modal */}
       {selectedMessage && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl mx-4 shadow-strong border border-neutral-200">
             <h2 className="text-xl font-semibold mb-4">Message Details</h2>
             
             <div className="space-y-4">

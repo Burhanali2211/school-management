@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useUser } from "@/hooks/useAuth";
 
 const SettingsPage = () => {
-  const { user, isLoading } = useUser();
+  const { user, isLoaded } = useUser();
   const [activeTab, setActiveTab] = useState("general");
   const [notifications, setNotifications] = useState({
     email: true,
@@ -44,7 +44,7 @@ const SettingsPage = () => {
             </label>
             <input
               type="text"
-              defaultValue={user?.name || ""}
+              defaultValue={user?.fullName || ""}
               className="w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
@@ -302,7 +302,7 @@ const SettingsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <label className="text-sm font-medium text-gray-700">Activity Status</label>
-              <p className="text-sm text-gray-500">Show when you're online</p>
+              <p className="text-sm text-gray-500">Show when you&apos;re online</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" defaultChecked />

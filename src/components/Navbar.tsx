@@ -14,6 +14,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const user = null; // Demo mode
   const role = "Administrator";
@@ -67,8 +68,9 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
             <div className="relative">
               <input 
                 type="text" 
-                placeholder="Search..." 
-                className="w-64 pl-10 pr-4 py-2 text-sm text-neutral-700 bg-neutral-100 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-300 transition-all duration-200"
+                placeholder="Search students, teachers, classes..." 
+                className="w-64 lg:w-80 pl-10 pr-4 py-2.5 text-sm text-neutral-700 bg-neutral-100 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-300 transition-all duration-200 shadow-sm hover:shadow-md focus:shadow-lg"
+                style={{ minHeight: '44px' }}
               />
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <SearchIcon className="w-5 h-5 text-neutral-400" />
@@ -79,7 +81,12 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
 
         <div className="flex items-center space-x-2 sm:space-x-4">
           {/* Mobile Search Button */}
-          <button className="md:hidden p-2 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors">
+          <button 
+            onClick={() => setMobileSearchOpen(true)}
+            className="md:hidden p-2 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors"
+            style={{ minHeight: '44px', minWidth: '44px' }}
+            aria-label="Open search"
+          >
             <SearchIcon className="w-5 h-5" />
           </button>
 
@@ -169,6 +176,55 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Search Modal */}
+      {mobileSearchOpen && (
+        <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true" aria-label="Search">
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+            onClick={() => setMobileSearchOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="fixed top-0 left-0 right-0 bg-white shadow-xl border-b border-neutral-200 p-4 animate-in slide-in-from-top duration-300">
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                <input 
+                  type="text" 
+                  placeholder="Search students, teachers, classes..." 
+                  className="w-full pl-10 pr-4 py-3 text-base text-neutral-700 bg-neutral-100 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-300 transition-all duration-200"
+                  autoFocus
+                />
+              </div>
+              <button
+                onClick={() => setMobileSearchOpen(false)}
+                className="px-4 py-3 text-sm font-medium text-neutral-600 hover:text-neutral-800 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+            
+            {/* Quick search suggestions */}
+            <div className="mt-4 space-y-2">
+              <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Quick Search</p>
+              <div className="flex flex-wrap gap-2">
+                <button className="px-3 py-1.5 text-sm bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors">
+                  Students
+                </button>
+                <button className="px-3 py-1.5 text-sm bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors">
+                  Teachers
+                </button>
+                <button className="px-3 py-1.5 text-sm bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors">
+                  Classes
+                </button>
+                <button className="px-3 py-1.5 text-sm bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors">
+                  Subjects
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

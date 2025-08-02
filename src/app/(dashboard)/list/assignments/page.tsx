@@ -4,7 +4,8 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import ListPageActions from "@/components/ui/list-page-actions";
 import { Search, Filter, SortAsc, Plus, FileText, Calendar, Clock, User, School, AlertTriangle } from "lucide-react";
 
 import prisma from "@/lib/prisma";
@@ -16,9 +17,9 @@ import { UserType } from "@prisma/client";
 
 type AssignmentList = Assignment & {
   lesson: {
-    subject: Subject;
-    class: Class;
-    teacher: Teacher;
+    subject: { id: number; name: string; };
+    class: { id: number; name: string; };
+    teacher: { id: string; name: string; surname: string; };
   };
 };
 
@@ -212,9 +213,9 @@ const isAdmin = user?.userType === UserType.ADMIN;
       include: {
         lesson: {
           select: {
-            subject: { select: { name: true } },
-            teacher: { select: { name: true, surname: true } },
-            class: { select: { name: true } },
+            subject: { select: { id: true, name: true } },
+            teacher: { select: { id: true, name: true, surname: true } },
+            class: { select: { id: true, name: true } },
           },
         },
       },
@@ -245,20 +246,16 @@ const isAdmin = user?.userType === UserType.ADMIN;
               className="border-none p-0 focus:ring-0 w-48" 
             />
           </div>
-          <Button variant="outline" size="sm" onClick={() => console.log('Filter assignments')}>
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => console.log('Sort assignments')}>
-            <SortAsc className="w-4 h-4 mr-2" />
-            Sort
-          </Button>
-          {(isAdmin || role === "teacher") && (
-            <Button className="bg-green-600 hover:bg-green-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Assignment
-            </Button>
-          )}
+          <ListPageActions
+            filterText="Filter"
+            sortText="Sort"
+            showCreate={isAdmin || role === "teacher"}
+            createButtonText="Create Assignment"
+            createButtonClassName="bg-green-600 hover:bg-green-700"
+            filterAction="Filter assignments"
+            sortAction="Sort assignments"
+            createAction="Create assignment"
+          />
         </div>
       </div>
       

@@ -1,7 +1,7 @@
 "use client";
 
 import { SunIcon, CloudIcon, MapPinIcon, ThermometerIcon } from "lucide-react";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 const WeatherWidget = () => {
   // Mock weather data - in real app, this would come from weather API

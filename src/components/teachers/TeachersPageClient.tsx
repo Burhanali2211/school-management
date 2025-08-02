@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FilterDropdown, FilterOption } from "@/components/ui/filter-dropdown";
 import { SortDropdown, SortOption } from "@/components/ui/sort-dropdown";
 import { SearchInput } from "@/components/ui/search-input";
 import { Button } from "@/components/ui/button";
 import { Plus, GraduationCap } from "lucide-react";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 interface TeachersPageClientProps {
   isAdmin: boolean;
@@ -27,7 +27,7 @@ const TeachersPageClient = ({
   const [showAddTeacherModal, setShowAddTeacherModal] = useState(false);
 
   // Filter configuration
-  const filterOptions: FilterOption[] = [
+  const filterOptions: FilterOption[] = useMemo(() => [
     {
       key: "subjects",
       label: "Subjects",
@@ -41,7 +41,7 @@ const TeachersPageClient = ({
     {
       key: "classes",
       label: "Classes",
-      value: "classes", 
+      value: "classes",
       type: "multiselect",
       options: availableClasses.map(cls => ({
         label: cls.name,
@@ -58,7 +58,7 @@ const TeachersPageClient = ({
         { label: "Inactive", value: "inactive" }
       ]
     }
-  ];
+  ], [availableSubjects, availableClasses]);
 
   // Sort configuration
   const sortOptions: SortOption[] = [
@@ -167,7 +167,7 @@ const TeachersPageClient = ({
   };
 
   return (
-    <Card className="space-y-6">
+    <Card className="space-y-6" fullWidth fullHeight background="transparent" border={false} shadow="none" padding="lg">
       {/* TOP */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

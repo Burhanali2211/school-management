@@ -58,7 +58,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-lamaSkyLight p-4">
+    <div className="min-h-screen flex items-center justify-center bg-primary-50 p-4">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <Image
@@ -91,7 +91,7 @@ export default function SignInPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-lamaPurple focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               placeholder="Enter your username"
               required
             />
@@ -109,7 +109,7 @@ export default function SignInPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-lamaPurple focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               placeholder="Enter your password"
               required
             />
@@ -119,13 +119,13 @@ export default function SignInPage() {
             <label className="flex items-center">
               <input
                 type="checkbox"
-                className="h-4 w-4 text-lamaPurple focus:ring-lamaPurple border-gray-300 rounded"
+                className="h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded"
               />
               <span className="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm text-lamaPurple hover:text-lamaPurpleLight"
+              className="text-sm text-primary-600 hover:text-primary-500"
             >
               Forgot password?
             </Link>
@@ -134,7 +134,7 @@ export default function SignInPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-lamaPurple text-white py-2 px-4 rounded-md hover:bg-lamaPurpleLight transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? "Signing in..." : "Sign In"}
           </button>

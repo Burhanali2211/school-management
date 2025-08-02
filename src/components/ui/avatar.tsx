@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export interface AvatarProps {
   children?: React.ReactNode;
@@ -20,17 +21,31 @@ const Avatar = ({ children, className, ...props }: AvatarProps & React.HTMLAttri
   );
 };
 
-const AvatarImage = ({ 
-  src, 
-  alt, 
-  className, 
-  ...props 
-}: React.ImgHTMLAttributes<HTMLImageElement>) => {
+interface AvatarImageProps {
+  src?: string;
+  alt?: string;
+  className?: string;
+  width?: number;
+  height?: number;
+}
+
+const AvatarImage = ({
+  src,
+  alt = "",
+  className,
+  width = 40,
+  height = 40,
+  ...props
+}: AvatarImageProps) => {
+  if (!src) return null;
+
   return (
-    <img
+    <Image
       src={src}
       alt={alt}
-      className={cn("aspect-square h-full w-full", className)}
+      width={width}
+      height={height}
+      className={cn("aspect-square h-full w-full object-cover", className)}
       {...props}
     />
   );

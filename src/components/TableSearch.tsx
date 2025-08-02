@@ -61,24 +61,27 @@ const TableSearch = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`relative flex items-center ${className}`}
+      className={`relative flex items-center w-full max-w-md ${className}`}
     >
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
+      <div className="relative flex-1 min-w-0">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-neutral-400" />
         <input
           type="text"
           placeholder={placeholder}
           value={inputValue}
           onChange={handleInputChange}
-          className="w-full pl-10 pr-10 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+          className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2.5 sm:py-3 bg-white border border-neutral-300 rounded-xl text-sm sm:text-base placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md focus:shadow-lg"
+          style={{ minHeight: '44px' }} // Ensure 44px minimum touch target
         />
         {inputValue && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1 rounded-full hover:bg-neutral-100"
+            style={{ minWidth: '44px', minHeight: '44px' }} // Ensure 44px minimum touch target
+            aria-label="Clear search"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         )}
       </div>

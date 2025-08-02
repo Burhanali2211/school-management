@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FilterDropdown, FilterOption } from "@/components/ui/filter-dropdown";
 import { SortDropdown, SortOption } from "@/components/ui/sort-dropdown";
 import { SearchInput } from "@/components/ui/search-input";
 import { Button } from "@/components/ui/button";
 import { Plus, School } from "lucide-react";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 interface ClassesPageClientProps {
   isAdmin: boolean;
@@ -27,7 +27,7 @@ const ClassesPageClient = ({
   const [showAddClassModal, setShowAddClassModal] = useState(false);
 
   // Filter configuration
-  const filterOptions: FilterOption[] = [
+  const filterOptions: FilterOption[] = useMemo(() => [
     {
       key: "grade",
       label: "Grade Level",
@@ -69,7 +69,7 @@ const ClassesPageClient = ({
         { label: "Inactive", value: "inactive" }
       ]
     }
-  ];
+  ], [availableGrades, availableTeachers]);
 
   // Sort configuration
   const sortOptions: SortOption[] = [
@@ -77,7 +77,7 @@ const ClassesPageClient = ({
     { key: "grade", label: "Grade Level", defaultDirection: "asc" },
     { key: "capacity", label: "Capacity", defaultDirection: "desc" },
     { key: "supervisor", label: "Supervisor", defaultDirection: "asc" },
-    { key: "createdAt", label: "Date Created", defaultDirection: "desc" },
+    { key: "id", label: "Class ID", defaultDirection: "desc" },
     { key: "studentCount", label: "Student Count", defaultDirection: "desc" }
   ];
 
@@ -184,7 +184,7 @@ const ClassesPageClient = ({
   };
 
   return (
-    <Card className="space-y-6">
+    <Card className="space-y-6" fullWidth fullHeight background="transparent" border={false} shadow="none" padding="lg">
       {/* TOP */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

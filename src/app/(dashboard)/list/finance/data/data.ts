@@ -28,3 +28,18 @@ export const statuses = [
     icon: CrossCircledIcon,
   },
 ];
+
+export const labels = [
+  {
+    value: "urgent",
+    label: "Urgent",
+  },
+  {
+    value: "normal",
+    label: "Normal",
+  },
+  {
+    value: "low",
+    label: "Low",
+  },
+];

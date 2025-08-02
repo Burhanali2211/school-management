@@ -3,8 +3,8 @@ import Image from "next/image";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Group A", value: 92, fill: "#C3EBFA" },
-  { name: "Group B", value: 8, fill: "#FAE27C" },
+  { name: "Group A", value: 92, fill: "primary-300" },
+  { name: "Group B", value: 8, fill: "accent-300" },
 ];
 
 const Performance = () => {
@@ -25,7 +25,11 @@ const Performance = () => {
             cy="50%"
             innerRadius={70}
             fill="#8884d8"
-          />
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={`hsl(var(--${entry.fill}))`} />
+            ))}
+          </Pie>
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">

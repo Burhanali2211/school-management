@@ -58,39 +58,52 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-white border-t border-neutral-200">
-      <div className="flex items-center text-sm text-neutral-600">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 sm:px-6 py-4 bg-white border-t border-neutral-200">
+      {/* Results info - hidden on mobile, shown on larger screens */}
+      <div className="hidden sm:flex items-center text-sm text-neutral-600">
         <span>
           Showing {Math.min((page - 1) * ITEM_PER_PAGE + 1, count)} to{' '}
           {Math.min(page * ITEM_PER_PAGE, count)} of {count} results
         </span>
       </div>
 
-      <div className="flex items-center space-x-2">
+      {/* Mobile results info - compact version */}
+      <div className="sm:hidden text-xs text-neutral-500 text-center">
+        Page {page} of {totalPages} ({count} total)
+      </div>
+
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        {/* Previous button */}
         <button
           disabled={!hasPrev}
           onClick={() => changePage(page - 1)}
-          className="flex items-center px-3 py-2 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+          className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-xl hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm hover:shadow-md"
+          style={{ minHeight: '44px', minWidth: '44px' }} // Ensure 44px minimum touch target
+          aria-label="Go to previous page"
         >
-          <ChevronLeft className="w-4 h-4 mr-1" />
-          Previous
+          <ChevronLeft className="w-4 h-4 sm:mr-1" />
+          <span className="hidden sm:inline">Previous</span>
         </button>
 
-        <div className="flex items-center space-x-1">
+        {/* Page numbers - responsive visibility */}
+        <div className="flex items-center gap-1">
           {getPageNumbers().map((pageNum, index) => (
             pageNum === '...' ? (
-              <span key={`ellipsis-${index}`} className="px-3 py-2 text-neutral-400">
+              <span key={`ellipsis-${index}`} className="px-2 py-2 text-neutral-400 text-sm">
                 ...
               </span>
             ) : (
               <button
                 key={pageNum}
                 onClick={() => changePage(pageNum as number)}
-                className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                className={`px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
                   page === pageNum
-                    ? 'bg-primary-500 text-white shadow-sm'
-                    : 'text-neutral-600 hover:bg-neutral-50 border border-neutral-300'
+                    ? 'bg-primary-500 text-white shadow-md hover:shadow-lg'
+                    : 'text-neutral-600 hover:bg-neutral-50 border border-neutral-300 shadow-sm hover:shadow-md'
                 }`}
+                style={{ minHeight: '44px', minWidth: '44px' }} // Ensure 44px minimum touch target
+                aria-label={`Go to page ${pageNum}`}
+                aria-current={page === pageNum ? 'page' : undefined}
               >
                 {pageNum}
               </button>
@@ -98,13 +111,16 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
           ))}
         </div>
 
+        {/* Next button */}
         <button
           disabled={!hasNext}
           onClick={() => changePage(page + 1)}
-          className="flex items-center px-3 py-2 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+          className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-xl hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm hover:shadow-md"
+          style={{ minHeight: '44px', minWidth: '44px' }} // Ensure 44px minimum touch target
+          aria-label="Go to next page"
         >
-          Next
-          <ChevronRight className="w-4 h-4 ml-1" />
+          <span className="hidden sm:inline">Next</span>
+          <ChevronRight className="w-4 h-4 sm:ml-1" />
         </button>
       </div>
     </div>

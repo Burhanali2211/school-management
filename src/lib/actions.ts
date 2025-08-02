@@ -13,6 +13,7 @@ import {
   ResultSchema,
   EventSchema,
   AnnouncementSchema,
+  AttendanceSchema,
 } from "./formValidationSchemas";
 import prisma from "./prisma";
 import { requireAdmin } from "./auth";
@@ -929,7 +930,7 @@ export const deleteAnnouncement = async (
 // ATTENDANCE CRUD OPERATIONS
 export const createAttendance = async (
   currentState: CurrentState,
-  data: { studentId: string; lessonId: number; date: Date; present: boolean }
+  data: AttendanceSchema
 ) => {
   try {
     await requireAdmin();
@@ -953,7 +954,7 @@ export const createAttendance = async (
 
 export const updateAttendance = async (
   currentState: CurrentState,
-  data: { id: number; studentId: string; lessonId: number; date: Date; present: boolean }
+  data: AttendanceSchema
 ) => {
   try {
     await requireAdmin();

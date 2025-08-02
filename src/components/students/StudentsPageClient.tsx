@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FilterDropdown, FilterOption } from "@/components/ui/filter-dropdown";
 import { SortDropdown, SortOption } from "@/components/ui/sort-dropdown";
 import { SearchInput } from "@/components/ui/search-input";
 import { Button } from "@/components/ui/button";
 import { Plus, Users } from "lucide-react";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 interface StudentsPageClientProps {
   isAdmin: boolean;
@@ -27,7 +27,7 @@ const StudentsPageClient = ({
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
 
   // Filter configuration
-  const filterOptions: FilterOption[] = [
+  const filterOptions: FilterOption[] = useMemo(() => [
     {
       key: "classId",
       label: "Class",
@@ -68,7 +68,7 @@ const StudentsPageClient = ({
         { label: "Female", value: "FEMALE" }
       ]
     }
-  ];
+  ], [availableClasses, availableGrades]);
 
   // Sort configuration
   const sortOptions: SortOption[] = [
@@ -183,7 +183,7 @@ const StudentsPageClient = ({
   };
 
   return (
-    <Card className="space-y-6">
+    <Card className="space-y-6" fullWidth fullHeight background="transparent" border={false} shadow="none" padding="lg">
       {/* TOP */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

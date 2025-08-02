@@ -37,6 +37,7 @@ const TeacherForm = ({
   });
 
   const [img, setImg] = useState<any>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [state, formAction] = useFormState(
     type === "create" ? createTeacher : updateTeacher,
@@ -46,29 +47,39 @@ const TeacherForm = ({
     }
   );
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    formAction({ ...data, img: img?.secure_url });
+  const onSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true);
+    try {
+      formAction({ ...data, img: img?.secure_url });
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("Failed to submit form. Please try again.");
+      setIsSubmitting(false);
+    }
   });
 
   const router = useRouter();
 
   useEffect(() => {
     if (state.success) {
-      toast(`Teacher has been ${type === "create" ? "created" : "updated"}!`);
+      toast.success(`Teacher has been ${type === "create" ? "created" : "updated"}!`);
       setOpen(false);
       router.refresh();
+      setIsSubmitting(false);
+    } else if (state.error) {
+      toast.error((state as any).message || "Something went wrong! Please try again.");
+      setIsSubmitting(false);
     }
   }, [state, router, type, setOpen]);
 
   const { subjects } = relatedData;
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">
+    <form className="flex flex-col gap-8 bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-neutral-200" onSubmit={onSubmit}>
+      <h1 className="text-2xl font-bold text-neutral-900 mb-2">
         {type === "create" ? "Create a new teacher" : "Update the teacher"}
       </h1>
-      <span className="text-xs text-gray-400 font-medium">
+      <span className="text-sm text-neutral-500 font-medium border-b border-neutral-200 pb-2">
         Authentication Information
       </span>
       <div className="flex justify-between flex-wrap gap-4">
@@ -95,7 +106,7 @@ const TeacherForm = ({
           error={errors?.password}
         />
       </div>
-      <span className="text-xs text-gray-400 font-medium">
+      <span className="text-sm text-neutral-500 font-medium border-b border-neutral-200 pb-2">
         Personal Information
       </span>
       <div className="flex justify-between flex-wrap gap-4">
@@ -207,10 +218,23 @@ const TeacherForm = ({
         </CldUploadWidget>
       </div>
       {state.error && (
-        <span className="text-red-500">Something went wrong!</span>
+        <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-lg">
+          <p className="text-sm font-medium">Error</p>
+          <p className="text-sm">{(state as any).message || "Something went wrong! Please try again."}</p>
+        </div>
       )}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Create" : "Update"}
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-primary-600 hover:bg-primary-700 disabled:bg-primary-300 disabled:cursor-not-allowed text-white p-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+      >
+        {isSubmitting && (
+          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        )}
+        {isSubmitting
+          ? (type === "create" ? "Creating..." : "Updating...")
+          : (type === "create" ? "Create Teacher" : "Update Teacher")
+        }
       </button>
     </form>
   );

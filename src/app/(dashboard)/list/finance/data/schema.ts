@@ -13,4 +13,7 @@ export const feeSchema = z.object({
   }),
 });
 
+// Alias for compatibility with data-table-row-actions
+export const taskSchema = feeSchema;
+
 export type Fee = z.infer<typeof feeSchema>;

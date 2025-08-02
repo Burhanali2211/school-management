@@ -16,7 +16,7 @@ import {
   updateSubject,
 } from "@/lib/actions";
 import { useFormState } from "react-dom";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -39,7 +39,7 @@ const ExamForm = ({
     resolver: zodResolver(examSchema),
   });
 
-  // AFTER REACT 19 IT'LL BE USEACTIONSTATE
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [state, formAction] = useFormState(
     type === "create" ? createExam : updateExam,
@@ -49,18 +49,28 @@ const ExamForm = ({
     }
   );
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    formAction(data);
+  const onSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true);
+    try {
+      formAction(data);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("Failed to submit form. Please try again.");
+      setIsSubmitting(false);
+    }
   });
 
   const router = useRouter();
 
   useEffect(() => {
     if (state.success) {
-      toast(`Exam has been ${type === "create" ? "created" : "updated"}!`);
+      toast.success(`Exam has been ${type === "create" ? "created" : "updated"}!`);
       setOpen(false);
       router.refresh();
+      setIsSubmitting(false);
+    } else if (state.error) {
+      toast.error((state as any).message || "Something went wrong! Please try again.");
+      setIsSubmitting(false);
     }
   }, [state, router, type, setOpen]);
 

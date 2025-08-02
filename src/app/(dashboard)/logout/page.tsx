@@ -39,7 +39,7 @@ const LogoutPage = () => {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-lamaSkyLight">
+    <div className="min-h-screen flex items-center justify-center bg-primary-50">
       <div className="text-center max-w-md p-8">
         <div className="mb-8">
           <Image src="/logo.png" alt="SchooLama" width={64} height={64} className="mx-auto" />

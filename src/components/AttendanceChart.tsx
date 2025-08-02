@@ -41,13 +41,13 @@ const AttendanceChart = ({
           />
           <Bar
             dataKey="present"
-            fill="#FAE27C"
+            fill="hsl(var(--accent-300))"
             legendType="circle"
             radius={[10, 10, 0, 0]}
           />
           <Bar
             dataKey="absent"
-            fill="#C3EBFA"
+            fill="hsl(var(--primary-300))"
             legendType="circle"
             radius={[10, 10, 0, 0]}
           />

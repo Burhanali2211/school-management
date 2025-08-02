@@ -1,10 +1,11 @@
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
-import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import ExamsTableWithPreview from "@/components/exams/ExamsTableWithPreview";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import ListPageActions from "@/components/ui/list-page-actions";
 import { Search, Filter, SortAsc, Plus, ClipboardList, Calendar, Clock, User, School, AlertCircle } from "lucide-react";
 
 import prisma from "@/lib/prisma";
@@ -63,79 +64,7 @@ const columns = [
     : []),
 ];
 
-const renderRow = (item: ExamList) => {
-  const isUpcoming = new Date(item.startTime) > new Date();
-  const examDate = new Date(item.startTime);
-  const examTime = examDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  
-  return (
-    <TableRow key={item.id} className="hover:bg-secondary-50">
-      <TableCell className="flex items-center gap-4 p-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
-          <ClipboardList className="w-6 h-6 text-white" />
-        </div>
-        <div className="flex flex-col">
-          <h3 className="font-semibold text-secondary-900 text-lg">{item.lesson.subject.name}</h3>
-          <div className="flex items-center gap-2 text-xs text-secondary-500">
-            {isUpcoming ? (
-              <Badge variant="warning" size="sm">
-                <AlertCircle className="w-3 h-3 mr-1" />
-                Upcoming
-              </Badge>
-            ) : (
-              <Badge variant="success" size="sm">
-                Completed
-              </Badge>
-            )}
-          </div>
-        </div>
-      </TableCell>
-      <TableCell className="text-center">
-        <div className="flex items-center justify-center gap-2">
-          <School className="w-4 h-4 text-secondary-500" />
-          <Badge variant="info">{item.lesson.class.name}</Badge>
-        </div>
-      </TableCell>
-      <TableCell className="hidden md:table-cell">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-            <User className="w-4 h-4 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-medium text-secondary-900 text-sm">
-              {item.lesson.teacher.name} {item.lesson.teacher.surname}
-            </span>
-            <span className="text-xs text-secondary-500">Instructor</span>
-          </div>
-        </div>
-      </TableCell>
-      <TableCell className="hidden md:table-cell">
-        <div className="flex flex-col items-center gap-1">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-secondary-500" />
-            <span className="text-sm font-medium text-secondary-900">
-              {examDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-secondary-500" />
-            <span className="text-xs text-secondary-500">{examTime}</span>
-          </div>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2 justify-center">
-          {(isAdmin || role === "teacher") && (
-            <>
-              <FormContainer table="exam" type="update" data={item} />
-              <FormContainer table="exam" type="delete" id={item.id} />
-            </>
-          )}
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-};
+
 
   const { page, ...queryParams } = searchParams;
 
@@ -205,9 +134,9 @@ const renderRow = (item: ExamList) => {
       include: {
         lesson: {
           select: {
-            subject: { select: { name: true } },
-            teacher: { select: { name: true, surname: true } },
-            class: { select: { name: true } },
+            subject: { select: { id: true, name: true } },
+            teacher: { select: { id: true, name: true, surname: true, username: true, email: true, phone: true, address: true, img: true, bloodType: true, sex: true, createdAt: true, birthday: true } },
+            class: { select: { id: true, name: true, capacity: true, supervisorId: true, gradeId: true, schoolId: true } },
           },
         },
       },
@@ -239,38 +168,26 @@ const renderRow = (item: ExamList) => {
               className="border-none p-0 focus:ring-0 w-48" 
             />
           </div>
-          <Button variant="outline" size="sm" onClick={() => console.log('Filter exams')}>
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => console.log('Sort exams')}>
-            <SortAsc className="w-4 h-4 mr-2" />
-            Sort
-          </Button>
-          {(isAdmin || role === "teacher") && (
-            <Button className="bg-red-600 hover:bg-red-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Schedule Exam
-            </Button>
-          )}
+          <ListPageActions
+            filterText="Filter"
+            sortText="Sort"
+            showCreate={isAdmin || role === "teacher"}
+            createButtonText="Schedule Exam"
+            createButtonClassName="bg-red-600 hover:bg-red-700"
+            filterAction="Filter exams"
+            sortAction="Sort exams"
+            createAction="Schedule exam"
+          />
         </div>
       </div>
       
       {/* LIST */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.accessor} className={col.className}>
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map(renderRow)}
-        </TableBody>
-      </Table>
+      <ExamsTableWithPreview
+        exams={data}
+        columns={columns}
+        isAdmin={isAdmin}
+        role={role}
+      />
       
       {/* PAGINATION */}
       <Pagination page={p} count={count} />

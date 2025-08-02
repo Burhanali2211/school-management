@@ -2,6 +2,7 @@ import { columns } from '@/app/(dashboard)/list/finance/components/columns';
 import { DataTable } from '@/app/(dashboard)/list/finance/components/data-table';
 import { UserNav } from '@/app/(dashboard)/list/finance/components/user-nav';
 import { Fee } from '@prisma/client';
+import Image from 'next/image';
 
 async function getFees(): Promise<Fee[]> {
   try {
@@ -27,14 +28,14 @@ export default async function TaskPage() {
   return (
     <>
       <div className='md:hidden'>
-        <img
+        <Image
           src='/examples/tasks-light.png'
           width={1280}
           height={998}
           alt='Playground'
           className='block dark:hidden'
         />
-        <img
+        <Image
           src='/examples/tasks-dark.png'
           width={1280}
           height={998}

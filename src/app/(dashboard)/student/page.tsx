@@ -2,16 +2,18 @@ import Announcements from "@/components/Announcements";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
 import BigCalendar from "@/components/BigCalender";
 import EventCalendar from "@/components/EventCalendar";
+import { Card } from "@/components/ui/card";
 import prisma from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-utils";
 import { UserType } from "@prisma/client";
+import StudentPageClient from "./StudentPageClient";
 
 const StudentPage = async () => {
   let userId = "student1"; // Default for demo
   
   try {
-    const authResult = auth();
-    userId = authResult.userId || "student1";
+    const user = await getAuthUser();
+    userId = user?.id || "student1";
   } catch (error) {
     console.log("Auth not configured, using demo mode");
   }
@@ -36,22 +38,7 @@ const StudentPage = async () => {
 
   const studentClass = classItem[0];
 
-  return (
-    <div className="p-4 flex gap-4 flex-col xl:flex-row">
-      {/* LEFT */}
-      <div className="w-full xl:w-2/3">
-        <div className="h-full bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Schedule ({studentClass.name})</h1>
-          <BigCalendarContainer type="classId" id={studentClass.id} />
-        </div>
-      </div>
-      {/* RIGHT */}
-      <div className="w-full xl:w-1/3 flex flex-col gap-8">
-        <EventCalendar />
-        <Announcements />
-      </div>
-    </div>
-  );
+  return <StudentPageClient studentClass={studentClass} />;
 };
 
 export default StudentPage;

@@ -1,9 +1,8 @@
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
-import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import ClassesTableWithPreview from "@/components/classes/ClassesTableWithPreview";
 import { Badge } from "@/components/ui/badge";
 import ClassesPageClient from "@/components/classes/ClassesPageClient";
-import { Users, User, School } from "lucide-react";
 
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
@@ -12,7 +11,7 @@ import Image from "next/image";
 import { getAuthUser } from "@/lib/auth-utils";
 import { UserType } from "@prisma/client";
 
-type ClassList = Class & { supervisor: Teacher };
+type ClassList = Class & { supervisor: Teacher | null };
 
 const ClassListPage = async ({
   searchParams,
@@ -30,75 +29,27 @@ const columns = [
     accessor: "name",
   },
   {
-    header: "Capacity",
-    accessor: "capacity",
-    className: "hidden md:table-cell",
-  },
-  {
     header: "Grade",
     accessor: "grade",
     className: "hidden md:table-cell",
   },
   {
-    header: "Supervisor",
-    accessor: "supervisor",
+    header: "Capacity",
+    accessor: "capacity",
     className: "hidden md:table-cell",
   },
-  ...(isAdmin
-    ? [
-        {
-          header: "Actions",
-          accessor: "action",
-        },
-      ]
-    : []),
+  {
+    header: "Supervisor",
+    accessor: "supervisor",
+    className: "hidden lg:table-cell",
+  },
+  {
+    header: "Actions",
+    accessor: "action",
+  },
 ];
 
-const renderRow = (item: ClassList) => (
-  <TableRow key={item.id} className="hover:bg-secondary-50">
-    <TableCell className="flex items-center gap-4 p-4">
-      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-        <School className="w-6 h-6 text-white" />
-      </div>
-      <div className="flex flex-col">
-        <h3 className="font-semibold text-secondary-900 text-lg">{item.name}</h3>
-        <p className="text-xs text-secondary-500">Grade {item.name[0]}</p>
-      </div>
-    </TableCell>
-    <TableCell className="hidden md:table-cell text-center">
-      <div className="flex items-center justify-center gap-2">
-        <Users className="w-4 h-4 text-secondary-500" />
-        <Badge variant="info">{item.capacity} students</Badge>
-      </div>
-    </TableCell>
-    <TableCell className="hidden md:table-cell text-center">
-      <Badge variant="secondary" size="lg">{item.name[0]}</Badge>
-    </TableCell>
-    <TableCell className="hidden md:table-cell">
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
-          <User className="w-4 h-4 text-white" />
-        </div>
-        <div className="flex flex-col">
-          <span className="font-medium text-secondary-900 text-sm">
-            {item.supervisor.name} {item.supervisor.surname}
-          </span>
-          <span className="text-xs text-secondary-500">Class Supervisor</span>
-        </div>
-      </div>
-    </TableCell>
-    <TableCell>
-      <div className="flex items-center gap-2 justify-center">
-        {isAdmin && (
-          <>
-            <FormContainer table="class" type="update" data={item} />
-            <FormContainer table="class" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </TableCell>
-  </TableRow>
-);
+
 
   const { page, sortBy, sortOrder, grade, supervisor, capacity, status, ...queryParams } = searchParams;
 
@@ -131,7 +82,7 @@ const renderRow = (item: ClassList) => (
   if (grade) {
     const grades = grade.split(",").map(g => parseInt(g)).filter(g => !isNaN(g));
     if (grades.length > 0) {
-      query.grade = { in: grades };
+      query.gradeId = { in: grades };
     }
   }
 
@@ -156,7 +107,7 @@ const renderRow = (item: ClassList) => (
   }
 
   // Build order by clause
-  let orderBy: Prisma.ClassOrderByWithRelationInput = { createdAt: "desc" };
+  let orderBy: Prisma.ClassOrderByWithRelationInput = { id: "desc" };
 
   if (sortBy && sortOrder) {
     switch (sortBy) {
@@ -164,7 +115,7 @@ const renderRow = (item: ClassList) => (
         orderBy = { name: sortOrder as "asc" | "desc" };
         break;
       case "grade":
-        orderBy = { grade: sortOrder as "asc" | "desc" };
+        orderBy = { grade: { level: sortOrder as "asc" | "desc" } };
         break;
       case "capacity":
         orderBy = { capacity: sortOrder as "asc" | "desc" };
@@ -172,14 +123,14 @@ const renderRow = (item: ClassList) => (
       case "supervisor":
         orderBy = { supervisor: { name: sortOrder as "asc" | "desc" } };
         break;
-      case "createdAt":
-        orderBy = { createdAt: sortOrder as "asc" | "desc" };
+      case "id":
+        orderBy = { id: sortOrder as "asc" | "desc" };
         break;
       case "studentCount":
         orderBy = { students: { _count: sortOrder as "asc" | "desc" } };
         break;
       default:
-        orderBy = { createdAt: "desc" };
+        orderBy = { id: "desc" };
     }
   }
 
@@ -188,6 +139,7 @@ const renderRow = (item: ClassList) => (
       where: query,
       include: {
         supervisor: true,
+        grade: true,
         _count: {
           select: { students: true }
         }
@@ -198,9 +150,9 @@ const renderRow = (item: ClassList) => (
     }),
     prisma.class.count({ where: query }),
     prisma.class.findMany({
-      select: { grade: true },
-      distinct: ['grade'],
-      orderBy: { grade: "asc" }
+      select: { gradeId: true, grade: { select: { level: true } } },
+      distinct: ['gradeId'],
+      orderBy: { grade: { level: "asc" } }
     }),
     prisma.teacher.findMany({
       select: { id: true, name: true },
@@ -211,24 +163,15 @@ const renderRow = (item: ClassList) => (
   return (
     <ClassesPageClient
       isAdmin={isAdmin}
-      availableGrades={availableGrades.map(g => ({ level: g.grade }))}
+      availableGrades={availableGrades.map(g => ({ level: g.grade.level }))}
       availableTeachers={availableTeachers}
     >
       {/* LIST */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.accessor} className={col.className}>
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map(renderRow)}
-        </TableBody>
-      </Table>
+      <ClassesTableWithPreview
+        classes={data}
+        columns={columns}
+        isAdmin={isAdmin}
+      />
 
       {/* PAGINATION */}
       <Pagination page={p} count={count} />

@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
+import Card from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Users, BookOpen, GraduationCap, School } from 'lucide-react';
@@ -73,7 +73,7 @@ const DrillDownCard: React.FC<DrillDownCardProps> = ({
   };
 
   return (
-    <Card
+    <div
       className={cn(
         'group relative overflow-hidden transition-all duration-200 cursor-pointer hover:shadow-lg hover:scale-[1.02]',
         isActive && `ring-2 ring-offset-2 ${config.borderColor.replace('border-', 'ring-')}`,
@@ -81,6 +81,7 @@ const DrillDownCard: React.FC<DrillDownCardProps> = ({
       )}
       onClick={handleClick}
     >
+      <Card>
       <div className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
@@ -146,7 +147,8 @@ const DrillDownCard: React.FC<DrillDownCardProps> = ({
         'absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity',
         config.color
       )} />
-    </Card>
+      </Card>
+    </div>
   );
 };
 

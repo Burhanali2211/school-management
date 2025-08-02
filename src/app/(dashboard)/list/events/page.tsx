@@ -1,15 +1,16 @@
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
-import Table from "@/components/Table";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import TableSearch from "@/components/TableSearch";
-import { Button } from "@/components/ui/button";
-import { Filter, SortAsc } from "lucide-react";
+import ListPageActions from "@/components/ui/list-page-actions";
+import { Card } from "@/components/ui/card";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Event, Prisma } from "@prisma/client";
 import Image from "next/image";
 import { getAuthUser } from "@/lib/auth-utils";
 import { UserType } from "@prisma/client";
+import { Calendar } from "lucide-react";
 
 type EventList = Event & { class: Class };
 
@@ -20,9 +21,9 @@ const EventListPage = async ({
 }) => {
 
   const user = await getAuthUser();
-  const role = user?.role;
+  const userType = user?.userType;
   const currentUserId = user?.id;
-  const isAdmin = role === UserType.ADMIN;
+  const isAdmin = userType === UserType.ADMIN;
 
   const columns = [
     {
@@ -59,30 +60,27 @@ const EventListPage = async ({
   ];
 
   const renderRow = (item: EventList) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">{item.title}</td>
-      <td>{item.class?.name || "-"}</td>
-      <td className="hidden md:table-cell">
+    <TableRow key={item.id}>
+      <TableCell className="flex items-center gap-4">{item.title}</TableCell>
+      <TableCell>{item.class?.name || "-"}</TableCell>
+      <TableCell className="hidden md:table-cell">
         {new Intl.DateTimeFormat("en-US").format(item.startTime)}
-      </td>
-      <td className="hidden md:table-cell">
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
         {item.startTime.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: false,
         })}
-      </td>
-      <td className="hidden md:table-cell">
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
         {item.endTime.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: false,
         })}
-      </td>
-      <td>
+      </TableCell>
+      <TableCell>
         <div className="flex items-center gap-2">
           {isAdmin && (
             <>
@@ -91,8 +89,8 @@ const EventListPage = async ({
             </>
           )}
         </div>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 
   const { page, ...queryParams } = searchParams;
@@ -128,7 +126,7 @@ const EventListPage = async ({
   query.OR = [
     { classId: null },
     {
-      class: roleConditions[role as keyof typeof roleConditions] || {},
+      class: roleConditions[userType as keyof typeof roleConditions] || {},
     },
   ];
 
@@ -145,30 +143,47 @@ const EventListPage = async ({
   ]);
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <Card className="space-y-6" fullWidth fullHeight background="transparent" border={false} shadow="none" padding="lg">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Events</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <Button variant="outline" size="sm" onClick={() => console.log('Filter events')}>
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => console.log('Sort events')}>
-              <SortAsc className="w-4 h-4 mr-2" />
-              Sort
-            </Button>
-            {isAdmin && <FormContainer table="event" type="create" />}
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-purple-100 rounded-lg">
+            <Calendar className="w-6 h-6 text-purple-600" />
           </div>
+          <div>
+            <h1 className="text-2xl font-bold text-secondary-900">All Events</h1>
+            <p className="text-secondary-500 text-sm">Manage school events and activities</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <TableSearch />
+          <ListPageActions
+            filterText="Filter"
+            sortText="Sort"
+            filterAction="Filter events"
+            sortAction="Sort events"
+          />
+          {isAdmin && <FormContainer table="event" type="create" />}
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {columns.map((col) => (
+              <TableHead key={col.accessor} className={col.className}>
+                {col.header}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map(renderRow)}
+        </TableBody>
+      </Table>
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
-    </div>
+    </Card>
   );
 };
 

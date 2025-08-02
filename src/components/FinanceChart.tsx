@@ -59,10 +59,10 @@ const FinanceChart = ({ data }: FinanceChartProps) => {
             <Line
               type="monotone"
               dataKey="income"
-              stroke="#C3EBFA"
+              stroke="hsl(var(--primary-300))"
               strokeWidth={5}
             />
-            <Line type="monotone" dataKey="expense" stroke="#CFCEFF" strokeWidth={5}/>
+            <Line type="monotone" dataKey="expense" stroke="hsl(var(--accent-300))" strokeWidth={5}/>
           </LineChart>
         </ResponsiveContainer>
       </ClientWrapper>

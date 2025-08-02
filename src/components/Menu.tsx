@@ -84,28 +84,28 @@ const menuItems = [
       {
         icon: CalendarIcon,
         label: "Lessons",
-        href: "/list/lessons",
+        href: "/admin/lessons",
         visible: ["admin", "teacher"],
         badge: null,
       },
       {
         icon: FileText,
         label: "Exams",
-        href: "/list/exams",
+        href: "/admin/exams",
         visible: ["admin", "teacher", "student", "parent"],
         badge: "3",
       },
       {
         icon: ClipboardCheck,
         label: "Assignments",
-        href: "/list/assignments",
+        href: "/admin/assignments",
         visible: ["admin", "teacher", "student", "parent"],
         badge: "12",
       },
       {
         icon: Trophy,
         label: "Results",
-        href: "/list/results",
+        href: "/admin/results",
         visible: ["admin", "teacher", "student", "parent"],
         badge: null,
       },
@@ -194,28 +194,39 @@ const Menu = () => {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 relative overflow-hidden focus-visible-ring ${isActive
-                      ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                      : 'text-neutral-700 hover:bg-primary-50 hover:text-primary-700 hover:shadow-md'
+                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 relative overflow-hidden focus-visible-ring transform hover:scale-[1.02] ${isActive
+                      ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg hover:shadow-xl'
+                      : 'text-neutral-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 hover:text-primary-700 hover:shadow-md'
                     }`}
+                  style={{ minHeight: '44px' }} // Ensure 44px minimum touch target
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {/* Active indicator */}
                   {isActive && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                    <motion.div 
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full"
+                      initial={{ scaleY: 0 }}
+                      animate={{ scaleY: 1 }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
+                    />
                   )}
 
-                  <item.icon className={`w-5 h-5 mr-3 transition-colors duration-200 ${
-                    isActive ? 'text-white' : 'text-neutral-500 group-hover:text-primary-600'
+                  {/* Hover background effect */}
+                  {!isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-primary-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                  )}
+
+                  <item.icon className={`w-5 h-5 mr-3 transition-all duration-300 relative z-10 ${
+                    isActive ? 'text-white' : 'text-neutral-500 group-hover:text-primary-600 group-hover:scale-110'
                   }`} />
-                  <span className="flex-1 font-medium">{item.label}</span>
+                  <span className="flex-1 font-medium relative z-10 transition-all duration-300">{item.label}</span>
                   {item.badge && (
                     <Badge
                       variant={isActive ? "secondary" : "default"}
-                      className={`text-xs ${
+                      className={`text-xs relative z-10 transition-all duration-300 ${
                         isActive
                           ? "bg-white/20 text-white border-white/30"
-                          : "bg-primary-100 text-primary-700 border-primary-200"
+                          : "bg-primary-100 text-primary-700 border-primary-200 group-hover:bg-primary-200 group-hover:scale-105"
                       }`}
                     >
                       {item.badge}

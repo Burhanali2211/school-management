@@ -1,9 +1,8 @@
 import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
-import Table from "@/components/Table";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import TableSearch from "@/components/TableSearch";
-import { Button } from "@/components/ui/button";
-import { Filter, SortAsc } from "lucide-react";
+import ListPageActions from "@/components/ui/list-page-actions";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Prisma } from "@prisma/client";
@@ -77,21 +76,18 @@ const columns = [
 ];
 
 const renderRow = (item: ResultList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">{item.title}</td>
-    <td>{item.studentName + " " + item.studentName}</td>
-    <td className="hidden md:table-cell">{item.score}</td>
-    <td className="hidden md:table-cell">
+  <TableRow key={item.id}>
+    <TableCell className="flex items-center gap-4">{item.title}</TableCell>
+    <TableCell>{item.studentName + " " + item.studentSurname}</TableCell>
+    <TableCell className="hidden md:table-cell">{item.score}</TableCell>
+    <TableCell className="hidden md:table-cell">
       {item.teacherName + " " + item.teacherSurname}
-    </td>
-    <td className="hidden md:table-cell">{item.className}</td>
-    <td className="hidden md:table-cell">
+    </TableCell>
+    <TableCell className="hidden md:table-cell">{item.className}</TableCell>
+    <TableCell className="hidden md:table-cell">
       {new Intl.DateTimeFormat("en-US").format(item.startTime)}
-    </td>
-    <td>
+    </TableCell>
+    <TableCell>
       <div className="flex items-center gap-2">
         {(isAdmin || role === "teacher") && (
           <>
@@ -100,8 +96,8 @@ const renderRow = (item: ResultList) => (
           </>
         )}
       </div>
-    </td>
-  </tr>
+    </TableCell>
+  </TableRow>
 );
 
   const { page, ...queryParams } = searchParams;
@@ -210,21 +206,19 @@ const renderRow = (item: ResultList) => (
   });
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="h-full p-6 space-y-6">
       {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">All Results</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <Button variant="outline" size="sm" onClick={() => console.log('Filter results')}>
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => console.log('Sort results')}>
-              <SortAsc className="w-4 h-4 mr-2" />
-              Sort
-            </Button>
+            <ListPageActions
+              filterText="Filter"
+              sortText="Sort"
+              filterAction="Filter results"
+              sortAction="Sort results"
+            />
             {(isAdmin || role === "teacher") && (
               <FormContainer table="result" type="create" />
             )}
@@ -232,7 +226,20 @@ const renderRow = (item: ResultList) => (
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {columns.map((col) => (
+              <TableHead key={col.accessor} className={col.className}>
+                {col.header}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map(renderRow)}
+        </TableBody>
+      </Table>
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>

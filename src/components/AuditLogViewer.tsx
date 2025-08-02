@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AuditLog, UserType } from "@prisma/client";
 import { format } from "date-fns";
 
@@ -18,11 +18,7 @@ export default function AuditLogViewer() {
     dateTo: "",
   });
 
-  useEffect(() => {
-    fetchAuditLogs();
-  }, [filter]);
-
-  const fetchAuditLogs = async () => {
+  const fetchAuditLogs = useCallback(async () => {
     try {
       const params = new URLSearchParams();
       if (filter.action) params.append("action", filter.action);
@@ -40,7 +36,11 @@ export default function AuditLogViewer() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filter]);
+
+  useEffect(() => {
+    fetchAuditLogs();
+  }, [fetchAuditLogs]);
 
   const getActionColor = (action: string) => {
     switch (action) {
@@ -79,7 +79,7 @@ export default function AuditLogViewer() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-lamaPurple"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
       </div>
     );
   }
@@ -93,7 +93,7 @@ export default function AuditLogViewer() {
           <select
             value={filter.action}
             onChange={(e) => setFilter({ ...filter, action: e.target.value })}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-lamaPurple focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           >
             <option value="">All Actions</option>
             <option value="LOGIN">Login</option>
@@ -107,7 +107,7 @@ export default function AuditLogViewer() {
           <select
             value={filter.userType}
             onChange={(e) => setFilter({ ...filter, userType: e.target.value })}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-lamaPurple focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           >
             <option value="">All User Types</option>
             <option value="ADMIN">Admin</option>
@@ -120,7 +120,7 @@ export default function AuditLogViewer() {
             type="date"
             value={filter.dateFrom}
             onChange={(e) => setFilter({ ...filter, dateFrom: e.target.value })}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-lamaPurple focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             placeholder="From Date"
           />
 
@@ -128,7 +128,7 @@ export default function AuditLogViewer() {
             type="date"
             value={filter.dateTo}
             onChange={(e) => setFilter({ ...filter, dateTo: e.target.value })}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-lamaPurple focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             placeholder="To Date"
           />
         </div>
@@ -190,7 +190,7 @@ export default function AuditLogViewer() {
                 <td className="px-4 py-3 text-sm">
                   {log.changes && (
                     <details className="cursor-pointer">
-                      <summary className="text-lamaPurple hover:text-lamaPurpleLight">
+                      <summary className="text-primary-600 hover:text-primary-500">
                         View Changes
                       </summary>
                       <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-x-auto">

@@ -46,7 +46,7 @@ const SingleTeacherPage = async ({
         {/* TOP */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* USER INFO CARD */}
-          <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
+          <div className="bg-primary-200 py-6 px-4 rounded-md flex-1 flex gap-4">
             <div className="w-1/3">
               <Image
                 src={teacher.img || "/noAvatar.png"}
@@ -90,97 +90,108 @@ const SingleTeacherPage = async ({
               </div>
             </div>
           </div>
-          {/* SMALL CARDS */}
-          <div className="flex-1 flex gap-4 justify-between flex-wrap">
-            {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-              <Image
-                src="/singleAttendance.png"
-                alt=""
-                width={24}
-                height={24}
-                className="w-6 h-6"
-              />
+          {/* STATS CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            {/* ATTENDANCE CARD */}
+            <div className="bg-gradient-to-br from-white to-primary-50/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                <Image
+                  src="/singleAttendance.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+              </div>
               <div className="">
-                <h1 className="text-xl font-semibold">90%</h1>
-                <span className="text-sm text-gray-400">Attendance</span>
+                <h1 className="text-xl font-semibold text-primary-900">90%</h1>
+                <span className="text-sm text-primary-600">Attendance</span>
               </div>
             </div>
-            {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-              <Image
-                src="/singleBranch.png"
-                alt=""
-                width={24}
-                height={24}
-                className="w-6 h-6"
-              />
+
+            {/* SUBJECTS CARD */}
+            <div className="bg-gradient-to-br from-white to-accent-50/30 p-6 rounded-2xl shadow-soft border border-accent-100/50 flex items-center gap-4">
+              <div className="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center">
+                <Image
+                  src="/singleBranch.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+              </div>
               <div className="">
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-xl font-semibold text-accent-900">
                   {teacher._count.subjects}
                 </h1>
-                <span className="text-sm text-gray-400">Branches</span>
+                <span className="text-sm text-accent-600">Branches</span>
               </div>
             </div>
-            {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-              <Image
-                src="/singleLesson.png"
-                alt=""
-                width={24}
-                height={24}
-                className="w-6 h-6"
-              />
+
+            {/* LESSONS CARD */}
+            <div className="bg-gradient-to-br from-white to-secondary-50/30 p-6 rounded-2xl shadow-soft border border-secondary-100/50 flex items-center gap-4">
+              <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
+                <Image
+                  src="/singleLesson.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+              </div>
               <div className="">
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-xl font-semibold text-secondary-900">
                   {teacher._count.lessons}
                 </h1>
-                <span className="text-sm text-gray-400">Lessons</span>
+                <span className="text-sm text-secondary-600">Lessons</span>
               </div>
             </div>
-            {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-              <Image
-                src="/singleClass.png"
-                alt=""
-                width={24}
-                height={24}
-                className="w-6 h-6"
-              />
+
+            {/* CLASSES CARD */}
+            <div className="bg-gradient-to-br from-white to-success-50/30 p-6 rounded-2xl shadow-soft border border-success-100/50 flex items-center gap-4">
+              <div className="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
+                <Image
+                  src="/singleClass.png"
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+              </div>
               <div className="">
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-xl font-semibold text-success-900">
                   {teacher._count.classes}
                 </h1>
-                <span className="text-sm text-gray-400">Classes</span>
+                <span className="text-sm text-success-600">Classes</span>
               </div>
             </div>
           </div>
         </div>
         {/* BOTTOM */}
-        <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
-          <h1>Teacher&apos;s Schedule</h1>
+        <div className="mt-8 bg-gradient-to-br from-white to-neutral-50/30 rounded-2xl p-6 shadow-soft border border-neutral-100/50 h-[800px]">
+          <h1 className="text-xl font-semibold text-neutral-900 mb-4">Teacher&apos;s Schedule</h1>
           <BigCalendarContainer type="teacherId" id={teacher.id} />
         </div>
       </div>
       {/* RIGHT */}
-      <div className="w-full xl:w-1/3 flex flex-col gap-4">
-        <div className="bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Shortcuts</h1>
+      <div className="w-full xl:w-1/3 flex flex-col gap-8">
+        <div className="bg-gradient-to-br from-white to-primary-50/30 rounded-2xl p-6 shadow-soft border border-primary-100/50">
+          <h1 className="text-xl font-semibold text-primary-900 mb-4">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
            <Link
-              className="p-3 rounded-md bg-lamaSkyLight"
+              className="p-3 rounded-md bg-primary-50"
               href={`/list/classes?supervisorId=${teacher.id}`}
             >
               Teacher&apos;s Classes
             </Link>
             <Link
-              className="p-3 rounded-md bg-lamaPurpleLight"
+              className="p-3 rounded-md bg-secondary-100"
               href={`/list/students?teacherId=${teacher.id}`}
             >
               Teacher&apos;s Students
             </Link>
             <Link
-              className="p-3 rounded-md bg-lamaYellowLight"
+              className="p-3 rounded-md bg-warning-50"
               href={`/list/lessons?teacherId=${teacher.id}`}
             >
               Teacher&apos;s Lessons
@@ -192,7 +203,7 @@ const SingleTeacherPage = async ({
               Teacher&apos;s Exams
             </Link>
             <Link
-              className="p-3 rounded-md bg-lamaSkyLight"
+              className="p-3 rounded-md bg-primary-50"
               href={`/list/assignments?teacherId=${teacher.id}`}
             >
               Teacher&apos;s Assignments

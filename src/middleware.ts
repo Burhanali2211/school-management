@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { validateSession } from './lib/auth-service';
+import { validateSessionEdge, getSessionFromRequest } from './lib/auth-edge';
 import { UserType } from '@prisma/client';
 
 // Define public routes that don't require authentication
@@ -42,7 +42,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   // Get session token from cookie
-  const token = request.cookies.get('session-token')?.value;
+  const token = getSessionFromRequest(request);
 
   if (!token) {
     // No token, redirect to sign-in
@@ -51,7 +51,7 @@ export default async function middleware(request: NextRequest) {
 
   try {
     // Validate session
-    const session = await validateSession(token);
+    const session = await validateSessionEdge(token);
 
     if (!session) {
       // Invalid session, redirect to sign-in

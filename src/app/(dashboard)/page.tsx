@@ -6,11 +6,11 @@ import FinanceChartContainer from "@/components/FinanceChartContainer";
 import UserCard from "@/components/UserCard";
 import QuickActions from "@/components/QuickActions";
 import WeatherWidget from "@/components/WeatherWidget";
-import { requireAdmin } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   TrendingUp, 
@@ -30,9 +30,10 @@ const DashboardHomePage = async ({
   searchParams: { [keys: string]: string | undefined };
 }) => {
   try {
-    await requireAdmin();
+    const session = await requireAuth();
+    // This page is now accessible to all authenticated users
   } catch (error) {
-    redirect("/admin-login");
+    redirect("/sign-in");
   }
   
   return (
@@ -53,11 +54,11 @@ const DashboardHomePage = async ({
                 </div>
                 <div>
                   <h1 className="text-4xl font-bold">Dashboard</h1>
-                  <p className="text-primary-100 text-lg">Welcome back, Admin!</p>
+                  <p className="text-primary-100 text-lg">Welcome back!</p>
                 </div>
               </div>
               <p className="text-primary-100 max-w-2xl">
-                Monitor your school's performance, manage students and staff, and stay updated with the latest activities.
+                Monitor your school&apos;s performance, manage students and staff, and stay updated with the latest activities.
               </p>
             </div>
             
@@ -147,7 +148,7 @@ const DashboardHomePage = async ({
         <Card className="p-6 hover:shadow-strong transition-all duration-300 border-l-4 border-l-accent-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-secondary-600 font-medium">This Week's Events</p>
+              <p className="text-sm text-secondary-600 font-medium">This Week&apos;s Events</p>
               <p className="text-2xl font-bold text-secondary-900">5</p>
               <div className="flex items-center gap-1 mt-1">
                 <Calendar className="w-4 h-4 text-accent-500" />

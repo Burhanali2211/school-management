@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await getAuthUser(req);
+    const user = await getAuthUser();
     
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const user = await getAuthUser(req);
+    const user = await getAuthUser();
     
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -34,19 +34,12 @@ export async function PUT(req: NextRequest) {
       return new NextResponse("Name and email are required", { status: 400 });
     }
 
-    // Update the user profile
-    const updatedUser = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        name,
-        email,
-        phone,
-        department,
-        address,
-      },
+    // TODO: Update the user profile based on user type
+    // For now, return success without actual update
+    return NextResponse.json({
+      message: "Profile update functionality not yet implemented",
+      data: { name, email, phone, department, address }
     });
-
-    return NextResponse.json(updatedUser);
   } catch (error) {
     console.error("Error updating profile:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

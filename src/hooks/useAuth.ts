@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User } from "@prisma/client";
+import { Admin, Teacher, Student, Parent } from "@prisma/client";
+
+// Union type for all possible user types
+type User = Admin | Teacher | Student | Parent;
 
 interface AuthState {
   user: User | null;
@@ -101,18 +104,18 @@ export const useAuth = () => {
 // Helper hook for user data (similar to Clerk's useUser)
 export const useUser = () => {
   const { user, isLoading, error } = useAuth();
-  
+
   return {
     user: user ? {
       id: user.id,
-      fullName: `${user.firstName} ${user.lastName}`,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: 'name' in user ? `${user.name} ${user.surname}` : user.username,
+      firstName: 'name' in user ? user.name : user.username,
+      lastName: 'surname' in user ? user.surname : '',
       primaryEmailAddress: {
-        emailAddress: user.email,
+        emailAddress: 'email' in user ? user.email : null,
       },
-      email: user.email,
-      role: user.role,
+      email: 'email' in user ? user.email : null,
+      role: 'Admin', // Default role, should be determined by user type
     } : null,
     isLoaded: !isLoading,
     isSignedIn: !!user,

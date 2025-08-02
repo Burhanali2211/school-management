@@ -7,7 +7,7 @@ import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
+  DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -21,8 +21,8 @@ export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu
+      trigger={
         <Button
           variant="outline"
           size="sm"
@@ -31,29 +31,27 @@ export function DataTableViewOptions<TData>({
           <MixerHorizontalIcon className="mr-2 h-4 w-4" />
           View
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {table
-          .getAllColumns()
-          .filter(
-            (column) =>
-              typeof column.accessorFn !== "undefined" && column.getCanHide()
-          )
-          .map((column) => {
-            return (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                className="capitalize"
-                checked={column.getIsVisible()}
-                onCheckedChange={(value) => column.toggleVisibility(!!value)}
-              >
-                {column.id}
-              </DropdownMenuCheckboxItem>
-            );
-          })}
-      </DropdownMenuContent>
+      }
+    >
+      <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      {table
+        .getAllColumns()
+        .filter(
+          (column) =>
+            typeof column.accessorFn !== "undefined" && column.getCanHide()
+        )
+        .map((column) => {
+          return (
+            <DropdownMenuItem
+              key={column.id}
+              className="capitalize"
+              onClick={() => column.toggleVisibility(!column.getIsVisible())}
+            >
+              {column.getIsVisible() ? "✓ " : "  "}{column.id}
+            </DropdownMenuItem>
+          );
+        })}
     </DropdownMenu>
   );
 }

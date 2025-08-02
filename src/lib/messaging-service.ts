@@ -570,21 +570,34 @@ export async function saveDraft(
   }
 ) {
   try {
-    const draft = await prisma.messageDraft.upsert({
-      where: { userId },
-      update: {
-        content: draftData.content,
-        subject: draftData.subject,
-        recipients: draftData.recipients,
-      },
-      create: {
-        userId,
-        userType,
-        content: draftData.content,
-        subject: draftData.subject,
-        recipients: draftData.recipients,
-      },
+    // Find existing draft for this user
+    const existingDraft = await prisma.messageDraft.findFirst({
+      where: { userId, userType },
     });
+
+    let draft;
+    if (existingDraft) {
+      // Update existing draft
+      draft = await prisma.messageDraft.update({
+        where: { id: existingDraft.id },
+        data: {
+          content: draftData.content,
+          subject: draftData.subject,
+          recipients: draftData.recipients,
+        },
+      });
+    } else {
+      // Create new draft
+      draft = await prisma.messageDraft.create({
+        data: {
+          userId,
+          userType,
+          content: draftData.content,
+          subject: draftData.subject,
+          recipients: draftData.recipients,
+        },
+      });
+    }
 
     return draft;
   } catch (error) {
@@ -595,8 +608,8 @@ export async function saveDraft(
 
 export async function getDraft(userId: string, userType: UserType) {
   try {
-    const draft = await prisma.messageDraft.findUnique({
-      where: { userId },
+    const draft = await prisma.messageDraft.findFirst({
+      where: { userId, userType },
     });
 
     return draft;
@@ -606,11 +619,17 @@ export async function getDraft(userId: string, userType: UserType) {
   }
 }
 
-export async function deleteDraft(userId: string) {
+export async function deleteDraft(userId: string, userType: UserType) {
   try {
-    await prisma.messageDraft.delete({
-      where: { userId },
+    const draft = await prisma.messageDraft.findFirst({
+      where: { userId, userType },
     });
+
+    if (draft) {
+      await prisma.messageDraft.delete({
+        where: { id: draft.id },
+      });
+    }
   } catch (error) {
     console.error("Error deleting draft:", error);
     throw error;

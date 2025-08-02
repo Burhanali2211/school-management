@@ -106,14 +106,7 @@ const config: Config = {
           default: '#f8fafc',
           dark: '#f1f5f9',
         },
-        // Legacy colors for backward compatibility (will be removed gradually)
-        lamaSky: "#C3EBFA",
-        lamaSkyLight: "#EDF9FD",
-        lamaPurple: "#CFCEFF",
-        lamaPurpleLight: "#F1F0FF",
-        lamaYellow: "#FAE27C",
-        lamaYellowLight: "#FEFCE8",
-      },
+              },
       spacing: {
         '18': '4.5rem',
         '88': '22rem',

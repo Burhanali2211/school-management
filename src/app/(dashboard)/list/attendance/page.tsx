@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@/hooks/useAuth";
-import Table from "@/components/Table";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import TableSearch from "@/components/TableSearch";
 import { Button } from "@/components/ui/button";
 import { Filter, SortAsc } from "lucide-react";
+import Image from "next/image";
 
 
 
@@ -203,34 +204,33 @@ const AttendancePage = () => {
   };
 
   const renderRow = (item: Attendance) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-    >
-      <td className="p-4">{item.studentName}</td>
-      <td className="p-4">{item.className}</td>
-      <td className="p-4">{item.subject}</td>
-      <td className="p-4">{item.date}</td>
-      <td className="p-4">
+    <TableRow key={item.id}>
+      <TableCell>{item.studentName}</TableCell>
+      <TableCell>{item.className}</TableCell>
+      <TableCell>{item.subject}</TableCell>
+      <TableCell>{item.date}</TableCell>
+      <TableCell>
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
           {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
         </span>
-      </td>
+      </TableCell>
       {isAdmin && (
-        <td className="p-4 flex items-center gap-2">
-          <button onClick={() => handleEdit(item)} className="text-blue-500 hover:underline">
-            <img src="/update.png" alt="" width={16} height={16} />
-          </button>
-          <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:underline">
-            <img src="/delete.png" alt="" width={16} height={16} />
-          </button>
-        </td>
+        <TableCell>
+          <div className="flex items-center gap-2">
+            <button onClick={() => handleEdit(item)} className="text-blue-500 hover:underline">
+              <Image src="/update.png" alt="" width={16} height={16} />
+            </button>
+            <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:underline">
+              <Image src="/delete.png" alt="" width={16} height={16} />
+            </button>
+          </div>
+        </TableCell>
       )}
-    </tr>
+    </TableRow>
   );
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="h-full p-6 space-y-6">
       {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">Attendance Records</h1>
@@ -251,24 +251,33 @@ const AttendancePage = () => {
             </Button>
                         {isAdmin && <button
               onClick={() => setIsModalOpen(true)}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow"
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-warning-400"
             >
-              <img src="/create.png" alt="" width={14} height={14} />
+              <Image src="/create.png" alt="" width={14} height={14} />
             </button>}
           </div>
         </div>
       </div>
       {/* LIST */}
-      <Table
-        data={filteredAttendances}
-        columns={isAdmin ? [...columns, { header: "Actions", accessor: "actions" }] : columns}
-        renderRow={renderRow}
-      />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {(isAdmin ? [...columns, { header: "Actions", accessor: "actions" }] : columns).map((col) => (
+              <TableHead key={col.accessor} className={col.className}>
+                {col.header}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredAttendances.map(renderRow)}
+        </TableBody>
+      </Table>
 
       {isModalOpen && (
         <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
-            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4"><img src="/close.png" alt="" width={20} height={20} /></button>
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4"><Image src="/close.png" alt="" width={20} height={20} /></button>
             <h2 className="text-xl font-semibold mb-4">Add Attendance Record</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -340,7 +349,7 @@ const AttendancePage = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-lamaYellow text-white rounded-md">
+                <button type="submit" className="px-4 py-2 bg-warning-500 text-white rounded-md">
                   Add Record
                 </button>
               </div>
@@ -352,7 +361,7 @@ const AttendancePage = () => {
       {isEditModalOpen && selectedAttendance && (
         <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
-            <button onClick={() => setIsEditModalOpen(false)} className="absolute top-4 right-4"><img src="/close.png" alt="" width={20} height={20} /></button>
+            <button onClick={() => setIsEditModalOpen(false)} className="absolute top-4 right-4"><Image src="/close.png" alt="" width={20} height={20} /></button>
             <h2 className="text-xl font-semibold mb-4">Edit Attendance Record</h2>
             <form onSubmit={handleUpdate} className="space-y-4">
               <div>
@@ -421,7 +430,7 @@ const AttendancePage = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-lamaYellow text-white rounded-md">
+                <button type="submit" className="px-4 py-2 bg-warning-500 text-white rounded-md">
                   Update Record
                 </button>
               </div>
