@@ -6,11 +6,10 @@ import { UserType } from '@prisma/client';
 // Define public routes that don't require authentication
 const publicRoutes = [
   '/sign-in',
-  '/sign-up',
+  '/sign-up', 
   '/forgot-password',
   '/api/auth/login',
   '/api/auth/logout',
-  '/',
   '/admin-login', // Legacy admin login
 ];
 

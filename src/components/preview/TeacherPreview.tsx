@@ -12,6 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Card, CardHeader, CardBody, CardTitle } from '@/components/ui/card';
 import { 
   GraduationCap, 
   Users, 
@@ -33,7 +34,11 @@ import {
   BarChart3,
   Briefcase,
   Star,
-  ChevronRight
+  ChevronRight,
+  School,
+  Timer,
+  UserCheck,
+  Globe
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
@@ -108,9 +113,12 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
         title="Teacher Not Found"
         size="lg"
       >
-        <div className="text-center py-8">
-          <GraduationCap className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">Teacher information could not be loaded.</p>
+        <div className="text-center py-12">
+          <div className="w-20 h-20 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <GraduationCap className="w-10 h-10 text-secondary-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-secondary-900 mb-2">Teacher Not Found</h3>
+          <p className="text-secondary-600">Teacher information could not be loaded.</p>
         </div>
       </BasePreviewModal>
     );
@@ -148,196 +156,403 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
       title={`${teacher.name} ${teacher.surname}`}
       size="xl"
     >
-      <div className="space-y-6">
-        {/* Header */}
-        <PreviewHeader
-          image={teacher.img}
-          title={`${teacher.name} ${teacher.surname}`}
-          subtitle={`Teacher • ${teacher.username}`}
-          badges={[
-            { text: `${totalSubjects} Subject${totalSubjects !== 1 ? 's' : ''}`, variant: 'secondary' },
-            { text: `${totalClasses} Class${totalClasses !== 1 ? 'es' : ''}`, variant: 'outline' },
-            { text: `${experienceYears} Year${experienceYears !== 1 ? 's' : ''} Experience`, variant: 'default' }
-          ]}
-        />
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-blue-600 font-medium">Total Students</p>
-                <p className="text-2xl font-bold text-blue-700">{totalStudents}</p>
-              </div>
-              <Users className="w-8 h-8 text-blue-500" />
+      <div className="space-y-6 p-4">
+        {/* Compact AI Header */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 via-purple-500/20 to-accent-500/20 rounded-2xl blur-lg"></div>
+          <Card variant="gradient" className="relative backdrop-blur-sm border-white/30">
+            <CardBody className="p-6">
+              <div className="flex items-center gap-4">
+                {/* Compact Avatar */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <GraduationCap className="w-10 h-10 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center border-2 border-white">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  </div>
+                </div>
+                
+                {/* Compact Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between">
+                    <div className="min-w-0 flex-1">
+                      <h1 className="text-xl font-bold text-secondary-900 truncate">
+                        {teacher.name} {teacher.surname}
+                      </h1>
+                      <p className="text-sm text-secondary-600 font-medium truncate">
+                        {teacher.username} • Educational Professional
+                      </p>
+                      
+                      {/* Inline Compact Badges */}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-primary-100 text-primary-700 rounded-lg">
+                          <BookOpen className="w-3 h-3" />
+                          {totalSubjects}
+                        </span>
+                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-accent-100 text-accent-700 rounded-lg">
+                          <GraduationCap className="w-3 h-3" />
+                          {totalClasses}
+                        </span>
+                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-orange-100 text-orange-700 rounded-lg">
+                          <Clock className="w-3 h-3" />
+                          {experienceYears}y
+                        </span>
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-green-600 font-medium">Classes</p>
-                <p className="text-2xl font-bold text-green-700">{totalClasses}</p>
+                    {/* AI Status Indicator */}
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span className="text-green-600 font-medium hidden sm:inline">Active</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <GraduationCap className="w-8 h-8 text-green-500" />
+            </CardBody>
+          </Card>
+          </div>
+          
+        {/* AI-Powered Compact Stats */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-green-500/10 rounded-3xl blur-xl"></div>
+          <Card variant="gradient" className="relative backdrop-blur-sm border-white/20">
+            <CardBody className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-secondary-900 flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  Performance Analytics
+                </h3>
+                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                  Real-time
+                </Badge>
+              </div>
+              
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="group cursor-pointer">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 hover:shadow-md transition-all">
+                    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-sm">
+                      <Users className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-2xl font-bold text-blue-700 leading-none">{totalStudents}</p>
+                      <p className="text-xs font-medium text-blue-600 truncate">Students</p>
+                    </div>
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-purple-600 font-medium">Subjects</p>
-                <p className="text-2xl font-bold text-purple-700">{totalSubjects}</p>
+                <div className="group cursor-pointer">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200/50 hover:shadow-md transition-all">
+                    <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-sm">
+                      <GraduationCap className="w-5 h-5 text-white" />
               </div>
-              <BookOpen className="w-8 h-8 text-purple-500" />
-            </div>
-          </div>
-          
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-orange-600 font-medium">Avg Class Size</p>
-                <p className="text-2xl font-bold text-orange-700">{averageClassSize}</p>
-              </div>
-              <BarChart3 className="w-8 h-8 text-orange-500" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-2xl font-bold text-green-700 leading-none">{totalClasses}</p>
+                      <p className="text-xs font-medium text-green-600 truncate">Classes</p>
             </div>
           </div>
         </div>
 
-        {/* Personal Information */}
-        <PreviewSection title="Personal Information" icon={<User className="w-5 h-5" />}>
-          <PreviewGrid columns={2}>
-            <PreviewField
-              label="Full Name"
-              value={`${teacher.name} ${teacher.surname}`}
-              icon={<User className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Username"
-              value={teacher.username}
-              icon={<User className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Email"
-              value={teacher.email || 'Not provided'}
-              icon={<Mail className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Phone"
-              value={teacher.phone || 'Not provided'}
-              icon={<Phone className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Address"
-              value={teacher.address || 'Not provided'}
-              icon={<MapPin className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Birthday"
-              value={formatDate(teacher.birthday)}
-              icon={<Calendar className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Gender"
-              value={teacher.sex}
-              icon={<User className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Blood Type"
-              value={teacher.bloodType || 'Not provided'}
-              icon={<Heart className="w-4 h-4" />}
-            />
-          </PreviewGrid>
-        </PreviewSection>
-
-        {/* Professional Information */}
-        <PreviewSection title="Professional Information" icon={<Briefcase className="w-5 h-5" />}>
-          <PreviewGrid columns={2}>
-            <PreviewField
-              label="Employee ID"
-              value={teacher.id}
-              icon={<FileText className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Join Date"
-              value={formatDate(teacher.createdAt)}
-              icon={<Calendar className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Experience"
-              value={`${experienceYears} year${experienceYears !== 1 ? 's' : ''}`}
-              icon={<Award className="w-4 h-4" />}
-            />
-            <PreviewField
-              label="Total Students"
-              value={totalStudents.toString()}
-              icon={<Users className="w-4 h-4" />}
-            />
-          </PreviewGrid>
-        </PreviewSection>
-
-        {/* Teaching Load Overview */}
-        <PreviewSection title="Teaching Load Overview" icon={<BarChart3 className="w-5 h-5" />}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <BookOpen className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-blue-700">{totalSubjects}</p>
-              <p className="text-sm text-blue-600">Subjects Teaching</p>
+                <div className="group cursor-pointer">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200/50 hover:shadow-md transition-all">
+                    <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shadow-sm">
+                      <BookOpen className="w-5 h-5 text-white" />
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <GraduationCap className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-green-700">{totalClasses}</p>
-              <p className="text-sm text-green-600">Classes Assigned</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-2xl font-bold text-purple-700 leading-none">{totalSubjects}</p>
+                      <p className="text-xs font-medium text-purple-600 truncate">Subjects</p>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <Users className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-purple-700">{totalStudents}</p>
-              <p className="text-sm text-purple-600">Total Students</p>
             </div>
           </div>
-        </PreviewSection>
-
-        {/* Subjects Teaching */}
-        {teacher.subjects && teacher.subjects.length > 0 && (
-          <PreviewSection title="Subjects Teaching" icon={<BookOpen className="w-5 h-5" />}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {teacher.subjects.map((subject) => (
-                <div key={subject.id} className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center">
-                      <BookOpen className="w-5 h-5 text-blue-600" />
+                
+                <div className="group cursor-pointer">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200/50 hover:shadow-md transition-all">
+                    <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center shadow-sm">
+                      <BarChart3 className="w-5 h-5 text-white" />
                     </div>
-                    <div>
-                      <p className="font-medium text-blue-900">{subject.name}</p>
-                      {subject.department && (
-                        <p className="text-sm text-blue-600">{subject.department}</p>
-                      )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-2xl font-bold text-orange-700 leading-none">{averageClassSize}</p>
+                      <p className="text-xs font-medium text-orange-600 truncate">Avg Size</p>
                     </div>
                   </div>
-                  {subject.credits && (
-                    <Badge variant="secondary" className="bg-blue-200 text-blue-800">
-                      {subject.credits} Credits
+                </div>
+              </div>
+              
+              {/* AI Insight Bar */}
+              <div className="mt-4 p-3 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl border border-indigo-200/50">
+                <div className="flex items-center gap-2 text-xs">
+                  <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse"></div>
+                  <span className="font-medium text-indigo-700">AI Analysis:</span>
+                  <span className="text-indigo-600">
+                    {totalStudents > 15 ? "High engagement teacher" : 
+                     totalSubjects > 3 ? "Multi-subject specialist" : 
+                     "Focused teaching approach"}
+                  </span>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+
+        {/* Compact Information Grid */}
+        <div className="teacher-info-sections grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Personal Information */}
+          <Card variant="elevated" className="w-full">
+            <CardHeader variant="bordered">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 text-primary-600" />
+                </div>
+                Personal Information
+              </CardTitle>
+            </CardHeader>
+            <CardBody className="p-6">
+              <div className="space-y-6">
+                {/* Basic Information Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <User className="w-4 h-4" />
+                      Full Name
+                    </div>
+                    <div className="text-lg font-semibold text-secondary-900">
+                      {teacher.name} {teacher.surname}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <Globe className="w-4 h-4" />
+                      Username
+                    </div>
+                    <div className="text-base font-mono text-secondary-800 bg-secondary-50 px-3 py-2 rounded-lg">
+                      {teacher.username}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Information Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <Mail className="w-4 h-4" />
+                      Email Address
+                    </div>
+                    {teacher.email ? (
+                      <a 
+                        href={`mailto:${teacher.email}`}
+                        className="text-primary-600 hover:text-primary-700 hover:underline break-words text-base"
+                      >
+                        {teacher.email}
+                      </a>
+                    ) : (
+                      <span className="text-secondary-400 italic text-base">Not provided</span>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <Phone className="w-4 h-4" />
+                      Phone Number
+                    </div>
+                    {teacher.phone ? (
+                      <a 
+                        href={`tel:${teacher.phone}`}
+                        className="text-primary-600 hover:text-primary-700 hover:underline text-base"
+                      >
+                        {teacher.phone}
+                      </a>
+                    ) : (
+                      <span className="text-secondary-400 italic text-base">Not provided</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Personal Details Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <Calendar className="w-4 h-4" />
+                      Birthday
+                    </div>
+                    <div className="text-base text-secondary-800">
+                      {formatDate(teacher.birthday)}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <User className="w-4 h-4" />
+                      Gender
+                    </div>
+                    <Badge variant="outline" className="text-sm px-3 py-1 w-fit">
+                      {teacher.sex}
                     </Badge>
-                  )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <Heart className="w-4 h-4" />
+                      Blood Type
+                    </div>
+                    <Badge variant="secondary" className="bg-red-50 text-red-700 border-red-200 text-sm px-3 py-1 w-fit">
+                      {teacher.bloodType || 'Not provided'}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Address Row */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                    <MapPin className="w-4 h-4" />
+                    Address
+                  </div>
+                  <div className="text-base text-secondary-800 bg-secondary-50 px-4 py-3 rounded-lg">
+                    {teacher.address || 'Not provided'}
+                  </div>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
+          {/* Professional Information */}
+          <Card variant="elevated" className="w-full">
+            <CardHeader variant="bordered">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center">
+                  <Briefcase className="w-4 h-4 text-accent-600" />
+                </div>
+                Professional Information
+              </CardTitle>
+            </CardHeader>
+            <CardBody className="p-6">
+              <div className="space-y-6">
+                {/* Employee Details Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <FileText className="w-4 h-4" />
+                      Employee ID
+                    </div>
+                    <div className="text-base font-mono text-secondary-800 bg-secondary-50 px-3 py-2 rounded-lg">
+                      TCH-{teacher.id.slice(-12).toUpperCase()}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-1">
+                      <Calendar className="w-4 h-4" />
+                      Join Date
+                    </div>
+                    <div className="text-base text-secondary-800">
+                      {formatDate(teacher.createdAt)}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Experience Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-secondary-600 mb-2">
+                    <Clock className="w-4 h-4" />
+                    Experience
+                  </div>
+                  <div className="bg-secondary-50 p-4 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <Badge variant="default" className="bg-accent-100 text-accent-700 text-base px-4 py-2">
+                        {experienceYears} year{experienceYears !== 1 ? 's' : ''}
+                      </Badge>
+                      <span className="text-sm text-secondary-600">{Math.min((experienceYears / 10) * 100, 100).toFixed(0)}%</span>
+                    </div>
+                    <Progress value={Math.min((experienceYears / 10) * 100, 100)} className="h-3" />
+                    <p className="text-xs text-secondary-500 mt-2">Professional Development Progress</p>
+                  </div>
+                </div>
+
+                {/* Statistics Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-gradient-to-br from-primary-50 to-primary-100 p-4 rounded-xl border border-primary-200/50 text-center">
+                    <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <GraduationCap className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="text-3xl font-bold text-primary-700 mb-1">{totalClasses}</p>
+                    <p className="text-sm font-medium text-primary-600">Active Classes</p>
+                    <p className="text-xs text-primary-500">Teaching Load</p>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200/50 text-center">
+                    <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <BookOpen className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="text-3xl font-bold text-purple-700 mb-1">{totalSubjects}</p>
+                    <p className="text-sm font-medium text-purple-600">Subjects</p>
+                    <p className="text-xs text-purple-500">Teaching Areas</p>
+                  </div>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+
+        {/* Compact Subjects and Classes */}
+        {((teacher.subjects && teacher.subjects.length > 0) || (teacher.classes && teacher.classes.length > 0)) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Subjects */}
+            {teacher.subjects && teacher.subjects.length > 0 && (
+              <Card variant="elevated">
+                <CardHeader variant="bordered">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <BookOpen className="w-4 h-4 text-purple-600" />
+                    </div>
+                    Subjects ({teacher.subjects.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardBody className="p-4">
+                  <div className="grid grid-cols-1 gap-2">
+                    {teacher.subjects.map((subject) => (
+                      <div key={subject.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-purple-50 transition-colors">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <BookOpen className="w-4 h-4 text-purple-600" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-secondary-900 truncate">{subject.name}</p>
+                          {subject.department && (
+                            <p className="text-xs text-secondary-500 truncate">{subject.department}</p>
+                          )}
+                        </div>
+                        {subject.credits && (
+                          <Badge variant="secondary" className="text-xs flex-shrink-0">
+                            {subject.credits}cr
+                          </Badge>
+                        )}
                 </div>
               ))}
             </div>
-          </PreviewSection>
+                </CardBody>
+              </Card>
         )}
 
-        {/* Classes Assigned */}
+            {/* Classes */}
         {teacher.classes && teacher.classes.length > 0 && (
-          <PreviewSection title="Classes Assigned" icon={<GraduationCap className="w-5 h-5" />}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {teacher.classes.map((classItem) => (
-                <div key={classItem.id} className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center">
-                      <GraduationCap className="w-5 h-5 text-green-600" />
+              <Card variant="elevated">
+                <CardHeader variant="bordered">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <div className="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center">
+                      <GraduationCap className="w-4 h-4 text-accent-600" />
                     </div>
-                    <div>
-                      <p className="font-medium text-green-900">{classItem.name}</p>
-                      <div className="flex items-center space-x-2 text-sm text-green-600">
+                    Classes ({teacher.classes.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardBody className="p-4">
+                  <div className="grid grid-cols-1 gap-2">
+                    {teacher.classes.map((classItem) => (
+                      <div key={classItem.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent-50 transition-colors">
+                        <div className="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <GraduationCap className="w-4 h-4 text-accent-600" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-secondary-900 truncate">{classItem.name}</p>
+                          <div className="flex items-center gap-2 text-xs text-secondary-500">
                         {classItem.grade && (
                           <span>Grade {classItem.grade.level}</span>
                         )}
@@ -349,106 +564,63 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
                         )}
                       </div>
                     </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-green-500" />
+                        <ChevronRight className="w-4 h-4 text-secondary-400 flex-shrink-0" />
                 </div>
               ))}
             </div>
-          </PreviewSection>
-        )}
-
-        {/* Weekly Schedule */}
-        {teacher.lessons && teacher.lessons.length > 0 && (
-          <PreviewSection title="Weekly Schedule" icon={<Clock className="w-5 h-5" />}>
-            <div className="space-y-2">
-              {teacher.lessons.slice(0, 8).map((lesson) => (
-                <div key={lesson.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{lesson.subject.name}</p>
-                      <p className="text-sm text-gray-500">
-                        {lesson.class.name} • {lesson.day}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">
-                      {new Date(lesson.startTime).toLocaleTimeString('en-US', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: true 
-                      })} - {new Date(lesson.endTime).toLocaleTimeString('en-US', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: true 
-                      })}
-                    </p>
-                    <p className="text-xs text-gray-500">{lesson.name}</p>
-                  </div>
-                </div>
-              ))}
-              {teacher.lessons.length > 8 && (
-                <div className="text-center py-2">
-                  <p className="text-sm text-gray-500">
-                    +{teacher.lessons.length - 8} more lessons
-                  </p>
-                </div>
-              )}
-            </div>
-          </PreviewSection>
-        )}
-
-        {/* Performance Metrics */}
-        <PreviewSection title="Performance Metrics" icon={<TrendingUp className="w-5 h-5" />}>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">Class Load Efficiency</span>
-                <span className="text-sm font-bold text-blue-600">
-                  {Math.min(100, Math.round((totalClasses / 8) * 100))}%
-                </span>
-              </div>
-              <Progress value={Math.min(100, Math.round((totalClasses / 8) * 100))} className="h-2" />
-            </div>
-            
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">Student Engagement</span>
-                <span className="text-sm font-bold text-green-600">
-                  {Math.min(100, Math.round((totalStudents / 200) * 100))}%
-                </span>
-              </div>
-              <Progress value={Math.min(100, Math.round((totalStudents / 200) * 100))} className="h-2" />
-            </div>
-            
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">Subject Expertise</span>
-                <span className="text-sm font-bold text-purple-600">
-                  {Math.min(100, Math.round((totalSubjects / 5) * 100))}%
-                </span>
-              </div>
-              <Progress value={Math.min(100, Math.round((totalSubjects / 5) * 100))} className="h-2" />
-            </div>
+                </CardBody>
+              </Card>
+            )}
           </div>
-        </PreviewSection>
+        )}
 
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-3 pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
-          <Button 
-            onClick={() => window.open(`/profile/teacher/${teacher.id}`, '_blank')}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            <User className="w-4 h-4 mr-2" />
-            View Full Profile
-          </Button>
-        </div>
+        {/* Compact Schedule */}
+        {teacher.lessons && teacher.lessons.length > 0 && (
+          <Card variant="elevated">
+            <CardHeader variant="bordered">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-orange-600" />
+                </div>
+                Schedule ({teacher.lessons.length} lessons)
+              </CardTitle>
+            </CardHeader>
+            <CardBody className="p-4">
+              <div className="grid grid-cols-1 gap-2">
+                {teacher.lessons.map((lesson) => (
+                  <div key={lesson.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-orange-50 transition-colors border border-orange-100/50">
+                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-secondary-900 truncate">{lesson.name}</p>
+                        <span className="text-xs font-medium text-orange-600 bg-orange-100 px-2 py-1 rounded flex-shrink-0 ml-2">
+                          {lesson.day}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-secondary-500 mt-1">
+                        <span>
+                          {lesson.startTime.toLocaleTimeString('en-US', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })} - {lesson.endTime.toLocaleTimeString('en-US', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </span>
+                        <span>•</span>
+                        <span className="truncate">{lesson.subject.name}</span>
+                        <span>•</span>
+                        <span className="truncate">{lesson.class.name}</span>
+                      </div>
+                  </div>
+                </div>
+              ))}
+                </div>
+            </CardBody>
+          </Card>
+        )}
       </div>
     </BasePreviewModal>
   );

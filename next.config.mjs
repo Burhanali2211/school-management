@@ -73,7 +73,7 @@ const nextConfig = {
           // Allow scripts in development mode to prevent CSP issues
           ...(isDev ? [{
             key: 'Content-Security-Policy',
-            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:* https://localhost:*; object-src 'none'; base-uri 'self';",
+            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:* https://localhost:* blob: data: 'unsafe-eval' https://esm.sh; object-src 'none'; base-uri 'self'; frame-src 'self' blob: data:; connect-src 'self' http://localhost:* https://localhost:* https://esm.sh ws://localhost:* wss://localhost:*;",
           }] : []),
         ],
       },

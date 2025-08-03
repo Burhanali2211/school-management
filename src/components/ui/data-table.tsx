@@ -328,42 +328,45 @@ export function DataTable<T extends Record<string, any>>({
                     {actions && (
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          {actions.view && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                actions.view!(row);
-                              }}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                          )}
-                          {actions.edit && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                actions.edit!(row);
-                              }}
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                          )}
-                          {actions.delete && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                actions.delete!(row);
-                              }}
-                            >
-                              <Trash2 className="w-4 h-4 text-red-600" />
-                            </Button>
-                          )}
+          {actions.view && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="hover:bg-primary-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                actions.view!(row);
+              }}
+            >
+              <Eye className="w-4 h-4" />
+            </Button>
+          )}
+          {actions.edit && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="hover:bg-primary-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                actions.edit!(row);
+              }}
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+          )}
+          {actions.delete && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="hover:bg-primary-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                actions.delete!(row);
+              }}
+            >
+              <Trash2 className="w-4 h-4 text-red-600" />
+            </Button>
+          )}
                         </div>
                       </td>
                     )}

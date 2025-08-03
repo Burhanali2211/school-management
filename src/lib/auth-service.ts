@@ -16,9 +16,11 @@ interface AuthUser {
 }
 
 interface SessionData {
+  id: string; // User ID for compatibility
   userId: string;
   userType: UserType;
   sessionId: string;
+  username?: string;
 }
 
 // Environment variables (should be in .env.local)
@@ -33,16 +35,28 @@ export async function createSession(
 ): Promise<string> {
   const expiresAt = new Date(Date.now() + SESSION_DURATION);
   
-  // Create JWT token
+  // Create JWT token with timestamp for uniqueness
   const token = jwt.sign(
     {
       userId: user.id,
       userType: user.userType,
       username: user.username,
+      timestamp: Date.now(),
     },
     JWT_SECRET,
     { expiresIn: "24h" }
   );
+
+  // Check if a session with this token already exists, delete it first
+  const existingSession = await prisma.session.findUnique({
+    where: { token },
+  });
+  
+  if (existingSession) {
+    await prisma.session.delete({
+      where: { token },
+    });
+  }
 
   // Store session in database
   const session = await prisma.session.create({
@@ -98,9 +112,11 @@ export async function validateSession(token?: string): Promise<SessionData | nul
     });
 
     return {
+      id: session.userId, // For compatibility
       userId: session.userId,
       userType: session.userType,
       sessionId: session.id,
+      username: decoded.username,
     };
   } catch (error) {
     return null;

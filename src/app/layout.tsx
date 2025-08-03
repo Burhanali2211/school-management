@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import AuthProvider from "@/components/SafeClerkProvider";
 import DevSetup from "@/components/DevSetup";
+import StagewiseClient from "@/components/StagewiseClient";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,6 +41,7 @@ export default function RootLayout({
             pauseOnHover
             className="toast-container"
           />
+          <StagewiseClient />
         </body>
       </html>
     </AuthProvider>

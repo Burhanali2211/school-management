@@ -28,7 +28,7 @@ const UserCardClient = ({ type, count }: UserCardClientProps) => {
   const IconComponent = iconMap[type];
 
   return (
-    <Card hover className="relative overflow-hidden group">
+    <Card hover className="relative overflow-hidden group user-card" data-testid="user-card">
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-xl ${colorMap[type]} shadow-lg group-hover:shadow-xl transition-shadow duration-200`}>
           <IconComponent className="w-6 h-6 text-white" />

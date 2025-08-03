@@ -111,6 +111,12 @@ const config: Config = {
         '18': '4.5rem',
         '88': '22rem',
         '128': '32rem',
+        '4.5': '1.125rem',
+        '5.5': '1.375rem',
+      },
+      screens: {
+        'xs': '475px',
+        '3xl': '1600px',
       },
       borderRadius: {
         'xl': '1rem',

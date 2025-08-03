@@ -12,12 +12,19 @@ async function main() {
   await prisma.assignment.deleteMany();
   await prisma.lesson.deleteMany();
   await prisma.student.deleteMany();
+  await prisma.section.deleteMany();
   await prisma.class.deleteMany();
   await prisma.parent.deleteMany();
   await prisma.subject.deleteMany();
   await prisma.teacher.deleteMany();
   await prisma.grade.deleteMany();
+  await prisma.school.deleteMany();
   await prisma.admin.deleteMany();
+  
+  // Delete all sessions and other auth-related data
+  await prisma.session.deleteMany();
+  await prisma.auditLog.deleteMany();
+  await prisma.userPreferences.deleteMany();
   
   // Reset sequences
   await prisma.$executeRaw`ALTER SEQUENCE "Grade_id_seq" RESTART WITH 1`;

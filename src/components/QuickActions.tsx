@@ -1,25 +1,35 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, UserPlus, BookOpen, MessageSquare, Calendar, Zap } from "lucide-react";
+import { Plus, UserPlus, BookOpen, MessageSquare, Calendar, Zap, GraduationCap } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const QuickActions = () => {
   const [showActions, setShowActions] = useState(false);
+  const router = useRouter();
 
   const actions = [
     {
       label: "Add Student",
       icon: UserPlus,
       href: "/list/students",
+      action: () => {
+        router.push("/list/students");
+        setShowActions(false);
+      },
       color: "from-blue-500 to-blue-600",
       bgColor: "bg-blue-100",
       textColor: "text-blue-600",
     },
     {
       label: "Add Teacher",
-      icon: UserPlus,
+      icon: GraduationCap,
       href: "/list/teachers",
+      action: () => {
+        router.push("/list/teachers");
+        setShowActions(false);
+      },
       color: "from-green-500 to-green-600",
       bgColor: "bg-green-100",
       textColor: "text-green-600",
@@ -28,6 +38,10 @@ const QuickActions = () => {
       label: "New Lesson",
       icon: BookOpen,
       href: "/list/lessons",
+      action: () => {
+        router.push("/list/lessons");
+        setShowActions(false);
+      },
       color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-100",
       textColor: "text-purple-600",
@@ -35,7 +49,11 @@ const QuickActions = () => {
     {
       label: "Send Message",
       icon: MessageSquare,
-      href: "/list/messages",
+      href: "/list/announcements",
+      action: () => {
+        router.push("/list/announcements");
+        setShowActions(false);
+      },
       color: "from-orange-500 to-orange-600",
       bgColor: "bg-orange-100",
       textColor: "text-orange-600",
@@ -44,6 +62,10 @@ const QuickActions = () => {
       label: "Schedule Event",
       icon: Calendar,
       href: "/list/events",
+      action: () => {
+        router.push("/list/events");
+        setShowActions(false);
+      },
       color: "from-pink-500 to-pink-600",
       bgColor: "bg-pink-100",
       textColor: "text-pink-600",
@@ -75,13 +97,14 @@ const QuickActions = () => {
           >
             <div className="p-2">
               {actions.map((action, index) => (
-                <motion.a
+                <motion.button
                   key={action.label}
-                  href={action.href}
+                  type="button"
+                  onClick={action.action}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-secondary-50 transition-all duration-200 group"
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-secondary-50 transition-all duration-200 group text-left"
                 >
                   <div className={`p-2 rounded-xl ${action.bgColor} group-hover:scale-110 transition-transform duration-200`}>
                     <action.icon className={`w-5 h-5 ${action.textColor}`} />
@@ -91,7 +114,7 @@ const QuickActions = () => {
                       {action.label}
                     </span>
                   </div>
-                </motion.a>
+                </motion.button>
               ))}
             </div>
             

@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { requireAuth, logAudit } from "@/lib/auth";
 import { z } from "zod";
 
-const StudentSchema = z.object({
+const TeacherSchema = z.object({
   username: z.string().min(1),
   name: z.string().min(1),
   surname: z.string().min(1),
@@ -13,12 +13,9 @@ const StudentSchema = z.object({
   img: z.string().optional(),
   bloodType: z.string(),
   sex: z.enum(["MALE", "FEMALE"]),
-  parentId: z.string(),
-  classId: z.number(),
-  gradeId: z.number(),
-  sectionId: z.number().optional(),
-  schoolId: z.number().optional(),
   birthday: z.string().transform((str) => new Date(str)),
+  subjectIds: z.array(z.number()).optional(),
+  classIds: z.array(z.number()).optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -28,9 +25,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
-    const classId = searchParams.get("classId");
-    const gradeId = searchParams.get("gradeId");
-    const schoolId = searchParams.get("schoolId");
+    const subjectId = searchParams.get("subjectId");
 
     const skip = (page - 1) * limit;
 
@@ -45,52 +40,51 @@ export async function GET(request: NextRequest) {
       ];
     }
     
-    if (classId) where.classId = parseInt(classId);
-    if (gradeId) where.gradeId = parseInt(gradeId);
-    if (schoolId) where.schoolId = parseInt(schoolId);
+    if (subjectId) {
+      where.subjects = {
+        some: { id: parseInt(subjectId) }
+      };
+    }
 
     // Role-based filtering
-    if (user.userType === "TEACHER") {
-      const teacherClasses = await prisma.class.findMany({
-        where: { supervisorId: user.id },
-        select: { id: true },
-      });
-      where.classId = { in: teacherClasses.map(c => c.id) };
-    } else if (user.userType === "PARENT") {
-      where.parentId = user.id;
-    } else if (user.userType === "STUDENT") {
+    if (user.userType === "TEACHER" && user.id) {
       where.id = user.id;
     }
 
-    const [students, total] = await Promise.all([
-      prisma.student.findMany({
+    const [teachers, total] = await Promise.all([
+      prisma.teacher.findMany({
         where,
         skip,
         take: limit,
         include: {
-          parent: { select: { name: true, surname: true, phone: true } },
-          class: { select: { name: true } },
-          grade: { select: { level: true } },
-          section: { select: { name: true } },
-          school: { select: { name: true } },
-          attendances: {
-            take: 5,
-            orderBy: { date: "desc" },
-            select: { date: true, present: true },
+          subjects: { select: { id: true, name: true } },
+          classes: { 
+            select: { 
+              id: true, 
+              name: true,
+              grade: { select: { level: true } }
+            } 
           },
-          results: {
+          lessons: {
             take: 5,
-            orderBy: { id: "desc" },
-            select: { score: true, exam: { select: { title: true } }, assignment: { select: { title: true } } },
+            orderBy: { startTime: "desc" },
+            select: { 
+              id: true,
+              name: true, 
+              day: true, 
+              startTime: true,
+              subject: { select: { name: true } },
+              class: { select: { name: true } }
+            },
           },
         },
         orderBy: { createdAt: "desc" },
       }),
-      prisma.student.count({ where }),
+      prisma.teacher.count({ where }),
     ]);
 
     return NextResponse.json({
-      students,
+      teachers,
       pagination: {
         page,
         limit,
@@ -99,7 +93,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching students:", error);
+    console.error("Error fetching teachers:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
@@ -108,26 +102,29 @@ export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth();
     
-    // Only admin and teachers can create students
-    if (user.userType !== "ADMIN" && user.userType !== "TEACHER") {
+    // Only admin can create teachers
+    if (user.userType !== "ADMIN") {
       return new NextResponse("Forbidden", { status: 403 });
     }
 
     const body = await request.json();
-    const validatedData = StudentSchema.parse(body);
+    const validatedData = TeacherSchema.parse(body);
+
+    // Extract subjects and classes from the data
+    const { subjectIds, classIds, ...teacherData } = validatedData;
 
     // Check if username is unique
-    const existingStudent = await prisma.student.findUnique({
+    const existingTeacher = await prisma.teacher.findUnique({
       where: { username: validatedData.username },
     });
 
-    if (existingStudent) {
+    if (existingTeacher) {
       return new NextResponse("Username already exists", { status: 400 });
     }
 
     // Check if email is unique (if provided)
     if (validatedData.email) {
-      const existingEmail = await prisma.student.findUnique({
+      const existingEmail = await prisma.teacher.findUnique({
         where: { email: validatedData.email },
       });
       if (existingEmail) {
@@ -135,29 +132,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const student = await prisma.student.create({
+    const teacher = await prisma.teacher.create({
       data: {
-        ...validatedData,
-        id: `STU-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        ...teacherData,
+        id: `TCH-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        subjects: subjectIds ? { connect: subjectIds.map(id => ({ id })) } : undefined,
+        classes: classIds ? { connect: classIds.map(id => ({ id })) } : undefined,
       },
       include: {
-        parent: { select: { name: true, surname: true } },
-        class: { select: { name: true } },
-        grade: { select: { level: true } },
-        section: { select: { name: true } },
-        school: { select: { name: true } },
+        subjects: { select: { id: true, name: true } },
+        classes: { select: { id: true, name: true } },
       },
     });
 
     // Log the action
-    await logAudit(user.id, user.userType, "CREATE", "STUDENT", student.id, validatedData);
+    await logAudit(user.id, user.userType, "CREATE", "TEACHER", teacher.id, validatedData);
 
-    return NextResponse.json(student, { status: 201 });
+    return NextResponse.json(teacher, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 });
     }
-    console.error("Error creating student:", error);
+    console.error("Error creating teacher:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

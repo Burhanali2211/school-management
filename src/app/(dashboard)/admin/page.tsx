@@ -19,8 +19,14 @@ const AdminPage = async ({
   }
   return (
     <div className="space-y-8">
+      {/* DASHBOARD HEADER */}
+      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 text-white shadow-xl">
+        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+        <p className="text-primary-100 text-lg">Welcome back! Here's what's happening at your school today.</p>
+      </div>
+      
       {/* USER CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="user-cards">
         <UserCard type="admin" />
         <UserCard type="teacher" />
         <UserCard type="student" />
