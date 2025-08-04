@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from 'react';
+import { ModernModal } from '@/components/ui/modern-modal';
+import { ParentForm } from '@/components/modern-forms/ParentForm';
 import { PageHeader, PageHeaderActions } from "@/components/ui/page-header";
 import { StatsGrid, StatsCard } from "@/components/ui/stats-card";
 import { DataTable, Column } from "@/components/ui/data-table";
@@ -15,29 +18,135 @@ import {
   Plus,
   Calendar,
   Baby,
+  Eye,
+  Edit,
+  Trash2,
+  Search,
+  Filter,
+  MoreVertical,
+  RefreshCw
 } from "lucide-react";
 import { generateInitials, formatDate } from "@/lib/utils";
 import { ParentList } from "./page";
-import { ParentPreview, usePreviewModal } from '@/components/preview';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast, Toaster } from '@/lib/notifications';
 
 interface ParentsPageClientProps {
   data: ParentList[];
-  isAdmin: boolean;
   totalParents: number;
   parentsWithChildren: number;
   totalChildren: number;
   averageChildrenPerParent: number;
+  availableStudents?: { id: string; name: string; surname: string; parentId: string }[];
 }
 
 const ParentsPageClient = ({
-  data,
-  isAdmin,
+  data: initialData,
   totalParents,
   parentsWithChildren,
   totalChildren,
-  averageChildrenPerParent
+  averageChildrenPerParent,
+  availableStudents = []
 }: ParentsPageClientProps) => {
-  const { isOpen, selectedItem, isLoading, openPreview, closePreview } = usePreviewModal();
+  // Filter out students that already have parents assigned
+  const orphanedStudents = availableStudents.filter(student => 
+    !initialData.some(parent => 
+      parent.students.some(parentStudent => parentStudent.id === student.id)
+    )
+  );
+  const { user } = useAuth();
+  const isAdmin = user?.userType === 'ADMIN';
+  const [parents, setParents] = useState<ParentList[]>(initialData);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Modal states
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedParent, setSelectedParent] = useState<ParentList | null>(null);
+
+  // Refresh data
+  const refreshParents = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/parents?limit=100');
+      if (response.ok) {
+        const data = await response.json();
+        setParents(data.parents || []);
+      }
+    } catch (error) {
+      console.error('Error refreshing parents:', error);
+      toast.error('Failed to refresh parents');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter parents based on search term
+  const filteredParents = parents.filter(parent =>
+    parent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    parent.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    parent.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    parent.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Event handlers
+  const handleAddParent = () => {
+    setShowAddModal(true);
+  };
+
+  const handleEditParent = (parent: ParentList) => {
+    setSelectedParent(parent);
+    setShowEditModal(true);
+  };
+
+  const handlePreviewParent = (parent: ParentList) => {
+    setSelectedParent(parent);
+    setShowPreviewModal(true);
+  };
+
+  const handleDeleteParent = (parent: ParentList) => {
+    setSelectedParent(parent);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedParent) return;
+
+    try {
+      const response = await fetch(`/api/parents/${selectedParent.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success('Parent deleted successfully!');
+        refreshParents();
+        setShowDeleteModal(false);
+        setSelectedParent(null);
+      } else {
+        toast.error('Failed to delete parent');
+      }
+    } catch (error) {
+      console.error('Error deleting parent:', error);
+      toast.error('Failed to delete parent');
+    }
+  };
+
+  const handleFormSuccess = () => {
+    refreshParents();
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setSelectedParent(null);
+  };
+
+  const handleFormCancel = () => {
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setSelectedParent(null);
+  };
+
   const columns: Column<ParentList>[] = [
     {
       key: "parent",
@@ -98,62 +207,86 @@ const ParentsPageClient = ({
             {parent.phone}
           </div>
           <div className="text-sm flex items-center gap-1 text-slate-500">
-            <MapPin className="w-3 h-3 text-slate-400" />
+            <MapPin className="w-3 h-3" />
             {parent.address}
           </div>
         </div>
       )
     },
     {
-      key: "stats",
-      header: "Family Stats",
-      className: "hidden xl:table-cell",
+      key: "actions",
+      header: "Actions",
+      className: "text-right",
       render: (_, parent) => (
-        <div className="space-y-1">
-          <div className="text-sm flex items-center gap-1">
-            <Users className="w-3 h-3 text-slate-400" />
-            {parent.students.length} children
-          </div>
-          <div className="text-sm flex items-center gap-1 text-slate-500">
-            <Calendar className="w-3 h-3 text-slate-400" />
-            Joined {formatDate(parent.createdAt)}
-          </div>
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handlePreviewParent(parent)}
+            className="text-slate-600 hover:text-slate-900"
+          >
+            <Eye className="w-4 h-4" />
+          </Button>
+          {isAdmin && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEditParent(parent)}
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleDeleteParent(parent)}
+                className="text-red-600 hover:text-red-700"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </>
+          )}
         </div>
       )
     }
   ];
 
+  // Filter options
   const filterOptions: FilterOption[] = [
     {
-      key: "studentCount",
-      label: "Children Count",
+      key: "hasChildren",
+      label: "Children Status",
       type: "select",
       options: [
-        { label: "Has Children", value: "1" },
-        { label: "No Children", value: "0" },
-        { label: "Multiple Children", value: "2" }
+        { label: "Has Children", value: "true" },
+        { label: "No Children", value: "false" }
       ]
     }
   ];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
+      <Toaster position="top-right" />
+
+      {/* Page Header */}
       <PageHeader
-        title="Parents Management"
-        subtitle="Manage parent information and family connections"
-        icon="heart"
-        iconColor="text-pink-600"
-        iconBgColor="bg-pink-100"
+        title="Parents"
+        subtitle="Manage parent accounts and their children"
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
+          { label: "Dashboard", href: "/dashboard" },
           { label: "Management", href: "/list" },
           { label: "Parents" }
         ]}
         actions={
           <PageHeaderActions>
             {isAdmin && (
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
+              <Button 
+                variant="default" 
+                size="sm" 
+                leftIcon={<Plus className="w-4 h-4" />}
+                onClick={handleAddParent}
+              >
                 Add Parent
               </Button>
             )}
@@ -161,11 +294,12 @@ const ParentsPageClient = ({
         }
       />
 
+      {/* Statistics Cards */}
       <StatsGrid columns={4}>
         <StatsCard
           title="Total Parents"
           value={totalParents}
-          subtitle="All registered parents"
+          subtitle="All parent accounts"
           icon="users"
           iconColor="text-pink-600"
           iconBgColor="bg-pink-100"
@@ -174,9 +308,9 @@ const ParentsPageClient = ({
           title="With Children"
           value={parentsWithChildren}
           subtitle="Parents with assigned children"
-          icon="user-check"
-          iconColor="text-green-600"
-          iconBgColor="bg-green-100"
+          icon="baby"
+          iconColor="text-blue-600"
+          iconBgColor="bg-blue-100"
           trend={{
             value: Math.round((parentsWithChildren / totalParents) * 100),
             label: "of total",
@@ -186,21 +320,22 @@ const ParentsPageClient = ({
         <StatsCard
           title="Total Children"
           value={totalChildren}
-          subtitle="Children under care"
-          icon="baby"
-          iconColor="text-blue-600"
-          iconBgColor="bg-blue-100"
+          subtitle="Students with parents"
+          icon="graduation-cap"
+          iconColor="text-green-600"
+          iconBgColor="bg-green-100"
         />
         <StatsCard
           title="Avg Children/Parent"
-          value={averageChildrenPerParent}
-          subtitle="Family size average"
-          icon="school"
+          value={averageChildrenPerParent.toFixed(1)}
+          subtitle="Average children per parent"
+          icon="trending-up"
           iconColor="text-purple-600"
           iconBgColor="bg-purple-100"
         />
       </StatsGrid>
 
+      {/* Enhanced Data Table */}
       <Card className="p-0" shadow="medium">
         <div className="p-6 border-b border-slate-200">
           <AdvancedFilters
@@ -210,43 +345,76 @@ const ParentsPageClient = ({
             showCreate={isAdmin}
             createButtonText="Add Parent"
             createButtonIcon={<Plus className="w-4 h-4" />}
+            onCreateClick={handleAddParent}
           />
         </div>
 
         <DataTable
-          data={data}
+          data={filteredParents}
           columns={columns}
-          searchable={false}
-          filterable={false}
+          searchable={false} // We handle search in AdvancedFilters
+          filterable={false} // We handle filters in AdvancedFilters
           selectable={isAdmin}
-          pagination={false}
-          actions={isAdmin ? {
-            view: (parent) => {
-              // Open parent preview modal
-              openPreview(parent);
-            },
-            edit: (parent) => {
-              // Open edit modal
-              console.log("Edit parent:", parent);
-            },
-            delete: (parent) => {
-              // Open delete confirmation
-              console.log("Delete parent:", parent);
-            }
-          } : undefined}
-          onRowClick={(parent) => {
-            // Open parent preview modal
-            openPreview(parent);
-          }}
+          pagination={false} // We'll implement custom pagination
         />
       </Card>
 
-      {/* Preview Modal */}
-      <ParentPreview
-        isOpen={isOpen}
-        onClose={closePreview}
-        parent={selectedItem}
-      />
+      {/* Add Parent Modal */}
+      <ModernModal
+        isOpen={showAddModal}
+        onClose={handleFormCancel}
+        title="Add New Parent"
+        subtitle="Create a new parent account"
+        size="2xl"
+      >
+        <ParentForm
+          mode="create"
+          onSuccess={handleFormSuccess}
+          onCancel={handleFormCancel}
+          relatedData={{ students: orphanedStudents }}
+        />
+      </ModernModal>
+
+      {/* Edit Parent Modal */}
+      <ModernModal
+        isOpen={showEditModal}
+        onClose={handleFormCancel}
+        title="Edit Parent"
+        subtitle="Modify parent information"
+        size="2xl"
+      >
+        <ParentForm
+          mode="update"
+          onSuccess={handleFormSuccess}
+          onCancel={handleFormCancel}
+          initialData={selectedParent || undefined}
+          relatedData={{ students: orphanedStudents }}
+        />
+      </ModernModal>
+
+      {/* Delete Confirmation Modal */}
+      <ModernModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Delete Parent"
+        subtitle={`Are you sure you want to delete "${selectedParent?.name} ${selectedParent?.surname}"? This action cannot be undone.`}
+        size="md"
+      >
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="outline"
+            onClick={() => setShowDeleteModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={confirmDelete}
+          >
+            Delete Parent
+          </Button>
+        </div>
+      </ModernModal>
     </div>
   );
 };

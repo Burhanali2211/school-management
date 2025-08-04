@@ -71,7 +71,12 @@ const DropdownMenuSeparator = () => {
   return <div className="my-2 h-px bg-secondary-200 mx-2" />;
 };
 
-const DropdownMenuTrigger = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+const DropdownMenuTrigger = ({ children, asChild = false, ...props }: React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }) => {
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      ...props,
+    });
+  }
   return <div {...props}>{children}</div>;
 };
 

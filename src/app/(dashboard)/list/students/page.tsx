@@ -8,7 +8,7 @@ import StudentsPageClient from "./StudentsPageClient";
 export type StudentList = Student & {
   class: Class;
   parent: Parent | null;
-  grade: { level: number };
+  grade: { level: number; name: string };
   _count: {
     attendances: number;
     results: number;
@@ -45,12 +45,12 @@ const StudentListPage = async ({
     query.classId = parseInt(classId);
   }
 
-  // Handle grade level filter
+  // Handle grade filter
   if (grade) {
-    const gradeLevel = parseInt(grade);
-    if (!isNaN(gradeLevel)) {
-      query.grade = {
-        level: gradeLevel
+    const gradeIds = grade.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
+    if (gradeIds.length > 0) {
+      query.gradeId = {
+        in: gradeIds
       };
     }
   }
@@ -61,7 +61,7 @@ const StudentListPage = async ({
   }
 
   // Fetch data with enhanced statistics
-  const [data, count, availableClasses, availableParents, studentStats] = await prisma.$transaction([
+  const [data, count, availableClasses, availableParents, availableGrades, studentStats] = await prisma.$transaction([
     prisma.student.findMany({
       where: query,
       include: {
@@ -88,6 +88,10 @@ const StudentListPage = async ({
       select: { id: true, name: true, surname: true },
       orderBy: { name: "asc" }
     }),
+    prisma.grade.findMany({
+      select: { id: true, name: true, level: true },
+      orderBy: { level: "asc" }
+    }),
     // Get student statistics
     prisma.student.aggregate({
       _count: { id: true },
@@ -111,6 +115,7 @@ const StudentListPage = async ({
       averageGradeLevel={averageGradeLevel}
       availableClasses={availableClasses}
       availableParents={availableParents}
+      availableGrades={availableGrades}
     />
   );
 };

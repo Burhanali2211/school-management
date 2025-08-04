@@ -73,16 +73,16 @@ export function AdvancedFilters({
   return (
     <div className={cn("space-y-4", className)}>
       {/* Main Filter Bar */}
-      <div className="flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-lg shadow-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white border border-slate-200 rounded-lg shadow-sm">
         {/* Search */}
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={searchTerm}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full pl-10 pr-10 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-10 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
           {searchTerm && (
             <button
@@ -94,52 +94,54 @@ export function AdvancedFilters({
           )}
         </div>
 
-        {/* Filter Toggle */}
-        {filters.length > 0 && (
-          <Button
-            variant="outline"
-            onClick={() => setShowFilters(!showFilters)}
-            className="relative"
-          >
-            <SlidersHorizontal className="w-4 h-4 mr-2" />
-            Filters
-            {activeFilterCount > 0 && (
-              <Badge 
-                variant="destructive" 
-                className="absolute -top-2 -right-2 w-5 h-5 p-0 flex items-center justify-center text-xs"
-              >
-                {activeFilterCount}
-              </Badge>
-            )}
-            <ChevronDown className={cn(
-              "w-4 h-4 ml-2 transition-transform",
-              showFilters && "rotate-180"
-            )} />
-          </Button>
-        )}
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Filter Toggle */}
+          {filters.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="relative"
+              leftIcon={<SlidersHorizontal className="w-4 h-4" />}
+              rightIcon={<ChevronDown className={cn(
+                "w-4 h-4 transition-transform",
+                showFilters && "rotate-180"
+              )} />}
+            >
+              <span className="hidden sm:inline">Filters</span>
+              {activeFilterCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-2 -right-2 w-5 h-5 p-0 flex items-center justify-center text-xs"
+                >
+                  {activeFilterCount}
+                </Badge>
+              )}
+            </Button>
+          )}
 
-        {/* Export Button */}
-        {showExport && (
-          <Button variant="outline" onClick={onExport}>
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
-        )}
+          {/* Export Button */}
+          {showExport && (
+            <Button variant="outline" size="sm" onClick={onExport} leftIcon={<Download className="w-4 h-4" />}>
+              <span className="hidden sm:inline">Export</span>
+            </Button>
+          )}
 
-        {/* Create Button */}
-        {showCreate && (
-          <Button onClick={onCreateClick}>
-            {createButtonIcon}
-            <span className="ml-2">{createButtonText}</span>
-          </Button>
-        )}
+          {/* Create Button */}
+          {showCreate && (
+            <Button size="sm" onClick={onCreateClick} leftIcon={createButtonIcon}>
+              {createButtonText}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Active Filters Display */}
       {activeFilterCount > 0 && (
-        <div className="flex items-center gap-2 px-4">
-          <span className="text-sm text-slate-600">Active filters:</span>
-          <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 px-3 sm:px-4">
+          <span className="text-sm text-slate-600 flex-shrink-0">Active filters:</span>
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
             {Object.entries(activeFilters).map(([key, value]) => {
               if (!value || (Array.isArray(value) && value.length === 0)) return null;
               
@@ -178,8 +180,8 @@ export function AdvancedFilters({
 
       {/* Expanded Filters */}
       {showFilters && filters.length > 0 && (
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="p-3 sm:p-4 bg-slate-50 border border-slate-200 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {filters.map((filter) => (
               <div key={filter.key} className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">
@@ -215,7 +217,7 @@ export function AdvancedFilters({
                               : current.filter((v: string) => v !== option.value);
                             onFilterChange?.(filter.key, updated.length > 0 ? updated : null);
                           }}
-                          className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                          className="rounded border-gray-300 text-black focus:ring-black"
                         />
                         <span className="text-sm text-slate-700">{option.label}</span>
                       </label>

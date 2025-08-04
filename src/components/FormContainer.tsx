@@ -19,7 +19,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import { toast } from "react-toastify";
+import { toast } from "@/lib/notifications";
 
 export type FormContainerProps = {
   table:
@@ -313,6 +313,9 @@ const FormContainer = ({
         className={`${size} flex items-center justify-center rounded-full ${bgColor} cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105`}
         onClick={() => setOpen(true)}
         title={`${type.charAt(0).toUpperCase() + type.slice(1)} ${table}`}
+        data-table={table}
+        data-type={type}
+        data-id={id}
       >
         <Image src={`/${type}.png`} alt="" width={16} height={16} className={iconColor} />
       </button>

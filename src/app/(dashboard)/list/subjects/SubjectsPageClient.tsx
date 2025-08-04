@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from 'react';
+import { ModernModal } from '@/components/ui/modern-modal';
+import { SubjectForm } from '@/components/modern-forms/SubjectForm';
 import { PageHeader, PageHeaderActions } from "@/components/ui/page-header";
 import { StatsGrid, StatsCard } from "@/components/ui/stats-card";
 import { DataTable, Column } from "@/components/ui/data-table";
@@ -21,10 +24,16 @@ import {
   Clock,
   FileText,
   TrendingUp,
-  School
+  School,
+  Search,
+  Filter,
+  MoreVertical,
+  RefreshCw
 } from "lucide-react";
 import { generateInitials } from "@/lib/utils";
 import { SubjectList } from "./page";
+import { useAuth } from '@/contexts/AuthContext';
+import { toast, Toaster } from '@/lib/notifications';
 
 interface SubjectsPageClientProps {
   data: SubjectList[];
@@ -33,16 +42,107 @@ interface SubjectsPageClientProps {
   subjectsWithTeachers: number;
   totalTeachers: number;
   totalLessons: number;
+  availableTeachers?: { id: string; name: string; surname: string }[];
 }
 
 const SubjectsPageClient = ({
-  data,
+  data: initialData,
   isAdmin,
   totalSubjects,
   subjectsWithTeachers,
   totalTeachers,
-  totalLessons
+  totalLessons,
+  availableTeachers = []
 }: SubjectsPageClientProps) => {
+  const { user } = useAuth();
+  const [subjects, setSubjects] = useState<SubjectList[]>(initialData);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Modal states
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState<SubjectList | null>(null);
+
+  // Refresh data
+  const refreshSubjects = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/subjects?limit=100');
+      if (response.ok) {
+        const data = await response.json();
+        setSubjects(data.subjects || []);
+      }
+    } catch (error) {
+      console.error('Error refreshing subjects:', error);
+      toast.error('Failed to refresh subjects');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter subjects based on search term
+  const filteredSubjects = subjects.filter(subject =>
+    subject.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Event handlers
+  const handleAddSubject = () => {
+    setShowAddModal(true);
+  };
+
+  const handleEditSubject = (subject: SubjectList) => {
+    setSelectedSubject(subject);
+    setShowEditModal(true);
+  };
+
+  const handlePreviewSubject = (subject: SubjectList) => {
+    setSelectedSubject(subject);
+    setShowPreviewModal(true);
+  };
+
+  const handleDeleteSubject = (subject: SubjectList) => {
+    setSelectedSubject(subject);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedSubject) return;
+
+    try {
+      const response = await fetch(`/api/subjects/${selectedSubject.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success('Subject deleted successfully!');
+        refreshSubjects();
+        setShowDeleteModal(false);
+        setSelectedSubject(null);
+      } else {
+        toast.error('Failed to delete subject');
+      }
+    } catch (error) {
+      console.error('Error deleting subject:', error);
+      toast.error('Failed to delete subject');
+    }
+  };
+
+  const handleFormSuccess = () => {
+    refreshSubjects();
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setSelectedSubject(null);
+  };
+
+  const handleFormCancel = () => {
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setSelectedSubject(null);
+  };
+
   // Define table columns with enhanced rendering
   const columns: Column<SubjectList>[] = [
     {
@@ -101,56 +201,91 @@ const SubjectsPageClient = ({
       )
     },
     {
-      key: "stats",
-      header: "Statistics",
+      key: "lessons",
+      header: "Lessons",
       className: "hidden lg:table-cell",
       render: (_, subject) => (
-        <div className="space-y-1">
-          <div className="text-sm flex items-center gap-1">
-            <Calendar className="w-3 h-3 text-slate-400" />
-            {subject._count.lessons} lessons
-          </div>
-          <div className="text-sm flex items-center gap-1 text-slate-500">
-            <Users className="w-3 h-3 text-slate-400" />
-            {subject.teachers.length} teachers
-          </div>
+        <div className="flex items-center gap-2">
+          <Calendar className="w-4 h-4 text-slate-400" />
+          <span className="text-sm font-medium">{subject.lessons?.length || 0}</span>
+          <span className="text-xs text-slate-500">lessons</span>
+        </div>
+      )
+    },
+    {
+      key: "actions",
+      header: "Actions",
+      className: "text-right",
+      render: (_, subject) => (
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handlePreviewSubject(subject)}
+            className="text-slate-600 hover:text-slate-900"
+          >
+            <Eye className="w-4 h-4" />
+          </Button>
+          {isAdmin && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEditSubject(subject)}
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleDeleteSubject(subject)}
+                className="text-red-600 hover:text-red-700"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </>
+          )}
         </div>
       )
     }
   ];
 
-  // Define filter options
+  // Filter options
   const filterOptions: FilterOption[] = [
     {
-      key: "teacherCount",
-      label: "Teacher Assignment",
+      key: "teachers",
+      label: "Teachers",
       type: "select",
-      options: [
-        { label: "Has Teachers", value: "1" },
-        { label: "No Teachers", value: "0" }
-      ]
+      options: availableTeachers.map(teacher => ({
+        value: teacher.id,
+        label: `${teacher.name} ${teacher.surname}`
+      }))
     }
   ];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
+      <Toaster position="top-right" />
+
       {/* Page Header */}
       <PageHeader
-        title="Subjects Management"
-        subtitle="Manage academic subjects and curriculum"
-        icon="book-open"
-        iconColor="text-orange-600"
-        iconBgColor="bg-orange-100"
+        title="Subjects"
+        subtitle="Manage academic subjects and their teacher assignments"
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
+          { label: "Dashboard", href: "/dashboard" },
           { label: "Management", href: "/list" },
           { label: "Subjects" }
         ]}
         actions={
           <PageHeaderActions>
             {isAdmin && (
-              <Button className="bg-orange-600 hover:bg-orange-700">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button 
+                variant="default" 
+                size="sm" 
+                leftIcon={<Plus className="w-4 h-4" />}
+                onClick={handleAddSubject}
+              >
                 Add Subject
               </Button>
             )}
@@ -209,36 +344,76 @@ const SubjectsPageClient = ({
             showCreate={isAdmin}
             createButtonText="Add Subject"
             createButtonIcon={<Plus className="w-4 h-4" />}
+            onCreateClick={handleAddSubject}
           />
         </div>
 
         <DataTable
-          data={data}
+          data={filteredSubjects}
           columns={columns}
           searchable={false} // We handle search in AdvancedFilters
           filterable={false} // We handle filters in AdvancedFilters
           selectable={isAdmin}
           pagination={false} // We'll implement custom pagination
-          actions={isAdmin ? {
-            view: (subject) => {
-              // Navigate to subject detail page
-              console.log("View subject:", subject);
-            },
-            edit: (subject) => {
-              // Open edit modal
-              console.log("Edit subject:", subject);
-            },
-            delete: (subject) => {
-              // Open delete confirmation
-              console.log("Delete subject:", subject);
-            }
-          } : undefined}
-          onRowClick={(subject) => {
-            // Navigate to subject detail page or show details
-            console.log("Subject clicked:", subject);
-          }}
         />
       </Card>
+
+      {/* Add Subject Modal */}
+      <ModernModal
+        isOpen={showAddModal}
+        onClose={handleFormCancel}
+        title="Add New Subject"
+        subtitle="Create a new subject and assign teachers"
+        size="2xl"
+      >
+        <SubjectForm
+          mode="create"
+          onSuccess={handleFormSuccess}
+          onCancel={handleFormCancel}
+          relatedData={{ teachers: availableTeachers }}
+        />
+      </ModernModal>
+
+      {/* Edit Subject Modal */}
+      <ModernModal
+        isOpen={showEditModal}
+        onClose={handleFormCancel}
+        title="Edit Subject"
+        subtitle="Modify subject information and teacher assignments"
+        size="2xl"
+      >
+        <SubjectForm
+          mode="update"
+          onSuccess={handleFormSuccess}
+          onCancel={handleFormCancel}
+          initialData={selectedSubject || undefined}
+          relatedData={{ teachers: availableTeachers }}
+        />
+      </ModernModal>
+
+      {/* Delete Confirmation Modal */}
+      <ModernModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Delete Subject"
+        subtitle={`Are you sure you want to delete "${selectedSubject?.name}"? This action cannot be undone.`}
+        size="md"
+      >
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="outline"
+            onClick={() => setShowDeleteModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={confirmDelete}
+          >
+            Delete Subject
+          </Button>
+        </div>
+      </ModernModal>
     </div>
   );
 };

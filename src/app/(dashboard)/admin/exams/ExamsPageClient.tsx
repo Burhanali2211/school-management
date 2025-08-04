@@ -291,8 +291,8 @@ export default function ExamsPageClient() {
     <div className="space-y-6">
       <PageHeader
         title="Exams Management"
-        description="Manage exams, schedules, and track results"
-        action={
+        subtitle="Manage exams, schedules, and track results"
+        actions={
           <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Add Exam
@@ -305,26 +305,26 @@ export default function ExamsPageClient() {
         <StatsCard
           title="Total Exams"
           value={stats.totalExams}
-          icon={FileText}
-          trend={{ value: 8, isPositive: true }}
+          icon="book-open"
+          trend={{ value: 8, label: "vs last month", isPositive: true }}
         />
         <StatsCard
           title="Upcoming Exams"
           value={stats.upcomingExams}
-          icon={Calendar}
-          trend={{ value: 3, isPositive: true }}
+          icon="calendar"
+          trend={{ value: 3, label: "vs last month", isPositive: true }}
         />
         <StatsCard
           title="Completed Exams"
           value={stats.completedExams}
-          icon={Clock}
-          trend={{ value: 5, isPositive: true }}
+          icon="calendar"
+          trend={{ value: 5, label: "vs last month", isPositive: true }}
         />
         <StatsCard
           title="Average Score"
           value={`${stats.averageScore}%`}
-          icon={TrendingUp}
-          trend={{ value: 2, isPositive: true }}
+          icon="trending-up"
+          trend={{ value: 2, label: "vs last month", isPositive: true }}
         />
       </div>
 

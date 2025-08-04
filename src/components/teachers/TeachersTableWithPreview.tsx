@@ -4,7 +4,13 @@ import React from 'react';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, GraduationCap, Phone, MapPin, Mail } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Eye, GraduationCap, Phone, MapPin, Mail, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import FormContainer from "@/components/FormContainer";
 import { TeacherPreview, usePreviewModal } from '@/components/preview';
 
@@ -29,6 +35,7 @@ interface Teacher {
     name: string;
     grade?: {
       level: number;
+      name: string;
     };
     _count?: {
       students: number;
@@ -119,24 +126,55 @@ const TeachersTableWithPreview: React.FC<TeachersTableWithPreviewProps> = ({
           {item.address}
         </div>
       </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2 justify-center">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => openPreview(item)}
-            className="hover:bg-primary-50"
-          >
-            <Eye className="w-4 h-4" />
-          </Button>
-          
-          {isAdmin && (
-            <>
-              <FormContainer table="teacher" type="update" data={item} />
-              <FormContainer table="teacher" type="delete" id={item.id} />
-            </>
-          )}
-        </div>
+      <TableCell className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="h-8 w-8 p-0 hover:bg-muted"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => openPreview(item)}>
+              <Eye className="mr-2 h-4 w-4" />
+              View
+            </DropdownMenuItem>
+            {isAdmin && (
+              <>
+                <DropdownMenuItem onClick={() => {
+                  // Trigger the update form
+                  const updateButton = document.querySelector(`[data-table="teacher"][data-type="update"][data-id="${item.id}"]`) as HTMLButtonElement;
+                  if (updateButton) updateButton.click();
+                }}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => {
+                    // Trigger the delete form
+                    const deleteButton = document.querySelector(`[data-table="teacher"][data-type="delete"][data-id="${item.id}"]`) as HTMLButtonElement;
+                    if (deleteButton) deleteButton.click();
+                  }}
+                  className="text-red-600"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
+        {/* Hidden FormContainer buttons for admin actions */}
+        {isAdmin && (
+          <div className="hidden">
+            <FormContainer table="teacher" type="update" data={item} />
+            <FormContainer table="teacher" type="delete" id={item.id} />
+          </div>
+        )}
       </TableCell>
     </TableRow>
   );

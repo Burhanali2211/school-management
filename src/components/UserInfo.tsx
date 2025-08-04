@@ -1,139 +1,231 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { UserType } from "@prisma/client";
+import React from 'react';
+import { User, Mail, Phone, MapPin, Calendar, Clock, Shield, Edit, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { UserType } from '@prisma/client';
 
-interface User {
-  id: string;
-  username: string;
-  userType: UserType;
-  email?: string | null;
-  name: string;
-  surname: string;
+interface UserInfoProps {
+  user: {
+    id: string;
+    name: string;
+    surname: string;
+    email: string;
+    phone?: string;
+    address?: string;
+    dateOfBirth?: Date;
+    userType: UserType;
+    createdAt: Date;
+    updatedAt: Date;
+    isActive?: boolean;
+    profileImage?: string;
+  };
+  onEdit?: () => void;
+  onDelete?: () => void;
+  showActions?: boolean;
 }
 
-interface UserPreferences {
-  theme: string;
-  language: string;
-  emailNotifications: boolean;
-  smsNotifications: boolean;
-  twoFactorEnabled: boolean;
-}
-
-export default function UserInfo() {
-  const [user, setUser] = useState<User | null>(null);
-  const [preferences, setPreferences] = useState<UserPreferences | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
-
-  const fetchUserInfo = useCallback(async () => {
-    try {
-      const response = await fetch("/api/auth/me");
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-        setPreferences(data.preferences);
-      } else if (response.status === 401) {
-        router.push("/sign-in");
-      }
-    } catch (error) {
-      console.error("Error fetching user info:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [router]);
-
-  useEffect(() => {
-    fetchUserInfo();
-  }, [fetchUserInfo]);
-
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-      });
-      
-      if (response.ok) {
-        router.push("/sign-in");
-      }
-    } catch (error) {
-      console.error("Error logging out:", error);
+const UserInfo: React.FC<UserInfoProps> = ({
+  user,
+  onEdit,
+  onDelete,
+  showActions = true,
+}) => {
+  const getUserTypeColor = (userType: UserType) => {
+    switch (userType) {
+      case 'ADMIN':
+        return "bg-primary-100 text-primary-900";
+      case 'TEACHER':
+        return "bg-secondary-100 text-secondary-800";
+      case 'STUDENT':
+        return "bg-accent-100 text-accent-800";
+      case 'PARENT':
+        return "bg-warning-100 text-warning-800";
+      default:
+        return "bg-neutral-100 text-neutral-800";
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center gap-4 p-4 animate-pulse">
-        <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-        <div className="space-y-2">
-          <div className="h-4 w-24 bg-gray-300 rounded"></div>
-          <div className="h-3 w-16 bg-gray-300 rounded"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) return null;
-
-  const getUserTypeColor = (type: UserType) => {
-    switch (type) {
-      case "ADMIN":
-        return "bg-purple-100 text-purple-800";
-      case "TEACHER":
-        return "bg-blue-100 text-blue-800";
-      case "STUDENT":
-        return "bg-green-100 text-green-800";
-      case "PARENT":
-        return "bg-yellow-100 text-yellow-800";
+  const getUserTypeIcon = (userType: UserType) => {
+    switch (userType) {
+      case 'ADMIN':
+        return <Shield className="w-4 h-4" />;
+      case 'TEACHER':
+        return <User className="w-4 h-4" />;
+      case 'STUDENT':
+        return <User className="w-4 h-4" />;
+      case 'PARENT':
+        return <User className="w-4 h-4" />;
       default:
-        return "bg-gray-100 text-gray-800";
+        return <User className="w-4 h-4" />;
     }
+  };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const formatDateTime = (date: Date) => {
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
-      <div className="flex items-center gap-4">
-        <div className="relative">
-          <Image
-            src="/noAvatar.png"
-            alt="User Avatar"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-gray-800">
-              {user.name} {user.surname}
-            </h3>
-            <span className={`text-xs px-2 py-1 rounded-full ${getUserTypeColor(user.userType)}`}>
-              {user.userType}
-            </span>
+    <Card className="p-6 bg-white border border-neutral-200 shadow-soft">
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary-800 to-primary-950 rounded-full flex items-center justify-center text-white text-xl font-semibold shadow-soft">
+              {user.profileImage ? (
+                <img
+                  src={user.profileImage}
+                  alt={`${user.name} ${user.surname}`}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                `${user.name.charAt(0)}${user.surname.charAt(0)}`
+              )}
+            </div>
+            {user.isActive && (
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-success-500 border-2 border-white rounded-full"></span>
+            )}
           </div>
-          <p className="text-sm text-gray-600">@{user.username}</p>
+          <div>
+            <h2 className="text-2xl font-bold text-neutral-900">
+              {user.name} {user.surname}
+            </h2>
+            <div className="flex items-center space-x-2 mt-1">
+              <Badge className={getUserTypeColor(user.userType)}>
+                <div className="flex items-center space-x-1">
+                  {getUserTypeIcon(user.userType)}
+                  <span>{user.userType}</span>
+                </div>
+              </Badge>
+              {user.isActive ? (
+                <Badge className="bg-success-100 text-success-800">
+                  Active
+                </Badge>
+              ) : (
+                <Badge className="bg-neutral-100 text-neutral-800">
+                  Inactive
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {showActions && (
+          <div className="flex items-center space-x-2">
+            {onEdit && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onEdit}
+                className="flex items-center space-x-2"
+              >
+                <Edit className="w-4 h-4" />
+                <span>Edit</span>
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onDelete}
+                className="px-3 py-1 text-sm text-error-600 hover:bg-error-50 rounded-md transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete</span>
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+              <Mail className="w-4 h-4 text-primary-600" />
+            </div>
+            <div>
+              <p className="text-sm text-neutral-500">Email</p>
+              <p className="text-neutral-900">{user.email}</p>
+            </div>
+          </div>
+
+          {user.phone && (
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-secondary-100 rounded-lg flex items-center justify-center">
+                <Phone className="w-4 h-4 text-secondary-600" />
+              </div>
+              <div>
+                <p className="text-sm text-neutral-500">Phone</p>
+                <p className="text-neutral-900">{user.phone}</p>
+              </div>
+            </div>
+          )}
+
+          {user.address && (
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center">
+                <MapPin className="w-4 h-4 text-accent-600" />
+              </div>
+              <div>
+                <p className="text-sm text-neutral-500">Address</p>
+                <p className="text-neutral-900">{user.address}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          {user.dateOfBirth && (
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
+                <Calendar className="w-4 h-4 text-primary-600" />
+              </div>
+              <div>
+                <p className="text-sm text-neutral-500">Date of Birth</p>
+                <p className="text-neutral-900">{formatDate(user.dateOfBirth)}</p>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-secondary-100 rounded-lg flex items-center justify-center">
+              <Clock className="w-4 h-4 text-secondary-600" />
+            </div>
+            <div>
+              <p className="text-sm text-neutral-500">Created</p>
+              <p className="text-neutral-900">{formatDateTime(user.createdAt)}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center">
+              <Clock className="w-4 h-4 text-accent-600" />
+            </div>
+            <div>
+              <p className="text-sm text-neutral-500">Last Updated</p>
+              <p className="text-neutral-900">{formatDateTime(user.updatedAt)}</p>
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div className="flex items-center gap-2">
-        {preferences?.twoFactorEnabled && (
-          <span className="text-xs text-green-600 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            2FA
-          </span>
-        )}
-        <button
-          onClick={handleLogout}
-          className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
-        >
-          Logout
-        </button>
-      </div>
-    </div>
+    </Card>
   );
-}
+};
+
+export default UserInfo;

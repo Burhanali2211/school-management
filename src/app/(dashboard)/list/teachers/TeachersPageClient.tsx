@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast } from "@/lib/notifications";
 import { 
   Users,
   GraduationCap,
@@ -35,6 +35,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardBody, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { generateInitials } from "@/lib/utils";
 import { TeacherList } from "./page";
 import FormContainer from "@/components/FormContainer";
@@ -201,35 +205,45 @@ const TeachersPageClient = ({
     setShowPreview(false);
   }, []);
 
+  const handleEditTeacher = useCallback((teacher: TeacherList) => {
+    router.push(`/list/teachers/${teacher.id}`);
+  }, [router]);
+
+  const handleDeleteTeacher = useCallback((teacher: TeacherList) => {
+    // You can implement a delete confirmation modal here
+    console.log('Delete teacher:', teacher.id);
+    toast.info('Delete functionality can be implemented here');
+  }, []);
+
   const TeacherCard = ({ teacher }: { teacher: TeacherList }) => (
     <Card 
       variant="elevated" 
       hover 
-      className="group cursor-pointer overflow-hidden transition-all duration-300"
+      className="group cursor-pointer overflow-hidden transition-all duration-300 bg-white border border-neutral-200 shadow-soft hover:shadow-elevated"
       onClick={() => openPreview(teacher)}
     >
       <CardBody className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
             <div className="relative">
-              <Avatar className="w-16 h-16 border-2 border-white shadow-lg">
+              <Avatar className="w-16 h-16 border-2 border-white shadow-soft">
                 <AvatarImage src={teacher.img || undefined} alt={teacher.name} />
                 <AvatarFallback className="bg-gradient-to-br from-primary-500 to-primary-600 text-white text-lg font-semibold">
                   {generateInitials(teacher.name, teacher.surname)}
                 </AvatarFallback>
               </Avatar>
               {teacher.subjects.length > 0 && (
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-accent-500 rounded-full flex items-center justify-center">
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-success-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-4 h-4 text-white" />
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-secondary-900 group-hover:text-primary-600 transition-colors">
+              <h3 className="text-lg font-semibold text-neutral-900 group-hover:text-primary-600 transition-colors">
                 {teacher.name} {teacher.surname}
               </h3>
-              <p className="text-sm text-secondary-600 font-mono mb-2">{teacher.username}</p>
-              <div className="flex items-center gap-2 text-sm text-secondary-500">
+              <p className="text-sm text-neutral-600 font-mono mb-2">{teacher.username}</p>
+              <div className="flex items-center gap-2 text-sm text-neutral-500">
                 <Mail className="w-4 h-4 flex-shrink-0" />
                 <span className="truncate">{teacher.email || 'No email'}</span>
               </div>
@@ -248,72 +262,92 @@ const TeachersPageClient = ({
               <Eye className="w-4 h-4" />
             </Button>
             {isAdmin && (
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={(e) => e.stopPropagation()}
-                className="h-8 w-8 p-0 hover:bg-secondary-100"
+              <DropdownMenu
+                trigger={
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={(e) => e.stopPropagation()}
+                    className="h-8 w-8 p-0 hover:bg-neutral-100"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </Button>
+                }
               >
-                <MoreVertical className="w-4 h-4" />
-              </Button>
+                <DropdownMenuItem onClick={() => openPreview(teacher)}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  View Details
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleEditTeacher(teacher)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit Teacher
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleDeleteTeacher(teacher)}
+                  className="text-error-600"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenu>
             )}
           </div>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-secondary-700">Subjects</span>
-              <Badge variant="outline" className="text-xs">
+              <span className="text-sm font-medium text-neutral-700">Subjects</span>
+              <span className="text-xs text-neutral-500 bg-neutral-50 px-2 py-1 rounded-md">
                 {teacher.subjects.length} assigned
-              </Badge>
+              </span>
             </div>
             <div className="flex flex-wrap gap-1">
               {teacher.subjects.length > 0 ? (
                 teacher.subjects.slice(0, 3).map((subject) => (
-                  <Badge key={subject.id} variant="secondary" className="text-xs">
+                  <Badge key={subject.id} variant="secondary" className="text-xs bg-primary-50 text-primary-700 border-0">
                     {subject.name}
                   </Badge>
                 ))
               ) : (
-                <span className="text-sm text-secondary-400 italic">No subjects assigned</span>
+                <span className="text-sm text-neutral-400 italic">No subjects assigned</span>
               )}
               {teacher.subjects.length > 3 && (
-                <Badge variant="outline" className="text-xs">
+                <span className="text-xs text-neutral-500 bg-neutral-50 px-2 py-1 rounded-md">
                   +{teacher.subjects.length - 3} more
-                </Badge>
+                </span>
               )}
             </div>
           </div>
           
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-secondary-700">Classes</span>
-              <Badge variant="outline" className="text-xs">
+              <span className="text-sm font-medium text-neutral-700">Classes</span>
+              <span className="text-xs text-neutral-500 bg-neutral-50 px-2 py-1 rounded-md">
                 {teacher.classes.length} assigned
-              </Badge>
+              </span>
             </div>
             <div className="flex flex-wrap gap-1">
               {teacher.classes.length > 0 ? (
                 teacher.classes.slice(0, 3).map((cls) => (
-                  <Badge key={cls.id} variant="outline" className="text-xs">
+                  <span key={cls.id} className="text-xs bg-accent-50 text-accent-700 px-2 py-1 rounded-md border-0">
                     {cls.name}
-                  </Badge>
+                  </span>
                 ))
               ) : (
-                <span className="text-sm text-secondary-400 italic">No classes assigned</span>
+                <span className="text-sm text-neutral-400 italic">No classes assigned</span>
               )}
               {teacher.classes.length > 3 && (
-                <Badge variant="outline" className="text-xs">
+                <span className="text-xs text-neutral-500 bg-neutral-50 px-2 py-1 rounded-md">
                   +{teacher.classes.length - 3} more
-                </Badge>
+                </span>
               )}
             </div>
           </div>
           
-          <div className="pt-2 border-t border-secondary-100">
+          <div className="pt-2 border-t border-neutral-100">
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2 text-secondary-600">
+              <div className="flex items-center gap-2 text-neutral-600">
                 <Phone className="w-4 h-4" />
                 <span className="truncate">{teacher.phone || 'No phone'}</span>
               </div>
@@ -336,79 +370,78 @@ const TeachersPageClient = ({
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background-default via-primary-50/30 to-accent-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-secondary-50/30">
       <div className="container mx-auto px-4 py-8 space-y-8">
-
 
         {/* Enhanced Statistics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card variant="gradient" padding="lg" hover className="text-center group">
+          <Card variant="elevated" padding="lg" hover className="text-center group bg-white border border-neutral-200 shadow-soft hover:shadow-elevated">
             <div className="flex flex-col items-center space-y-3">
               <div className="p-4 bg-primary-100 rounded-2xl group-hover:bg-primary-200 transition-colors">
                 <Users className="w-8 h-8 text-primary-600" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-secondary-900">{totalTeachers}</p>
-                <p className="text-sm font-medium text-secondary-600">Total Teachers</p>
-                <p className="text-xs text-secondary-500 mt-1">All registered faculty</p>
+                <p className="text-3xl font-bold text-neutral-900">{totalTeachers}</p>
+                <p className="text-sm font-medium text-neutral-600">Total Teachers</p>
+                <p className="text-xs text-neutral-500 mt-1">All registered faculty</p>
               </div>
             </div>
           </Card>
 
-          <Card variant="gradient" padding="lg" hover className="text-center group">
+          <Card variant="elevated" padding="lg" hover className="text-center group bg-white border border-neutral-200 shadow-soft hover:shadow-elevated">
             <div className="flex flex-col items-center space-y-3">
-              <div className="p-4 bg-accent-100 rounded-2xl group-hover:bg-accent-200 transition-colors">
-                <Star className="w-8 h-8 text-accent-600" />
+              <div className="p-4 bg-success-100 rounded-2xl group-hover:bg-success-200 transition-colors">
+                <Star className="w-8 h-8 text-success-600" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-secondary-900">{activeTeachers}</p>
-                <p className="text-sm font-medium text-secondary-600">Active Teachers</p>
-                <p className="text-xs text-secondary-500 mt-1">
+                <p className="text-3xl font-bold text-neutral-900">{activeTeachers}</p>
+                <p className="text-sm font-medium text-neutral-600">Active Teachers</p>
+                <p className="text-xs text-neutral-500 mt-1">
                   {Math.round((activeTeachers / totalTeachers) * 100)}% with assignments
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card variant="gradient" padding="lg" hover className="text-center group">
+          <Card variant="elevated" padding="lg" hover className="text-center group bg-white border border-neutral-200 shadow-soft hover:shadow-elevated">
             <div className="flex flex-col items-center space-y-3">
-              <div className="p-4 bg-purple-100 rounded-2xl group-hover:bg-purple-200 transition-colors">
-                <BookOpen className="w-8 h-8 text-purple-600" />
+              <div className="p-4 bg-accent-100 rounded-2xl group-hover:bg-accent-200 transition-colors">
+                <BookOpen className="w-8 h-8 text-accent-600" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-secondary-900">{totalSubjects}</p>
-                <p className="text-sm font-medium text-secondary-600">Subjects</p>
-                <p className="text-xs text-secondary-500 mt-1">Available courses</p>
+                <p className="text-3xl font-bold text-neutral-900">{totalSubjects}</p>
+                <p className="text-sm font-medium text-neutral-600">Subjects</p>
+                <p className="text-xs text-neutral-500 mt-1">Available courses</p>
               </div>
             </div>
           </Card>
 
-          <Card variant="gradient" padding="lg" hover className="text-center group">
+          <Card variant="elevated" padding="lg" hover className="text-center group bg-white border border-neutral-200 shadow-soft hover:shadow-elevated">
             <div className="flex flex-col items-center space-y-3">
-              <div className="p-4 bg-orange-100 rounded-2xl group-hover:bg-orange-200 transition-colors">
-                <Calendar className="w-8 h-8 text-orange-600" />
+              <div className="p-4 bg-secondary-100 rounded-2xl group-hover:bg-secondary-200 transition-colors">
+                <Calendar className="w-8 h-8 text-secondary-600" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-secondary-900">{totalClasses}</p>
-                <p className="text-sm font-medium text-secondary-600">Classes</p>
-                <p className="text-xs text-secondary-500 mt-1">Active sessions</p>
+                <p className="text-3xl font-bold text-neutral-900">{totalClasses}</p>
+                <p className="text-sm font-medium text-neutral-600">Classes</p>
+                <p className="text-xs text-neutral-500 mt-1">Active sessions</p>
               </div>
             </div>
           </Card>
         </div>
 
         {/* Enhanced Action Bar */}
-        <Card variant="elevated" padding="lg">
+        <Card variant="elevated" padding="lg" className="bg-white border border-neutral-200 shadow-soft">
           <div className="flex flex-col lg:flex-row gap-6 lg:items-center lg:justify-between">
             {/* Search and Filters */}
             <div className="flex-1 space-y-4 lg:space-y-0 lg:flex lg:items-center lg:gap-4">
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary-400 w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5" />
                 <Input
                   placeholder="Search teachers by name, email, or subject..."
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-12 h-12 text-base border-secondary-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 rounded-xl search-input-modern"
+                  className="pl-12 h-12 text-base border-neutral-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 rounded-xl search-input-modern"
                 />
               </div>
               
@@ -416,7 +449,7 @@ const TeachersPageClient = ({
                 <Button 
                   variant="outline" 
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-2 h-12 px-6 rounded-xl transition-all ${
+                  className={`flex items-center gap-2 h-12 px-6 rounded-xl transition-all border-neutral-200 ${
                     showFilters ? 'bg-primary-50 border-primary-300 text-primary-700' : ''
                   }`}
                 >
@@ -429,7 +462,7 @@ const TeachersPageClient = ({
                   )}
                 </Button>
                 
-                <div className="flex items-center gap-2 p-1 bg-secondary-100 rounded-xl">
+                <div className="flex items-center gap-2 p-1 bg-neutral-100 rounded-xl">
                   <Button
                     variant={viewMode === 'cards' ? 'default' : 'ghost'}
                     size="sm"
@@ -456,19 +489,19 @@ const TeachersPageClient = ({
                 variant="outline" 
                 onClick={handleExport} 
                 disabled={isExporting}
-                className="flex items-center gap-2 h-12 px-6 rounded-xl hover:bg-secondary-50 disabled:opacity-50"
+                leftIcon={<Download className="w-4 h-4" />}
+                className="border-neutral-200"
               >
-                <Download className="w-4 h-4" />
-                <span>Export</span>
+                Export
               </Button>
               
               {isAdmin && (
                 <Button 
                   onClick={handleCreateTeacher} 
-                  className="flex items-center gap-2 h-12 px-6 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl"
+                  leftIcon={<Plus className="w-4 h-4" />}
+                  className="bg-primary-500 hover:bg-primary-600"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Teacher</span>
+                  Add Teacher
                 </Button>
               )}
             </div>
@@ -476,14 +509,14 @@ const TeachersPageClient = ({
 
           {/* Advanced Filters Panel */}
           {showFilters && (
-            <div className="mt-6 pt-6 border-t border-secondary-200 filter-panel-slide">
+            <div className="mt-6 pt-6 border-t border-neutral-200 filter-panel-slide">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">Status</label>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Status</label>
                   <select 
                     value={activeFilters.status || ''}
                     onChange={(e) => handleFilterChange('status', e.target.value || undefined)}
-                    className="w-full h-10 px-3 border border-secondary-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    className="w-full h-10 px-3 border border-neutral-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
                   >
                     <option value="">All Teachers</option>
                     <option value="active">Active (With Subjects)</option>
@@ -492,11 +525,11 @@ const TeachersPageClient = ({
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-secondary-700 mb-2">Sort By</label>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Sort By</label>
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
-                    className="w-full h-10 px-3 border border-secondary-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    className="w-full h-10 px-3 border border-neutral-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
                   >
                     <option value="name">Name (A-Z)</option>
                     <option value="subjects">Subject Count</option>
@@ -508,7 +541,7 @@ const TeachersPageClient = ({
                   <Button
                     variant="outline"
                     onClick={handleClearFilters}
-                    className="flex items-center gap-2 h-10 px-4 text-secondary-600 hover:text-secondary-700"
+                    className="flex items-center gap-2 h-10 px-4 text-neutral-600 hover:text-neutral-700 border-neutral-200"
                   >
                     <X className="w-4 h-4" />
                     <span>Clear Filters</span>
@@ -523,18 +556,18 @@ const TeachersPageClient = ({
         <div className="space-y-6">
           {/* Results Summary */}
           <div className="flex items-center justify-between">
-            <p className="text-secondary-600">
-              Showing <span className="font-semibold text-secondary-900">{filteredData.length}</span> of{' '}
-              <span className="font-semibold text-secondary-900">{totalTeachers}</span> teachers
+            <p className="text-neutral-600">
+              Showing <span className="font-semibold text-neutral-900">{filteredData.length}</span> of{' '}
+              <span className="font-semibold text-neutral-900">{totalTeachers}</span> teachers
             </p>
             {searchTerm && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleSearchChange('')}
-                className="text-secondary-500 hover:text-secondary-700"
+                className="text-neutral-500 hover:text-neutral-700"
+                leftIcon={<X className="w-4 h-4" />}
               >
-                <X className="w-4 h-4 mr-1" />
                 Clear search
               </Button>
             )}
@@ -551,23 +584,23 @@ const TeachersPageClient = ({
 
           {/* Table View */}
           {viewMode === 'table' && (
-            <Card variant="elevated" padding="none" className="overflow-hidden">
+            <Card variant="elevated" padding="none" className="overflow-hidden bg-white border border-neutral-200 shadow-soft">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-secondary-50 border-b border-secondary-200">
+                  <thead className="bg-neutral-50 border-b border-neutral-200">
                     <tr>
-                      <th className="text-left py-4 px-6 font-semibold text-secondary-700">Teacher</th>
-                      <th className="text-left py-4 px-6 font-semibold text-secondary-700">ID</th>
-                      <th className="text-left py-4 px-6 font-semibold text-secondary-700">Subjects</th>
-                      <th className="text-left py-4 px-6 font-semibold text-secondary-700">Classes</th>
-                      <th className="text-left py-4 px-6 font-semibold text-secondary-700">Contact</th>
-                      <th className="text-left py-4 px-6 font-semibold text-secondary-700">Status</th>
-                      <th className="text-center py-4 px-6 font-semibold text-secondary-700">Actions</th>
+                      <th className="text-left py-4 px-6 font-semibold text-neutral-700">Teacher</th>
+                      <th className="text-left py-4 px-6 font-semibold text-neutral-700">ID</th>
+                      <th className="text-left py-4 px-6 font-semibold text-neutral-700">Subjects</th>
+                      <th className="text-left py-4 px-6 font-semibold text-neutral-700">Classes</th>
+                      <th className="text-left py-4 px-6 font-semibold text-neutral-700">Contact</th>
+                      <th className="text-left py-4 px-6 font-semibold text-neutral-700">Status</th>
+                      <th className="text-center py-4 px-6 font-semibold text-neutral-700">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-secondary-100">
+                  <tbody className="divide-y divide-neutral-100">
                     {filteredData.map((teacher) => (
-                      <tr key={teacher.id} className="hover:bg-secondary-25 transition-colors">
+                      <tr key={teacher.id} className="hover:bg-neutral-50 transition-colors">
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
                             <Avatar className="w-10 h-10">
@@ -577,25 +610,25 @@ const TeachersPageClient = ({
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-medium text-secondary-900">{teacher.name} {teacher.surname}</p>
-                              <p className="text-sm text-secondary-500">{teacher.email}</p>
+                              <p className="font-medium text-neutral-900">{teacher.name} {teacher.surname}</p>
+                              <p className="text-sm text-neutral-500">{teacher.email}</p>
                             </div>
                           </div>
                         </td>
                         <td className="py-4 px-6">
-                          <Badge variant="outline" className="font-mono text-xs">
+                          <Badge variant="outline" className="font-mono text-xs border-neutral-200">
                             {teacher.username}
                           </Badge>
                         </td>
                         <td className="py-4 px-6">
                           <div className="flex flex-wrap gap-1">
                             {teacher.subjects.slice(0, 2).map((subject) => (
-                              <Badge key={subject.id} variant="secondary" className="text-xs">
+                              <Badge key={subject.id} variant="secondary" className="text-xs bg-primary-50 text-primary-700 border-0">
                                 {subject.name}
                               </Badge>
                             ))}
                             {teacher.subjects.length > 2 && (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs border-neutral-200">
                                 +{teacher.subjects.length - 2}
                               </Badge>
                             )}
@@ -604,18 +637,18 @@ const TeachersPageClient = ({
                         <td className="py-4 px-6">
                           <div className="flex flex-wrap gap-1">
                             {teacher.classes.slice(0, 2).map((cls) => (
-                              <Badge key={cls.id} variant="outline" className="text-xs">
+                              <Badge key={cls.id} variant="outline" className="text-xs border-neutral-200">
                                 {cls.name}
                               </Badge>
                             ))}
                             {teacher.classes.length > 2 && (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs border-neutral-200">
                                 +{teacher.classes.length - 2}
                               </Badge>
                             )}
                           </div>
                         </td>
-                        <td className="py-4 px-6 text-sm text-secondary-600">
+                        <td className="py-4 px-6 text-sm text-neutral-600">
                           {teacher.phone || 'No phone'}
                         </td>
                         <td className="py-4 px-6">
@@ -644,14 +677,14 @@ const TeachersPageClient = ({
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-8 w-8 p-0 hover:bg-secondary-100"
+                                  className="h-8 w-8 p-0 hover:bg-neutral-100"
                                 >
                                   <Edit className="w-4 h-4" />
                                 </Button>
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
+                                  className="h-8 w-8 p-0 hover:bg-error-50 hover:text-error-600"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
@@ -669,17 +702,16 @@ const TeachersPageClient = ({
 
           {/* Empty State */}
           {filteredData.length === 0 && (
-            <Card variant="elevated" padding="lg" className="text-center py-12">
-              <div className="w-20 h-20 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <GraduationCap className="w-10 h-10 text-secondary-400" />
+            <Card variant="elevated" padding="lg" className="text-center py-12 bg-white border border-neutral-200 shadow-soft">
+              <div className="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="w-10 h-10 text-neutral-400" />
               </div>
-              <h3 className="text-lg font-semibold text-secondary-900 mb-2">No teachers found</h3>
-              <p className="text-secondary-600 mb-6">
+              <h3 className="text-lg font-semibold text-neutral-900 mb-2">No teachers found</h3>
+              <p className="text-neutral-600 mb-6">
                 {searchTerm ? 'Try adjusting your search terms' : 'Get started by adding your first teacher'}
               </p>
               {isAdmin && !searchTerm && (
-                <Button onClick={handleCreateTeacher} className="mx-auto">
-                  <Plus className="w-4 h-4 mr-2" />
+                <Button onClick={handleCreateTeacher} className="mx-auto bg-primary-500 hover:bg-primary-600" leftIcon={<Plus className="w-4 h-4" />}>
                   Add Your First Teacher
                 </Button>
               )}
@@ -701,7 +733,7 @@ const TeachersPageClient = ({
             className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={() => setShowCreateModal(false)}
           />
-          <Card variant="elevated" className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <Card variant="elevated" className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white border border-neutral-200 shadow-elevated">
             <FormContainer 
               table="teacher" 
               type="create" 

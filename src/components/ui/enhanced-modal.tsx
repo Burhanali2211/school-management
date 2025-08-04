@@ -1,269 +1,138 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
-import { X, AlertTriangle, CheckCircle, Info, AlertCircle } from 'lucide-react';
-import { Button } from './button';
+import { useEffect, useRef } from "react";
+import { X } from "lucide-react";
 
-interface ModalProps {
+interface EnhancedModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
-  subtitle?: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-  variant?: 'default' | 'danger' | 'success' | 'warning' | 'info';
+  size?: "sm" | "md" | "lg" | "xl";
   showCloseButton?: boolean;
-  closeOnOverlayClick?: boolean;
-  closeOnEscape?: boolean;
-  className?: string;
-  overlayClassName?: string;
-  contentClassName?: string;
-  footer?: React.ReactNode;
   loading?: boolean;
 }
 
-const sizeClasses = {
-  sm: 'max-w-md',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-  xl: 'max-w-4xl',
-  full: 'max-w-7xl mx-4'
-};
+interface EnhancedModalHeaderProps {
+  title: string;
+  onClose?: () => void;
+  showCloseButton?: boolean;
+}
 
-const variantConfig = {
-  default: {
-    icon: null,
-    iconColor: '',
-    borderColor: 'border-slate-200'
-  },
-  danger: {
-    icon: AlertTriangle,
-    iconColor: 'text-red-600',
-    borderColor: 'border-red-200'
-  },
-  success: {
-    icon: CheckCircle,
-    iconColor: 'text-green-600',
-    borderColor: 'border-green-200'
-  },
-  warning: {
-    icon: AlertCircle,
-    iconColor: 'text-yellow-600',
-    borderColor: 'border-yellow-200'
-  },
-  info: {
-    icon: Info,
-    iconColor: 'text-blue-600',
-    borderColor: 'border-blue-200'
-  }
-};
+interface EnhancedModalBodyProps {
+  children: React.ReactNode;
+  loading?: boolean;
+}
+
+interface EnhancedModalFooterProps {
+  children: React.ReactNode;
+}
 
 export function EnhancedModal({
   isOpen,
   onClose,
   title,
-  subtitle,
   children,
-  size = 'md',
-  variant = 'default',
+  size = "md",
   showCloseButton = true,
-  closeOnOverlayClick = true,
-  closeOnEscape = true,
-  className,
-  overlayClassName,
-  contentClassName,
-  footer,
-  loading = false
-}: ModalProps) {
+  loading = false,
+}: EnhancedModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const config = variantConfig[variant];
-  const Icon = config.icon;
 
-  // Handle escape key
   useEffect(() => {
-    if (!isOpen || !closeOnEscape) return;
-
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, closeOnEscape, onClose]);
-
-  // Handle body scroll lock
-  useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
-  // Focus management
-  useEffect(() => {
-    if (isOpen && modalRef.current) {
-      const focusableElements = modalRef.current.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      const firstElement = focusableElements[0] as HTMLElement;
-      if (firstElement) {
-        firstElement.focus();
-      }
-    }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (closeOnOverlayClick && e.target === e.currentTarget) {
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
+  if (!isOpen) return null;
+
+  const sizeClasses = {
+    sm: "max-w-md",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
+  };
+
   return (
     <div
-      className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center p-4",
-        "bg-black/50 backdrop-blur-sm",
-        overlayClassName
-      )}
-      onClick={handleOverlayClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={handleBackdropClick}
     >
       <div
         ref={modalRef}
-        className={cn(
-          "relative w-full bg-white rounded-xl shadow-2xl",
-          "transform transition-all duration-200 ease-out",
-          "max-h-[90vh] overflow-hidden",
-          sizeClasses[size],
-          config.borderColor,
-          "border",
-          className
-        )}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={title ? "modal-title" : undefined}
+        className={`relative bg-white rounded-lg shadow-lg w-full mx-4 ${sizeClasses[size]} max-h-[90vh] overflow-hidden`}
       >
-        {loading && (
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
+        {title && (
+          <EnhancedModalHeader
+            title={title}
+            onClose={onClose}
+            showCloseButton={showCloseButton}
+          />
         )}
-
-        {/* Header */}
-        {(title || showCloseButton) && (
-          <div className={cn(
-            "flex items-center justify-between p-6 border-b border-slate-200",
-            variant !== 'default' && "bg-slate-50"
-          )}>
-            <div className="flex items-center gap-3">
-              {Icon && (
-                <div className={cn("p-2 rounded-lg bg-white", config.iconColor)}>
-                  <Icon className="w-5 h-5" />
-                </div>
-              )}
-              <div>
-                {title && (
-                  <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
-                    {title}
-                  </h2>
-                )}
-                {subtitle && (
-                  <p className="text-sm text-slate-600 mt-1">{subtitle}</p>
-                )}
-              </div>
-            </div>
-            
-            {showCloseButton && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-5 h-5" />
-              </Button>
-            )}
-          </div>
-        )}
-
-        {/* Content */}
-        <div className={cn(
-          "overflow-y-auto",
-          contentClassName,
-          footer ? "max-h-[calc(90vh-8rem)]" : "max-h-[calc(90vh-4rem)]"
-        )}>
-          <div className="p-6">
-            {children}
-          </div>
-        </div>
-
-        {/* Footer */}
-        {footer && (
-          <div className="border-t border-slate-200 p-6 bg-slate-50">
-            {footer}
-          </div>
-        )}
+        <EnhancedModalBody loading={loading}>
+          {children}
+        </EnhancedModalBody>
       </div>
     </div>
   );
 }
 
-interface ConfirmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  variant?: 'danger' | 'warning' | 'info';
-  loading?: boolean;
+export function EnhancedModalHeader({
+  title,
+  onClose,
+  showCloseButton = true,
+}: EnhancedModalHeaderProps) {
+  return (
+    <div className="flex items-center justify-between p-4 border-b border-neutral-200">
+      <h2 className="text-lg font-semibold text-neutral-900">{title}</h2>
+      {showCloseButton && onClose && (
+        <button
+          onClick={onClose}
+          className="p-1 text-neutral-400 hover:text-neutral-600"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      )}
+    </div>
+  );
 }
 
-export function ConfirmModal({
-  isOpen,
-  onClose,
-  onConfirm,
-  title,
-  message,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  variant = 'danger',
-  loading = false
-}: ConfirmModalProps) {
+export function EnhancedModalBody({ children, loading = false }: EnhancedModalBodyProps) {
+  if (loading) {
+    return (
+      <div className="p-8 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-neutral-600">Loading...</p>
+      </div>
+    );
+  }
+
+  return <div className="p-4 overflow-y-auto max-h-[calc(90vh-120px)]">{children}</div>;
+}
+
+export function EnhancedModalFooter({ children }: EnhancedModalFooterProps) {
   return (
-    <EnhancedModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-      variant={variant}
-      size="sm"
-      loading={loading}
-      footer={
-        <div className="flex items-center justify-end gap-3">
-          <Button variant="outline" onClick={onClose} disabled={loading}>
-            {cancelText}
-          </Button>
-          <Button
-            variant={variant === 'danger' ? 'destructive' : 'default'}
-            onClick={onConfirm}
-            disabled={loading}
-          >
-            {confirmText}
-          </Button>
-        </div>
-      }
-    >
-      <p className="text-slate-700">{message}</p>
-    </EnhancedModal>
+    <div className="flex items-center justify-end space-x-2 p-4 border-t border-neutral-200">
+      {children}
+    </div>
   );
 }

@@ -69,11 +69,11 @@ interface ResultsStats {
 }
 
 const getScoreColor = (score: number) => {
-  if (score >= 90) return "bg-green-100 text-green-800";
-  if (score >= 80) return "bg-blue-100 text-blue-800";
-  if (score >= 70) return "bg-yellow-100 text-yellow-800";
-  if (score >= 60) return "bg-orange-100 text-orange-800";
-  return "bg-red-100 text-red-800";
+  if (score >= 90) return "bg-success-100 text-success-800";
+  if (score >= 80) return "bg-primary-100 text-primary-800";
+  if (score >= 70) return "bg-warning-100 text-warning-800";
+  if (score >= 60) return "bg-accent-100 text-accent-800";
+  return "bg-error-100 text-error-800";
 };
 
 const getGrade = (score: number) => {

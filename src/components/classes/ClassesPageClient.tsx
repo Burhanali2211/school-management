@@ -8,6 +8,8 @@ import { SearchInput } from "@/components/ui/search-input";
 import { Button } from "@/components/ui/button";
 import { Plus, School } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { ModernModal } from "@/components/ui/modern-modal";
+import ClassForm from "@/components/forms/ClassForm";
 
 interface ClassesPageClientProps {
   isAdmin: boolean;
@@ -34,8 +36,8 @@ const ClassesPageClient = ({
       value: "grade",
       type: "multiselect",
       options: availableGrades.map(grade => ({
-        label: `Grade ${grade.level}`,
-        value: grade.level.toString()
+        label: grade.name || `Grade ${grade.level}`,
+        value: grade.id.toString()
       }))
     },
     {
@@ -183,6 +185,25 @@ const ClassesPageClient = ({
     setShowAddClassModal(true);
   };
 
+  // Handle close add class modal
+  const handleCloseAddClassModal = () => {
+    setShowAddClassModal(false);
+  };
+
+  // Prepare related data for the form
+  const relatedData = {
+    teachers: availableTeachers.map(teacher => ({
+      id: teacher.id,
+      name: teacher.name,
+      surname: ""
+    })),
+    grades: availableGrades.map(grade => ({
+      id: grade.id,
+      level: grade.level,
+      name: grade.name
+    }))
+  };
+
   return (
     <Card className="space-y-6" fullWidth fullHeight background="transparent" border={false} shadow="none" padding="lg">
       {/* TOP */}
@@ -225,9 +246,8 @@ const ClassesPageClient = ({
           {isAdmin && (
             <Button 
               onClick={handleAddClass}
-              className="bg-purple-600 hover:bg-purple-700"
+              leftIcon={<Plus className="w-4 h-4" />}
             >
-              <Plus className="w-4 h-4 mr-2" />
               Add Class
             </Button>
           )}
@@ -236,6 +256,20 @@ const ClassesPageClient = ({
       
       {/* Content */}
       {children}
+
+      {/* Add Class Modal */}
+      <ModernModal
+        isOpen={showAddClassModal}
+        onClose={handleCloseAddClassModal}
+        title="Add New Class"
+        size="lg"
+      >
+        <ClassForm
+          type="create"
+          setOpen={setShowAddClassModal}
+          relatedData={relatedData}
+        />
+      </ModernModal>
     </Card>
   );
 };

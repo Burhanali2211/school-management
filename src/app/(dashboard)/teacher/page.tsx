@@ -1,21 +1,16 @@
 import Announcements from "@/components/Announcements";
-import BigCalendarContainer from "@/components/BigCalendarContainer";
 import { Card } from "@/components/ui/card";
-import { getAuthUser } from "@/lib/auth-utils";
-import { UserType } from "@prisma/client";
+import { requireTeacher } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import TeacherPageClient from "./TeacherPageClient";
 
 const TeacherPage = async () => {
-  let userId = "teacher1"; // Default for demo
-
   try {
-    const user = await getAuthUser();
-    userId = user?.id || "teacher1";
+    const user = await requireTeacher();
+    return <TeacherPageClient userId={user.id} />;
   } catch (error) {
-    console.log("Auth not configured, using demo mode");
+    redirect("/sign-in");
   }
-  
-  return <TeacherPageClient userId={userId} />;
 };
 
 export default TeacherPage;

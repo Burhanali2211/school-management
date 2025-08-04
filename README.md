@@ -1,328 +1,114 @@
-# 🏫 School Management System
+# School Management System
 
-A comprehensive, modern school management system built with Next.js 14, featuring complete CRUD operations, role-based access control, and a beautiful responsive interface.
-
-## ✨ Features
-
-### 🎯 Complete CRUD Operations
-- **Students Management** - Full student lifecycle management
-- **Teachers Management** - Teacher profiles with subject assignments
-- **Parents Management** - Parent-student relationship tracking
-- **Classes & Subjects** - Academic structure management
-- **Lessons & Scheduling** - Timetable management with conflict detection
-- **Exams & Assignments** - Assessment creation and tracking
-- **Results & Grading** - Comprehensive grade management
-- **Attendance Tracking** - Daily attendance monitoring
-
-### 🔐 Role-Based Access Control
-- **Admin** - Complete system access and management
-- **Teacher** - Manage classes, lessons, exams, and student results
-- **Student** - View personal academic information and schedules
-- **Parent** - Monitor children's academic progress and attendance
-
-### 🚀 Advanced Features
-- **Real-time Search & Filtering** - Advanced filtering on all data tables
-- **Statistics Dashboard** - Comprehensive analytics and insights
-- **Audit Logging** - Complete activity tracking and security monitoring
-- **Messaging System** - Internal communication platform
-- **Responsive Design** - Mobile-first, fully responsive interface
-- **Modern UI/UX** - Beautiful, intuitive user interface
-
-## 🛠️ Technology Stack
-
-- **Frontend**: Next.js 14, React 18, TypeScript
-- **Backend**: Next.js API Routes, Prisma ORM
-- **Database**: PostgreSQL
-- **Authentication**: Custom JWT-based auth system
-- **Styling**: Tailwind CSS, Framer Motion
-- **Forms**: React Hook Form, Zod validation
-- **UI Components**: Custom design system with Radix UI primitives
+A comprehensive, production-ready school management system built with Next.js, Prisma, and PostgreSQL.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 18+ 
-- PostgreSQL 12+
+- PostgreSQL database
 - npm or yarn
 
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd school-management-system
-```
+### Setup
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Configure environment variables in `.env.local`
+4. Run setup: `npm run setup`
+5. Start development server: `npm run dev:complete`
 
-### 2. Quick Setup (Recommended)
-```bash
-node quick-setup.js
-```
+### Demo Credentials
+- **Admin**: admin1 / admin123
+- **Teacher**: teacher1 / teacher1123  
+- **Student**: student1 / student1123
+- **Parent**: parent1 / parent1123
 
-This script will:
-- Install all dependencies
-- Create environment configuration
-- Set up the database schema
-- Generate sample data
-- Configure the application
+## 🏗️ Architecture
 
-### 3. Manual Setup (Alternative)
+### Backend
+- **Framework**: Next.js 14 with App Router
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT-based sessions
+- **API**: RESTful APIs with proper error handling
+- **Security**: Role-based access control, input validation
 
-#### Install Dependencies
-```bash
-npm install
-```
+### Frontend  
+- **UI**: React with TypeScript
+- **Styling**: Tailwind CSS with custom design system
+- **State Management**: React Context + hooks
+- **Forms**: React Hook Form with Zod validation
 
-#### Environment Configuration
-Create `.env.local`:
-```env
-DATABASE_URL="postgresql://username:password@localhost:5432/school_management"
-JWT_SECRET="your-super-secret-jwt-key"
-NEXTAUTH_SECRET="your-nextauth-secret"
-NEXTAUTH_URL="http://localhost:3002"
-```
+### Features
+- ✅ User management (Admin, Teachers, Students, Parents)
+- ✅ Class and subject management
+- ✅ Attendance tracking
+- ✅ Grade and exam management
+- ✅ Assignment management
+- ✅ Messaging system
+- ✅ Dashboard analytics
+- ✅ Audit logging
+- ✅ Session management
+- ✅ Role-based permissions
 
-#### Database Setup
-```bash
-# Create database
-createdb school_management
+## 🛠️ Development
 
-# Apply schema
-npx prisma db push
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run dev:complete` - Full setup + start development
+- `npm run build` - Build for production
+- `npm run build:production` - Full production build with checks
+- `npm run test` - Run tests
+- `npm run test:all` - Run all tests including architecture checks
+- `npm run seed:complete` - Seed database with sample data
+- `npm run db:reset` - Reset and reseed database
 
-# Generate Prisma client
-npx prisma generate
-```
-
-### 4. Start Development Server
-```bash
-npm run dev
-```
-
-Visit `http://localhost:3002` to access the application.
-
-## 🔑 Default Login Credentials
-
-### Admin Access
-- **Username**: `admin`
-- **Password**: `admin123`
-
-### Demo Users
-- **Teacher**: `teacher1` / `teacher1123`
-- **Student**: `student1` / `student1123`
-- **Parent**: `parent1` / `parent1123`
-
-## 📊 Database Schema
-
-### Core Entities
-```sql
--- Users
-Admin, Teacher, Student, Parent
-
--- Academic Structure
-School, Grade, Class, Section, Subject
-
--- Scheduling
-Lesson, Exam, Assignment
-
--- Performance
-Result, Attendance
-
--- System
-Session, AuditLog, UserPreferences, Message*
-```
-
-For complete schema details, see `database_schema.sql`.
-
-## 🔌 API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - User authentication
-- `POST /api/auth/logout` - User logout
-
-### Core Resources
-All resources follow RESTful conventions:
-- `GET /api/{resource}` - List with filtering and pagination
-- `POST /api/{resource}` - Create new record
-- `GET /api/{resource}/[id]` - Get specific record
-- `PUT /api/{resource}/[id]` - Update record
-- `DELETE /api/{resource}/[id]` - Delete record
-
-### Available Resources
-- `students` - Student management
-- `teachers` - Teacher management
-- `parents` - Parent management
-- `classes` - Class management
-- `subjects` - Subject management
-- `lessons` - Lesson scheduling
-- `exams` - Exam management
-- `assignments` - Assignment tracking
-- `results` - Grade management
-- `attendance` - Attendance tracking
-
-## 🎨 UI Components
-
-### Design System
-- **Colors**: Comprehensive color palette with semantic naming
-- **Typography**: Consistent font scales and weights
-- **Spacing**: Standardized spacing system
-- **Components**: Reusable UI components with variants
-
-### Key Components
-- `PageHeader` - Consistent page headers with actions
-- `StatsCard` - Dashboard statistics display
-- `DataTable` - Advanced data tables with sorting/filtering
-- `FormContainer` - Modal form wrapper
-- `AdvancedFilters` - Search and filter components
+### Database Management
+- `npx prisma studio` - Open Prisma Studio
+- `npx prisma db push` - Push schema changes
+- `npx prisma generate` - Generate Prisma client
 
 ## 🔒 Security Features
 
-- **Authentication**: JWT-based session management
-- **Authorization**: Role-based access control
-- **Input Validation**: Zod schema validation
-- **SQL Injection Prevention**: Prisma ORM protection
-- **XSS Protection**: Input sanitization
-- **Audit Logging**: Complete activity tracking
+- JWT-based authentication
+- Role-based access control
+- Input validation and sanitization
+- SQL injection prevention
+- XSS protection
+- CSRF protection
+- Session management
+- Audit logging
 
-## 📱 Responsive Design
+## 📱 Production Deployment
 
-- **Mobile-First**: Optimized for mobile devices
-- **Tablet Support**: Enhanced tablet experience
-- **Desktop**: Full desktop functionality
-- **Touch-Friendly**: 44px minimum touch targets
-- **Accessibility**: ARIA labels and keyboard navigation
+1. Set up PostgreSQL database
+2. Configure production environment variables
+3. Run `npm run build:production`
+4. Deploy to your hosting platform
 
 ## 🧪 Testing
 
-```bash
-# Run all tests
-npm test
+The system includes comprehensive tests:
+- Unit tests for components
+- API route tests
+- Authentication tests
+- Production readiness checks
+- Architecture validation
 
-# Run tests in watch mode
-npm run test:watch
+Run all tests: `npm run test:all`
 
-# Generate coverage report
-npm run test:coverage
-```
+## 📚 Documentation
 
-### Test Coverage
-- Component testing with React Testing Library
-- API endpoint testing
-- Authentication flow testing
-- Permission system validation
-
-## 📦 Deployment
-
-### Production Build
-```bash
-npm run build
-npm start
-```
-
-### Docker Deployment
-```bash
-docker-compose up -d
-```
-
-### Environment Variables (Production)
-```env
-DATABASE_URL="postgresql://..."
-JWT_SECRET="secure-random-string"
-NEXTAUTH_SECRET="secure-random-string"
-NEXTAUTH_URL="https://yourdomain.com"
-```
-
-## 📁 Project Structure
-
-```
-src/
-├── app/
-│   ├── (auth)/                 # Authentication pages
-│   ├── (dashboard)/            # Protected dashboard
-│   │   ├── admin/              # Admin-specific pages
-│   │   ├── teacher/            # Teacher-specific pages
-│   │   ├── student/            # Student-specific pages
-│   │   └── parent/             # Parent-specific pages
-│   └── api/                    # API routes
-├── components/
-│   ├── forms/                  # Form components
-│   ├── ui/                     # UI components
-│   └── shared/                 # Shared components
-├── lib/
-│   ├── auth.ts                 # Authentication utilities
-│   ├── prisma.ts               # Database client
-│   └── utils.ts                # Utility functions
-└── prisma/
-    └── schema.prisma           # Database schema
-```
+- API documentation available at `/api/docs` (when running)
+- Database schema in `prisma/schema.prisma`
+- Component documentation in respective files
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Write tests for new features
-- Follow the established code style
-- Update documentation as needed
-
-## 📚 Documentation
-
-- `setup-complete-system.md` - Comprehensive setup guide
-- `BEST_PRACTICES.md` - Development best practices
-- `CODE_STYLE_GUIDE.md` - Code style guidelines
-- `TESTING_GUIDE.md` - Testing procedures
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### Database Connection Error
-```bash
-# Check PostgreSQL is running
-sudo service postgresql status
-
-# Verify database exists
-psql -l | grep school_management
-```
-
-#### Prisma Client Error
-```bash
-# Regenerate Prisma client
-npx prisma generate
-
-# Reset database (development only)
-npx prisma db push --force-reset
-```
-
-#### Port Already in Use
-```bash
-# Kill process on port 3002
-lsof -ti:3002 | xargs kill -9
-
-# Or use different port
-npm run dev -- -p 3003
-```
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `npm run test:all`
+5. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Next.js team for the amazing framework
-- Prisma team for the excellent ORM
-- Tailwind CSS for the utility-first CSS framework
-- All contributors and testers
-
-## 📞 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the documentation files
-- Review the troubleshooting section
-
----
-
-**Built with ❤️ for educational institutions worldwide**
+This project is licensed under the MIT License.

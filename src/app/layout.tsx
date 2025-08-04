@@ -1,18 +1,33 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+// Custom toast notifications - no external dependencies
 import ErrorBoundary from "@/components/ErrorBoundary";
 import AuthProvider from "@/components/SafeClerkProvider";
 import DevSetup from "@/components/DevSetup";
 import StagewiseClient from "@/components/StagewiseClient";
+import ToastProvider from "../components/ToastProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  variable: '--font-inter',
+  fallback: ['system-ui', 'arial', 'sans-serif'],
+  adjustFontFallback: true,
+});
 
 export const metadata: Metadata = {
-  title: "Lama Dev School Management Dashboard",
-  description: "Next.js School Management System",
+  title: "EduManage - School Management System",
+  description: "Modern Next.js School Management System with comprehensive features",
+  keywords: ["school management", "education", "dashboard", "next.js"],
+  authors: [{ name: "EduManage Team" }],
+  robots: "index, follow",
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -24,24 +39,13 @@ export default function RootLayout({
     <AuthProvider>
       <html lang="en">
         <body className={inter.className}>
-          <DevSetup />
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
-          <ToastContainer
-            position="bottom-right"
-            theme="light"
-            autoClose={4000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            className="toast-container"
-          />
-          <StagewiseClient />
+          <ToastProvider>
+            <DevSetup />
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+            <StagewiseClient />
+          </ToastProvider>
         </body>
       </html>
     </AuthProvider>

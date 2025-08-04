@@ -49,6 +49,7 @@ interface Teacher {
     name: string;
     grade?: {
       level: number;
+      name: string;
     };
     _count?: {
       students: number;
@@ -181,7 +182,7 @@ const TeacherProfilePage = () => {
                   />
                 </div>
                 {isEditing && (
-                  <button className="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
+                  <button className="absolute bottom-2 right-2 bg-black text-white p-3 rounded-full hover:bg-gray-800 transition-colors">
                     <Camera className="w-4 h-4" />
                   </button>
                 )}
@@ -205,16 +206,16 @@ const TeacherProfilePage = () => {
                   <Button
                     onClick={handleSave}
                     className="bg-green-600 hover:bg-green-700 text-white"
+                    leftIcon={<Save className="w-4 h-4" />}
                   >
-                    <Save className="w-4 h-4 mr-2" />
                     Save
                   </Button>
                   <Button
                     onClick={handleCancel}
                     variant="outline"
                     className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                    leftIcon={<X className="w-4 h-4" />}
                   >
-                    <X className="w-4 h-4 mr-2" />
                     Cancel
                   </Button>
                 </div>
@@ -223,8 +224,8 @@ const TeacherProfilePage = () => {
                   onClick={() => setIsEditing(true)}
                   variant="outline"
                   className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  leftIcon={<Edit3 className="w-4 h-4" />}
                 >
-                  <Edit3 className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
               )}
@@ -449,7 +450,7 @@ const TeacherProfilePage = () => {
                     <div key={cls.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <span className="font-medium">{cls.name}</span>
-                        {cls.grade && <p className="text-sm text-gray-500">Grade {cls.grade.level}</p>}
+                        {cls.grade && <p className="text-sm text-gray-500">{cls.grade.name}</p>}
                       </div>
                       <Badge variant="secondary">{cls._count?.students || 0} students</Badge>
                     </div>
@@ -508,7 +509,7 @@ const TeacherProfilePage = () => {
                       <span className="text-sm font-medium">4.8/5.0</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-green-600 h-2 rounded-full" style={{width: '96%'}}></div>
+                      <div className="bg-green-600 h-2 rounded-full" style={{ width: '96%' }}></div>
                     </div>
                   </div>
                   <div>
@@ -517,7 +518,7 @@ const TeacherProfilePage = () => {
                       <span className="text-sm font-medium">92%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '92%'}}></div>
+                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: '92%' }}></div>
                     </div>
                   </div>
                   <div>
@@ -526,7 +527,7 @@ const TeacherProfilePage = () => {
                       <span className="text-sm font-medium">89%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-purple-600 h-2 rounded-full" style={{width: '89%'}}></div>
+                      <div className="bg-purple-600 h-2 rounded-full" style={{ width: '89%' }}></div>
                     </div>
                   </div>
                 </div>

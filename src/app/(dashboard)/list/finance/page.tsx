@@ -6,18 +6,21 @@ import Image from 'next/image';
 
 async function getFees(): Promise<Fee[]> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003'}/api/finance`, {
+    // Use the correct port that matches your Next.js dev server
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3002';
+    const response = await fetch(`${baseUrl}/api/finance`, {
       cache: 'no-store',
     });
     
     if (!response.ok) {
-      throw new Error('Failed to fetch fees');
+      throw new Error(`Failed to fetch fees: ${response.status} ${response.statusText}`);
     }
     
     const fees = await response.json();
     return fees;
   } catch (error) {
     console.error("Error fetching fees:", error);
+    // Return empty array instead of throwing to prevent page crash
     return [];
   }
 }

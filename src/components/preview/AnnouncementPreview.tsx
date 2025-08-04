@@ -22,6 +22,7 @@ interface AnnouncementData {
     name: string;
     grade?: {
       level: number;
+      name: string;
     };
   };
   // Additional data
@@ -210,7 +211,7 @@ const AnnouncementPreview: React.FC<AnnouncementPreviewProps> = ({
             <div className="p-3 bg-neutral-50 rounded-lg">
               <div className="font-medium text-neutral-900">{announcement.class.name}</div>
               {announcement.class.grade && (
-                <div className="text-sm text-neutral-600">Grade {announcement.class.grade.level}</div>
+                <div className="text-sm text-neutral-600">{announcement.class.grade.name}</div>
               )}
             </div>
           </PreviewSection>

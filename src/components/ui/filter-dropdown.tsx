@@ -106,7 +106,7 @@ const FilterDropdown = React.forwardRef<HTMLDivElement, FilterDropdownProps>(
                   placeholder="Search filters..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
                 />
               </div>
 
@@ -173,7 +173,7 @@ const FilterDropdown = React.forwardRef<HTMLDivElement, FilterDropdownProps>(
                                   name={filter.key}
                                   checked={isSelected}
                                   onChange={() => handleFilterSelect(filter.key, option.value, filter.type === "multiselect")}
-                                  className="w-4 h-4 text-primary-600 border-secondary-300 rounded focus:ring-primary-500"
+                                  className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
                                 />
                                 <span className="text-sm text-secondary-700">{option.label}</span>
                               </label>

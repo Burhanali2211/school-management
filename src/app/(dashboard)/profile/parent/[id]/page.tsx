@@ -55,6 +55,7 @@ interface Parent {
       name: string;
       grade?: {
         level: number;
+        name: string;
       };
     };
     attendances?: {
@@ -201,7 +202,7 @@ const ParentProfilePage = () => {
                   </div>
                 </div>
                 {isEditing && (
-                  <button className="absolute bottom-2 right-2 bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors">
+                  <button className="absolute bottom-2 right-2 bg-black text-white p-3 rounded-full hover:bg-gray-800 transition-colors">
                     <Camera className="w-4 h-4" />
                   </button>
                 )}
@@ -225,16 +226,16 @@ const ParentProfilePage = () => {
                   <Button
                     onClick={handleSave}
                     className="bg-green-600 hover:bg-green-700 text-white"
+                    leftIcon={<Save className="w-4 h-4" />}
                   >
-                    <Save className="w-4 h-4 mr-2" />
                     Save
                   </Button>
                   <Button
                     onClick={handleCancel}
                     variant="outline"
                     className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                    leftIcon={<X className="w-4 h-4" />}
                   >
-                    <X className="w-4 h-4 mr-2" />
                     Cancel
                   </Button>
                 </div>
@@ -243,8 +244,8 @@ const ParentProfilePage = () => {
                   onClick={() => setIsEditing(true)}
                   variant="outline"
                   className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  leftIcon={<Edit3 className="w-4 h-4" />}
                 >
-                  <Edit3 className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
               )}
@@ -387,16 +388,13 @@ const ParentProfilePage = () => {
                     Quick Actions
                   </h3>
                   <div className="space-y-3">
-                    <Button className="w-full justify-start" variant="outline">
-                      <MessageCircle className="w-4 h-4 mr-2" />
+                    <Button className="w-full justify-start" variant="outline" leftIcon={<MessageCircle className="w-4 h-4" />}>
                       Message Teachers
                     </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <CreditCard className="w-4 h-4 mr-2" />
+                    <Button className="w-full justify-start" variant="outline" leftIcon={<CreditCard className="w-4 h-4" />}>
                       Pay Fees
                     </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <FileText className="w-4 h-4 mr-2" />
+                    <Button className="w-full justify-start" variant="outline" leftIcon={<FileText className="w-4 h-4" />}>
                       View Reports
                     </Button>
                   </div>
@@ -423,7 +421,7 @@ const ParentProfilePage = () => {
                       <h4 className="text-lg font-semibold">{student.name} {student.surname}</h4>
                       <p className="text-gray-600">{student.class?.name}</p>
                       {student.class?.grade && (
-                        <Badge variant="secondary">Grade {student.class.grade.level}</Badge>
+                        <Badge variant="secondary">{student.class.grade.name}</Badge>
                       )}
                     </div>
                     <Link href={`/profile/student/${student.id}`}>
@@ -465,8 +463,7 @@ const ParentProfilePage = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-blue-600 h-2 rounded-full" 
-                          style={{width: `${calculateChildAverage(student)}%`}}
+                          className="bg-blue-600 h-2 rounded-full"
                         ></div>
                       </div>
                     </div>
@@ -478,8 +475,7 @@ const ParentProfilePage = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-green-600 h-2 rounded-full" 
-                          style={{width: `${calculateChildAttendance(student)}%`}}
+                          className="bg-green-600 h-2 rounded-full"
                         ></div>
                       </div>
                     </div>

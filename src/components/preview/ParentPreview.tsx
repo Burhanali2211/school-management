@@ -59,8 +59,9 @@ interface Parent {
       id: number;
       name: string;
       grade?: {
-        level: number;
-      };
+      level: number;
+      name: string;
+    };
     };
     attendances?: {
       id: number;
@@ -419,7 +420,7 @@ const ParentPreview: React.FC<ParentPreviewProps> = ({
                             {student.name} {student.surname}
                           </p>
                           <p className="text-sm text-gray-600">
-                            {student.class?.name} • Grade {student.class?.grade?.level}
+                            {student.class?.name} • {student.class?.grade?.name}
                           </p>
                         </div>
                       </div>
@@ -512,8 +513,8 @@ const ParentPreview: React.FC<ParentPreviewProps> = ({
           <Button 
             onClick={() => window.open(`/profile/parent/${parent.id}`, '_blank')}
             className="bg-blue-600 hover:bg-blue-700"
+            leftIcon={<User className="w-4 h-4" />}
           >
-            <User className="w-4 h-4 mr-2" />
             View Full Profile
           </Button>
         </div>

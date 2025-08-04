@@ -70,15 +70,13 @@ const TableSearch = ({
           placeholder={placeholder}
           value={inputValue}
           onChange={handleInputChange}
-          className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2.5 sm:py-3 bg-white border border-neutral-300 rounded-xl text-sm sm:text-base placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md focus:shadow-lg"
-          style={{ minHeight: '44px' }} // Ensure 44px minimum touch target
+          className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-md text-sm sm:text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md focus:shadow-lg" // Ensure 44px minimum touch target
         />
         {inputValue && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1 rounded-full hover:bg-neutral-100"
-            style={{ minWidth: '44px', minHeight: '44px' }} // Ensure 44px minimum touch target
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1 rounded-full hover:bg-neutral-100" // Ensure 44px minimum touch target
             aria-label="Clear search"
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5" />

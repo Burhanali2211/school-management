@@ -6,7 +6,13 @@ import Link from 'next/link';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Users, User, School, GraduationCap } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Eye, Users, User, School, GraduationCap, MoreHorizontal, Edit, Trash2, ExternalLink } from "lucide-react";
 import FormContainer from "@/components/FormContainer";
 import { ClassPreview, usePreviewModal } from '@/components/preview';
 
@@ -17,6 +23,7 @@ interface Class {
   gradeId: number;
   grade: {
     level: number;
+    name: string;
   };
   supervisor?: {
     id: string;
@@ -70,7 +77,7 @@ const ClassesTableWithPreview: React.FC<ClassesTableWithPreviewProps> = ({
               {item.name}
             </p>
             <p className="text-sm text-neutral-500 truncate">
-              Grade {item.grade.level}
+              {item.grade.name}
             </p>
           </div>
         </div>
@@ -78,7 +85,7 @@ const ClassesTableWithPreview: React.FC<ClassesTableWithPreviewProps> = ({
       
       <TableCell className="hidden md:table-cell">
         <Badge variant="secondary">
-          Grade {item.grade.level}
+          {item.grade.name}
         </Badge>
       </TableCell>
       
@@ -114,26 +121,49 @@ const ClassesTableWithPreview: React.FC<ClassesTableWithPreviewProps> = ({
       
       <TableCell>
         <div className="flex items-center space-x-2" onClick={(e) => e.stopPropagation()}>
+          {/* Preview Button */}
           <Button 
             variant="outline" 
             size="sm"
             onClick={() => openPreview(item)}
             className="hover:bg-primary-50"
+            title="Preview class details"
           >
             <Eye className="w-4 h-4" />
           </Button>
           
+          {/* View Details Button */}
           <Link href={`/list/classes/${item.id}`}>
-            <Button variant="outline" size="sm">
-              <Eye className="w-4 h-4" />
+            <Button 
+              variant="outline" 
+              size="sm"
+              title="View detailed class page"
+            >
+              <ExternalLink className="w-4 h-4" />
             </Button>
           </Link>
           
+          {/* Admin Actions */}
           {isAdmin && (
-            <>
-              <FormContainer table="class" type="update" data={item} />
-              <FormContainer table="class" type="delete" id={item.id} />
-            </>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <div>
+                    <FormContainer table="class" type="update" data={item} />
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <div className="text-red-600">
+                    <FormContainer table="class" type="delete" id={item.id} />
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </TableCell>
@@ -159,9 +189,11 @@ const ClassesTableWithPreview: React.FC<ClassesTableWithPreviewProps> = ({
 
       {classes.length === 0 && (
         <div className="text-center py-12">
-          <div className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <div className="w-12 h-12 text-gray-400 mx-auto mb-4">
+            <School className="w-12 h-12" />
+          </div>
           <p className="text-gray-500 text-lg font-medium">No classes found</p>
-          <p className="text-gray-400 text-sm mt-2">Try adjusting your search criteria</p>
+          <p className="text-gray-400 text-sm mt-2">Try adjusting your search criteria or add a new class</p>
         </div>
       )}
 

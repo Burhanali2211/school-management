@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server';
 import { jwtVerify, SignJWT } from 'jose';
-import { UserType } from '@prisma/client';
+
+// Define UserType for Edge Runtime compatibility
+type UserType = 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
 
 // Edge Runtime compatible authentication utilities
 // Uses jose instead of jsonwebtoken for Edge Runtime compatibility

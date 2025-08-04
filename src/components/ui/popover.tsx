@@ -49,12 +49,28 @@ const Popover = ({ children, className, open, onOpenChange }: PopoverProps) => {
   );
 };
 
-const PopoverTrigger = ({ children, className, isOpen, setIsOpen, ...props }: any) => {
+const PopoverTrigger = ({ children, className, isOpen, setIsOpen, asChild = false, ...props }: any) => {
+  if (asChild && React.isValidElement(children)) {
+    const { asChild: _, ...restProps } = props;
+    return React.cloneElement(children, {
+      className,
+      onClick: (e: any) => {
+        e.preventDefault();
+        setIsOpen && setIsOpen(!isOpen);
+        if (children.props && (children.props as any).onClick) {
+          (children.props as any).onClick(e);
+        }
+      },
+      ...restProps,
+    });
+  }
+  const { asChild: _, ...restProps } = props;
   return (
     <button
+      type="button"
       className={className}
       onClick={() => setIsOpen(!isOpen)}
-      {...props}
+      {...restProps}
     >
       {children}
     </button>

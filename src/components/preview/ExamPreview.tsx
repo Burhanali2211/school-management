@@ -25,8 +25,9 @@ interface ExamData {
     class: {
       name: string;
       grade?: {
-        level: number;
-      };
+      level: number;
+      name: string;
+    };
     };
     teacher: {
       name: string;

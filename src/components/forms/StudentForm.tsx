@@ -172,7 +172,7 @@ const StudentForm = ({
         <InputField
           label="Birthday"
           name="birthday"
-          defaultValue={data?.birthday.toISOString().split("T")[0]}
+          defaultValue={data?.birthday ? new Date(data.birthday).toISOString().split("T")[0] : ""}
           register={register}
           error={errors.birthday}
           type="date"
@@ -217,9 +217,9 @@ const StudentForm = ({
             {...register("gradeId")}
             defaultValue={data?.gradeId}
           >
-            {grades.map((grade: { id: number; level: number }) => (
+            {grades.map((grade: { id: number; level: number; name?: string }) => (
               <option value={grade.id} key={grade.id}>
-                {grade.level}
+                {grade.name || `Grade ${grade.level}`}
               </option>
             ))}
           </select>

@@ -44,8 +44,8 @@ const StudentsPageClient = ({
       value: "grade",
       type: "multiselect",
       options: availableGrades.map(grade => ({
-        label: `Grade ${grade.level}`,
-        value: grade.level.toString()
+        label: grade.name || `Grade ${grade.level}`,
+        value: grade.id.toString()
       }))
     },
     {
@@ -224,9 +224,8 @@ const StudentsPageClient = ({
           {isAdmin && (
             <Button 
               onClick={handleAddStudent}
-              className="bg-green-600 hover:bg-green-700"
+              leftIcon={<Plus className="w-4 h-4" />}
             >
-              <Plus className="w-4 h-4 mr-2" />
               Add Student
             </Button>
           )}

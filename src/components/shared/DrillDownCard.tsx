@@ -1,21 +1,17 @@
 "use client";
 
 import React from 'react';
-import Card from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ChevronRight, Users, BookOpen, GraduationCap, School } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { School, BookOpen, Users, GraduationCap } from 'lucide-react';
 
 export interface DrillDownCardProps {
-  id: string | number;
+  id: string;
   title: string;
   subtitle?: string;
   description?: string;
   count?: number;
   countLabel?: string;
   type: 'school' | 'class' | 'section' | 'student';
-  onClick: (id: string | number) => void;
+  onClick?: () => void;
   className?: string;
   isActive?: boolean;
   metadata?: Record<string, any>;
@@ -24,31 +20,31 @@ export interface DrillDownCardProps {
 const typeConfig = {
   school: {
     icon: School,
-    color: 'bg-blue-500',
-    lightColor: 'bg-blue-50',
-    textColor: 'text-blue-600',
-    borderColor: 'border-blue-200',
+    color: 'bg-primary-600',
+    lightColor: 'bg-primary-50',
+    textColor: 'text-primary-600',
+    borderColor: 'border-primary-200',
   },
   class: {
     icon: BookOpen,
-    color: 'bg-purple-500',
-    lightColor: 'bg-purple-50',
-    textColor: 'text-purple-600',
-    borderColor: 'border-purple-200',
+    color: 'bg-secondary-600',
+    lightColor: 'bg-secondary-50',
+    textColor: 'text-secondary-600',
+    borderColor: 'border-secondary-200',
   },
   section: {
     icon: Users,
-    color: 'bg-green-500',
-    lightColor: 'bg-green-50',
-    textColor: 'text-green-600',
-    borderColor: 'border-green-200',
+    color: 'bg-accent-600',
+    lightColor: 'bg-accent-50',
+    textColor: 'text-accent-600',
+    borderColor: 'border-accent-200',
   },
   student: {
     icon: GraduationCap,
-    color: 'bg-orange-500',
-    lightColor: 'bg-orange-50',
-    textColor: 'text-orange-600',
-    borderColor: 'border-orange-200',
+    color: 'bg-primary-700',
+    lightColor: 'bg-primary-100',
+    textColor: 'text-primary-700',
+    borderColor: 'border-primary-300',
   },
 };
 
@@ -68,86 +64,71 @@ const DrillDownCard: React.FC<DrillDownCardProps> = ({
   const config = typeConfig[type];
   const Icon = config.icon;
 
-  const handleClick = () => {
-    onClick(id);
-  };
-
   return (
     <div
-      className={cn(
-        'group relative overflow-hidden transition-all duration-200 cursor-pointer hover:shadow-lg hover:scale-[1.02]',
-        isActive && `ring-2 ring-offset-2 ${config.borderColor.replace('border-', 'ring-')}`,
-        className
-      )}
-      onClick={handleClick}
+      className={`relative p-6 rounded-2xl border transition-all duration-300 cursor-pointer group hover:shadow-elevated ${
+        isActive
+          ? `${config.borderColor} ${config.lightColor} shadow-elevated`
+          : 'border-neutral-200 bg-white hover:border-neutral-300'
+      } ${className || ''}`}
+      onClick={onClick}
     >
-      <Card>
-      <div className="p-6">
+      {/* Background pattern for active state */}
+      {isActive && (
+        <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent rounded-2xl" />
+      )}
+
+      <div className="relative z-10">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className={cn('p-2 rounded-lg', config.lightColor)}>
-              <Icon className={cn('w-5 h-5', config.textColor)} />
+            <div
+              className={`w-12 h-12 rounded-xl flex items-center justify-center ${config.color} text-white shadow-soft`}
+            >
+              <Icon className="w-6 h-6" />
             </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 truncate">
-                {title}
-              </h3>
+            <div>
+              <h3 className="text-lg font-semibold text-neutral-900">{title}</h3>
               {subtitle && (
-                <p className="text-sm text-gray-500 truncate">
-                  {subtitle}
-                </p>
+                <p className="text-sm text-neutral-600">{subtitle}</p>
               )}
             </div>
           </div>
-          
+
+          {/* Count badge */}
           {count !== undefined && (
-            <Badge variant="secondary" className="ml-2">
-              {count} {countLabel || 'items'}
-            </Badge>
+            <div className={`px-3 py-1 rounded-full ${config.lightColor} ${config.textColor} text-sm font-medium border ${config.borderColor}`}>
+              {count} {countLabel}
+            </div>
           )}
         </div>
 
         {/* Description */}
         {description && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          <p className="text-neutral-600 text-sm mb-4 leading-relaxed">
             {description}
           </p>
         )}
 
         {/* Metadata */}
         {metadata && Object.keys(metadata).length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="space-y-2">
             {Object.entries(metadata).map(([key, value]) => (
-              <div key={key} className="text-xs text-gray-500">
-                <span className="font-medium">{key}:</span> {value}
+              <div key={key} className="flex justify-between text-sm">
+                <span className="text-neutral-500 capitalize">
+                  {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
+                </span>
+                <span className="text-neutral-700 font-medium">{String(value)}</span>
               </div>
             ))}
           </div>
         )}
 
-        {/* Action Button */}
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn(
-              'group-hover:bg-gray-100 transition-colors',
-              config.textColor
-            )}
-          >
-            View Details
-            <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-          </Button>
+        {/* Hover indicator */}
+        <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className={`w-2 h-2 rounded-full ${config.color}`} />
         </div>
       </div>
-
-      {/* Hover Effect */}
-      <div className={cn(
-        'absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity',
-        config.color
-      )} />
-      </Card>
     </div>
   );
 };

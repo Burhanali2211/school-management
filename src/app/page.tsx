@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser, validateSession } from "@/lib/auth";
-import { UserType } from "@prisma/client";
+import { getCurrentUser, validateSession } from "@/lib/auth-service";
 
 const HomePage = async () => {
   try {
@@ -10,16 +9,16 @@ const HomePage = async () => {
     if (session) {
       // Redirect based on user type
       switch (session.userType) {
-        case UserType.ADMIN:
+        case "ADMIN":
           redirect("/admin");
           break;
-        case UserType.TEACHER:
+        case "TEACHER":
           redirect("/teacher");
           break;
-        case UserType.STUDENT:
+        case "STUDENT":
           redirect("/student");
           break;
-        case UserType.PARENT:
+        case "PARENT":
           redirect("/parent");
           break;
         default:

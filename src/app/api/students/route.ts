@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireAuth, logAudit } from "@/lib/auth";
+import { requireAuth, logAudit, hasPermission } from "@/lib/auth-service";
+import { handleApiError, validateUserSession, AppError } from "@/lib/error-handler";
 import { z } from "zod";
 
 const StudentSchema = z.object({
@@ -24,9 +25,19 @@ const StudentSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth();
+    
+    if (!validateUserSession(user)) {
+      throw new AppError("Invalid session", 401);
+    }
+
+    // Check permissions
+    if (!hasPermission(user.userType, "students", "read")) {
+      throw new AppError("Insufficient permissions", 403);
+    }
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 100); // Limit max results
     const search = searchParams.get("search") || "";
     const classId = searchParams.get("classId");
     const gradeId = searchParams.get("gradeId");
@@ -52,14 +63,14 @@ export async function GET(request: NextRequest) {
     // Role-based filtering
     if (user.userType === "TEACHER") {
       const teacherClasses = await prisma.class.findMany({
-        where: { supervisorId: user.id },
+        where: { supervisorId: user.userId },
         select: { id: true },
       });
       where.classId = { in: teacherClasses.map(c => c.id) };
     } else if (user.userType === "PARENT") {
-      where.parentId = user.id;
+      where.parentId = user.userId;
     } else if (user.userType === "STUDENT") {
-      where.id = user.id;
+      where.id = user.userId;
     }
 
     const [students, total] = await Promise.all([
@@ -72,22 +83,17 @@ export async function GET(request: NextRequest) {
           class: { select: { name: true } },
           grade: { select: { level: true } },
           section: { select: { name: true } },
-          school: { select: { name: true } },
-          attendances: {
-            take: 5,
-            orderBy: { date: "desc" },
-            select: { date: true, present: true },
-          },
-          results: {
-            take: 5,
-            orderBy: { id: "desc" },
-            select: { score: true, exam: { select: { title: true } }, assignment: { select: { title: true } } },
-          },
         },
         orderBy: { createdAt: "desc" },
       }),
       prisma.student.count({ where }),
     ]);
+
+    // Log the action
+    await logAudit(user.userId, user.userType, "READ", "STUDENT", undefined, { 
+      count: students.length, 
+      filters: { search, classId, gradeId, schoolId } 
+    });
 
     return NextResponse.json({
       students,
@@ -99,8 +105,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching students:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return handleApiError(error);
   }
 }
 
@@ -108,12 +113,22 @@ export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth();
     
-    // Only admin and teachers can create students
-    if (user.userType !== "ADMIN" && user.userType !== "TEACHER") {
-      return new NextResponse("Forbidden", { status: 403 });
+    if (!validateUserSession(user)) {
+      throw new AppError("Invalid session", 401);
+    }
+
+    // Check permissions - only admin and teachers can create students
+    if (!hasPermission(user.userType, "students", "create")) {
+      throw new AppError("Insufficient permissions to create students", 403);
     }
 
     const body = await request.json();
+    
+    // Validate input data
+    if (!body || typeof body !== 'object') {
+      throw new AppError("Invalid request body", 400);
+    }
+
     const validatedData = StudentSchema.parse(body);
 
     // Check if username is unique
@@ -122,7 +137,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingStudent) {
-      return new NextResponse("Username already exists", { status: 400 });
+      throw new AppError("Username already exists", 409);
     }
 
     // Check if email is unique (if provided)
@@ -131,8 +146,31 @@ export async function POST(request: NextRequest) {
         where: { email: validatedData.email },
       });
       if (existingEmail) {
-        return new NextResponse("Email already exists", { status: 400 });
+        throw new AppError("Email already exists", 409);
       }
+    }
+
+    // Verify parent exists
+    const parentExists = await prisma.parent.findUnique({
+      where: { id: validatedData.parentId },
+    });
+
+    if (!parentExists) {
+      throw new AppError("Parent not found", 400);
+    }
+
+    // Verify class and grade exist
+    const [classExists, gradeExists] = await Promise.all([
+      prisma.class.findUnique({ where: { id: validatedData.classId } }),
+      prisma.grade.findUnique({ where: { id: validatedData.gradeId } }),
+    ]);
+
+    if (!classExists) {
+      throw new AppError("Class not found", 400);
+    }
+
+    if (!gradeExists) {
+      throw new AppError("Grade not found", 400);
     }
 
     const student = await prisma.student.create({
@@ -141,23 +179,27 @@ export async function POST(request: NextRequest) {
         id: `STU-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       },
       include: {
-        parent: { select: { name: true, surname: true } },
+        parent: { select: { name: true, surname: true, phone: true } },
         class: { select: { name: true } },
-        grade: { select: { level: true } },
+        grade: { select: { level: true, name: true } },
         section: { select: { name: true } },
         school: { select: { name: true } },
       },
     });
 
     // Log the action
-    await logAudit(user.id, user.userType, "CREATE", "STUDENT", student.id, validatedData);
+    await logAudit(user.userId, user.userType, "CREATE", "STUDENT", student.id, {
+      studentData: {
+        username: validatedData.username,
+        name: validatedData.name,
+        surname: validatedData.surname,
+        classId: validatedData.classId,
+        gradeId: validatedData.gradeId,
+      }
+    });
 
     return NextResponse.json(student, { status: 201 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
-    }
-    console.error("Error creating student:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return handleApiError(error);
   }
 }

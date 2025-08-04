@@ -117,7 +117,7 @@ const ClassPreview: React.FC<ClassPreviewProps> = ({
         {/* Header */}
         <PreviewHeader
           title={classData.name}
-          subtitle={classData.grade ? `Grade ${classData.grade.level}` : 'No grade assigned'}
+          subtitle={classData.grade ? classData.grade.name : 'No grade assigned'}
           badge={{
             text: `${studentCount} Students`,
             variant: 'secondary'
@@ -134,7 +134,7 @@ const ClassPreview: React.FC<ClassPreviewProps> = ({
             />
             <PreviewField
               label="Grade Level"
-              value={classData.grade?.level}
+              value={classData.grade?.name}
               icon={<TrendingUp className="w-4 h-4" />}
             />
             <PreviewField

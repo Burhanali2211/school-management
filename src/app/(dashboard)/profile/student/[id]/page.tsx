@@ -49,6 +49,7 @@ interface Student {
     name: string;
     grade?: {
       level: number;
+      name: string;
     };
   };
   parent: {
@@ -213,7 +214,7 @@ const StudentProfilePage = () => {
                   />
                 </div>
                 {isEditing && (
-                  <button className="absolute bottom-2 right-2 bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition-colors">
+                  <button className="absolute bottom-2 right-2 bg-black text-white p-3 rounded-full hover:bg-gray-800 transition-colors">
                     <Camera className="w-4 h-4" />
                   </button>
                 )}
@@ -227,7 +228,7 @@ const StudentProfilePage = () => {
                   </Badge>
                   {student.class.grade && (
                     <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                      Grade {student.class.grade.level}
+                      {student.class.grade.name}
                     </Badge>
                   )}
                 </div>
@@ -239,16 +240,16 @@ const StudentProfilePage = () => {
                   <Button
                     onClick={handleSave}
                     className="bg-green-600 hover:bg-green-700 text-white"
+                    leftIcon={<Save className="w-4 h-4" />}
                   >
-                    <Save className="w-4 h-4 mr-2" />
                     Save
                   </Button>
                   <Button
                     onClick={handleCancel}
                     variant="outline"
                     className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                    leftIcon={<X className="w-4 h-4" />}
                   >
-                    <X className="w-4 h-4 mr-2" />
                     Cancel
                   </Button>
                 </div>
@@ -257,8 +258,8 @@ const StudentProfilePage = () => {
                   onClick={() => setIsEditing(true)}
                   variant="outline"
                   className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  leftIcon={<Edit3 className="w-4 h-4" />}
                 >
-                  <Edit3 className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
               )}
@@ -444,8 +445,7 @@ const StudentProfilePage = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-blue-600 h-2 rounded-full" 
-                          style={{width: `${calculateAverageGrade()}%`}}
+                          className="bg-blue-600 h-2 rounded-full"
                         ></div>
                       </div>
                     </div>
@@ -456,8 +456,7 @@ const StudentProfilePage = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-green-600 h-2 rounded-full" 
-                          style={{width: `${calculateAttendanceRate()}%`}}
+                          className="bg-green-600 h-2 rounded-full"
                         ></div>
                       </div>
                     </div>

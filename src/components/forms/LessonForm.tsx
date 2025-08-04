@@ -170,7 +170,7 @@ const LessonForm = ({
       {state.error && (
         <span className="text-red-500">Something went wrong!</span>
       )}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+              <button className="bg-black text-white p-3 rounded-md hover:bg-gray-800 transition-colors">
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

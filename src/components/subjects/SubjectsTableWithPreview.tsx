@@ -6,7 +6,13 @@ import Link from 'next/link';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, BookOpen, Users, GraduationCap } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Eye, BookOpen, Users, GraduationCap, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import FormContainer from "@/components/FormContainer";
 import { SubjectPreview, usePreviewModal } from '@/components/preview';
 
@@ -97,30 +103,61 @@ const SubjectsTableWithPreview: React.FC<SubjectsTableWithPreviewProps> = ({
         </div>
       </TableCell>
       
-      <TableCell>
-        <div className="flex items-center space-x-2" onClick={(e) => e.stopPropagation()}>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => openPreview(item)}
-            className="hover:bg-primary-50"
-          >
-            <Eye className="w-4 h-4" />
-          </Button>
-          
-          <Link href={`/list/subjects/${item.id}`}>
-            <Button variant="outline" size="sm">
-              <Eye className="w-4 h-4" />
+      <TableCell className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="h-8 w-8 p-0 hover:bg-muted"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
             </Button>
-          </Link>
-          
-          {isAdmin && (
-            <>
-              <FormContainer table="subject" type="update" data={item} />
-              <FormContainer table="subject" type="delete" id={item.id} />
-            </>
-          )}
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => openPreview(item)}>
+              <Eye className="mr-2 h-4 w-4" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/list/subjects/${item.id}`}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Details
+              </Link>
+            </DropdownMenuItem>
+            {isAdmin && (
+              <>
+                <DropdownMenuItem onClick={() => {
+                  // Trigger the update form
+                  const updateButton = document.querySelector(`[data-table="subject"][data-type="update"][data-id="${item.id}"]`) as HTMLButtonElement;
+                  if (updateButton) updateButton.click();
+                }}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => {
+                    // Trigger the delete form
+                    const deleteButton = document.querySelector(`[data-table="subject"][data-type="delete"][data-id="${item.id}"]`) as HTMLButtonElement;
+                    if (deleteButton) deleteButton.click();
+                  }}
+                  className="text-red-600"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
+        {/* Hidden FormContainer buttons for admin actions */}
+        {isAdmin && (
+          <div className="hidden">
+            <FormContainer table="subject" type="update" data={item} />
+            <FormContainer table="subject" type="delete" id={item.id} />
+          </div>
+        )}
       </TableCell>
     </TableRow>
   );

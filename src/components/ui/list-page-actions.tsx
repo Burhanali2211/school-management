@@ -26,8 +26,8 @@ export const ListPageActions = ({
   showSort = true,
   showCreate = false,
   createButtonText = "Create",
-  createButtonIcon = <Plus className="w-4 h-4 mr-2" />,
-  createButtonClassName = "bg-blue-600 hover:bg-blue-700",
+  createButtonIcon = <Plus className="w-4 h-4" />,
+  createButtonClassName = "",
   filterText = "Filter",
   sortText = "Sort",
   filterAction = "filter",
@@ -74,27 +74,28 @@ export const ListPageActions = ({
   };
 
   return (
-    <div className="flex items-center gap-4 self-end relative">
+    <div className="flex items-center gap-2 flex-shrink-0">
       {showFilter && (
-        <div className="relative">
-          <Button variant="outline" size="sm" onClick={handleFilterClick}>
-            <Filter className="w-4 h-4 mr-2" />
-            {filterText}
-            <ChevronDown className="w-3 h-3 ml-1" />
-          </Button>
-        </div>
+        <Button variant="outline" size="sm" onClick={handleFilterClick}>
+          <Filter className="w-4 h-4" />
+          {filterText}
+          <ChevronDown className="w-3 h-3" />
+        </Button>
       )}
       {showSort && (
-        <div className="relative">
-          <Button variant="outline" size="sm" onClick={handleSortClick}>
-            <SortAsc className="w-4 h-4 mr-2" />
-            {sortText}
-          </Button>
-        </div>
+        <Button variant="outline" size="sm" onClick={handleSortClick}>
+          <SortAsc className="w-4 h-4" />
+          {sortText}
+        </Button>
       )}
       {showCreate && (
-        <Button className={createButtonClassName} onClick={handleCreateClick}>
-          {createButtonIcon}
+        <Button 
+          variant="default" 
+          size="sm" 
+          className={createButtonClassName} 
+          onClick={handleCreateClick}
+          leftIcon={createButtonIcon}
+        >
           {createButtonText}
         </Button>
       )}

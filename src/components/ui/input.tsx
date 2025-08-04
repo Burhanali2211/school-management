@@ -49,7 +49,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={id}
             className={cn(
               "block transition-all duration-200 appearance-none rounded-lg border px-4 py-3 text-sm",
-              "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500",
+              "focus:outline-none focus:ring-2 focus:ring-black focus:border-black",
               "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-secondary-50",
               "placeholder:text-secondary-400",
               icon ? 'pl-10' : 'pl-4',

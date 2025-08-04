@@ -26,8 +26,9 @@ interface SubjectData {
     class: {
       name: string;
       grade?: {
-        level: number;
-      };
+      level: number;
+      name: string;
+    };
     };
     day: string;
     startTime: Date;
@@ -209,7 +210,7 @@ const SubjectPreview: React.FC<SubjectPreviewProps> = ({
                   <div>
                     <div className="font-medium text-neutral-900">{lesson.class.name}</div>
                     {lesson.class.grade && (
-                      <div className="text-sm text-neutral-600">Grade {lesson.class.grade.level}</div>
+                      <div className="text-sm text-neutral-600">{lesson.class.grade.name}</div>
                     )}
                   </div>
                   <div className="text-right">

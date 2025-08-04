@@ -5,9 +5,9 @@ services:
     image: postgres:15
     container_name: postgres_db
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: school_db
     ports:
       - '5432:5432'
     volumes:
@@ -19,7 +19,7 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - DATABASE_URL=postgresql://myuser:mypassword@postgres:5432/mydb
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/school_db
     depends_on:
       - postgres
 

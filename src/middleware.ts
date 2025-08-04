@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { validateSessionEdge, getSessionFromRequest } from './lib/auth-edge';
-import { UserType } from '@prisma/client';
+
+// Define UserType enum for Edge Runtime compatibility
+enum UserType {
+  ADMIN = 'ADMIN',
+  TEACHER = 'TEACHER',
+  STUDENT = 'STUDENT',
+  PARENT = 'PARENT'
+}
 
 // Define public routes that don't require authentication
 const publicRoutes = [
@@ -10,16 +17,18 @@ const publicRoutes = [
   '/forgot-password',
   '/api/auth/login',
   '/api/auth/logout',
-  '/admin-login', // Legacy admin login
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password',
+  '/api/auth/verify-reset-code',
 ];
 
 // Define role-based route access
-const roleRoutes: Record<string, UserType[]> = {
-  '/admin': [UserType.ADMIN],
-  '/teacher': [UserType.TEACHER, UserType.ADMIN],
-  '/student': [UserType.STUDENT, UserType.ADMIN],
-  '/parent': [UserType.PARENT, UserType.ADMIN],
-  '/list': [UserType.ADMIN, UserType.TEACHER], // List pages mainly for admin and teachers
+const roleRoutes: Record<string, string[]> = {
+  '/admin': ['ADMIN'],
+  '/teacher': ['TEACHER', 'ADMIN'],
+  '/student': ['STUDENT', 'ADMIN'],
+  '/parent': ['PARENT', 'ADMIN'],
+  '/list': ['ADMIN', 'TEACHER'], // List pages mainly for admin and teachers
 };
 
 export default async function middleware(request: NextRequest) {
@@ -34,10 +43,17 @@ export default async function middleware(request: NextRequest) {
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/static') ||
-    pathname.includes('.') ||
-    (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/me'))
+    pathname.includes('.')
   ) {
     return NextResponse.next();
+  }
+
+  // Handle API routes separately
+  if (pathname.startsWith('/api/')) {
+    // Allow all API routes except /api/auth/me
+    if (!pathname.startsWith('/api/auth/me')) {
+      return NextResponse.next();
+    }
   }
 
   // Get session token from cookie

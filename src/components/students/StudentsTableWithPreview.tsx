@@ -5,7 +5,13 @@ import Image from 'next/image';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Eye, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import FormContainer from "@/components/FormContainer";
 import { StudentPreview, usePreviewModal } from '@/components/preview';
 
@@ -26,6 +32,7 @@ interface Student {
     name: string;
     grade?: {
       level: number;
+      name: string;
     };
   };
 }
@@ -87,7 +94,7 @@ const StudentsTableWithPreview: React.FC<StudentsTableWithPreviewProps> = ({
       <TableCell className="hidden md:table-cell">
         {item.class.grade && (
           <Badge variant="secondary">
-            Grade {item.class.grade.level}
+            {item.class.grade.name}
           </Badge>
         )}
       </TableCell>
@@ -100,24 +107,55 @@ const StudentsTableWithPreview: React.FC<StudentsTableWithPreviewProps> = ({
         <span className="text-sm text-neutral-600">{item.address}</span>
       </TableCell>
       
-      <TableCell>
-        <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => openPreview(item)}
-            className="hover:bg-primary-50"
-          >
-            <Eye className="w-4 h-4" />
-          </Button>
-          
-          {isAdmin && (
-            <>
-              <FormContainer table="student" type="update" data={item} />
-              <FormContainer table="student" type="delete" id={item.id} />
-            </>
-          )}
-        </div>
+      <TableCell className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="h-8 w-8 p-0 hover:bg-muted"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => openPreview(item)}>
+              <Eye className="mr-2 h-4 w-4" />
+              View
+            </DropdownMenuItem>
+            {isAdmin && (
+              <>
+                <DropdownMenuItem onClick={() => {
+                  // Trigger the update form
+                  const updateButton = document.querySelector(`[data-table="student"][data-type="update"][data-id="${item.id}"]`) as HTMLButtonElement;
+                  if (updateButton) updateButton.click();
+                }}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => {
+                    // Trigger the delete form
+                    const deleteButton = document.querySelector(`[data-table="student"][data-type="delete"][data-id="${item.id}"]`) as HTMLButtonElement;
+                    if (deleteButton) deleteButton.click();
+                  }}
+                  className="text-red-600"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
+        {/* Hidden FormContainer buttons for admin actions */}
+        {isAdmin && (
+          <div className="hidden">
+            <FormContainer table="student" type="update" data={item} />
+            <FormContainer table="student" type="delete" id={item.id} />
+          </div>
+        )}
       </TableCell>
     </TableRow>
   );

@@ -20,10 +20,11 @@ import {
   Clock,
   Megaphone,
   Mail,
-  ChevronRight
+  ChevronRight,
+  UserPlus
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   {
@@ -41,6 +42,13 @@ const menuItems = [
   {
     title: "MANAGEMENT",
     items: [
+      {
+        icon: UserPlus,
+        label: "User Management",
+        href: "/admin/user-management",
+        visible: ["admin"],
+        badge: null,
+      },
       {
         icon: Users,
         label: "Teachers",
@@ -82,35 +90,35 @@ const menuItems = [
     title: "ACADEMICS",
     items: [
       {
-        icon: CalendarIcon,
+        icon: FileText,
         label: "Lessons",
-        href: "/admin/lessons",
+        href: "/list/lessons",
+        visible: ["admin", "teacher"],
+        badge: null,
+      },
+      {
+        icon: ClipboardCheck,
+        label: "Exams",
+        href: "/list/exams",
         visible: ["admin", "teacher"],
         badge: null,
       },
       {
         icon: FileText,
-        label: "Exams",
-        href: "/admin/exams",
-        visible: ["admin", "teacher", "student", "parent"],
-        badge: "3",
-      },
-      {
-        icon: ClipboardCheck,
         label: "Assignments",
-        href: "/admin/assignments",
-        visible: ["admin", "teacher", "student", "parent"],
-        badge: "12",
+        href: "/list/assignments",
+        visible: ["admin", "teacher"],
+        badge: null,
       },
       {
-        icon: Trophy,
+        icon: BarChart3,
         label: "Results",
-        href: "/admin/results",
+        href: "/list/results",
         visible: ["admin", "teacher", "student", "parent"],
         badge: null,
       },
       {
-        icon: Clock,
+        icon: ClipboardCheck,
         label: "Attendance",
         href: "/list/attendance",
         visible: ["admin", "teacher", "student", "parent"],
@@ -122,11 +130,11 @@ const menuItems = [
     title: "COMMUNICATION",
     items: [
       {
-        icon: Mail,
-        label: "Messages",
-        href: "/list/messages",
+        icon: CalendarIcon,
+        label: "Events",
+        href: "/list/events",
         visible: ["admin", "teacher", "student", "parent"],
-        badge: "5",
+        badge: null,
       },
       {
         icon: Megaphone,
@@ -136,10 +144,22 @@ const menuItems = [
         badge: "2",
       },
       {
-        icon: CalendarIcon,
-        label: "Events",
-        href: "/list/events",
+        icon: Mail,
+        label: "Messages",
+        href: "/list/messages",
         visible: ["admin", "teacher", "student", "parent"],
+        badge: null,
+      },
+    ],
+  },
+  {
+    title: "FINANCE",
+    items: [
+      {
+        icon: BarChart3,
+        label: "Finance",
+        href: "/list/finance",
+        visible: ["admin"],
         badge: null,
       },
     ],
@@ -173,8 +193,23 @@ const menuItems = [
 ];
 
 const Menu = () => {
-  const role = "admin"; // Default role for demo - show all admin features
+  const { user, logout, isLoading } = useAuth();
   const pathname = usePathname();
+  
+  // Convert user type to lowercase for menu visibility check
+  const role = user?.userType.toLowerCase() || "guest";
+
+  if (isLoading) {
+    return (
+      <nav className="px-2 py-4">
+        <div className="space-y-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-10 bg-neutral-200 rounded-xl animate-pulse" />
+          ))}
+        </div>
+      </nav>
+    );
+  }
   
   return (
     <nav className="px-2 py-4">
@@ -190,48 +225,58 @@ const Menu = () => {
               const isActive = pathname === item.href || 
                 (item.href !== '/' && pathname.startsWith(item.href));
               
-              return (
+              return item.label === "Logout" ? (
+                <button
+                  key={item.label}
+                  onClick={logout}
+                  className="group flex items-center w-full px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 relative overflow-hidden focus-visible-ring transform hover:scale-[1.02] text-error-600 hover:bg-error-50 hover:text-error-700 hover:shadow-soft"
+                >
+                  <item.icon
+                    className="mr-3 h-5 w-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                    aria-hidden="true"
+                  />
+                  <span className="flex-1 transition-all duration-300 group-hover:translate-x-1">{item.label}</span>
+                  <ChevronRight className="ml-2 h-4 w-4 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1" />
+                </button>
+              ) : (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 relative overflow-hidden focus-visible-ring transform hover:scale-[1.02] ${isActive
-                      ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg hover:shadow-xl'
-                      : 'text-neutral-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 hover:text-primary-700 hover:shadow-md'
-                    }`}
-                  style={{ minHeight: '44px' }} // Ensure 44px minimum touch target
+                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 relative overflow-hidden focus-visible-ring transform hover:scale-[1.02] ${
+                    isActive
+                      ? 'bg-gradient-to-r from-primary-800 to-primary-950 text-white shadow-elevated hover:shadow-elevated'
+                      : 'text-neutral-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-800 hover:shadow-soft'
+                  }`}
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {/* Active indicator */}
                   {isActive && (
-                    <motion.div 
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full"
-                      initial={{ scaleY: 0 }}
-                      animate={{ scaleY: 1 }}
-                      transition={{ duration: 0.3, ease: "easeOut" }}
-                    />
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
                   )}
 
                   {/* Hover background effect */}
                   {!isActive && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-primary-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-secondary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                   )}
 
-                  <item.icon className={`w-5 h-5 mr-3 transition-all duration-300 relative z-10 ${
-                    isActive ? 'text-white' : 'text-neutral-500 group-hover:text-primary-600 group-hover:scale-110'
-                  }`} />
-                  <span className="flex-1 font-medium relative z-10 transition-all duration-300">{item.label}</span>
+                  <item.icon
+                    className="mr-3 h-5 w-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 relative z-10"
+                    aria-hidden="true"
+                  />
+                  <span className="flex-1 transition-all duration-300 group-hover:translate-x-1 relative z-10">{item.label}</span>
                   {item.badge && (
-                    <Badge
-                      variant={isActive ? "secondary" : "default"}
-                      className={`text-xs relative z-10 transition-all duration-300 ${
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-auto text-xs relative z-10 transition-all duration-300 ${
                         isActive
                           ? "bg-white/20 text-white border-white/30"
-                          : "bg-primary-100 text-primary-700 border-primary-200 group-hover:bg-primary-200 group-hover:scale-105"
+                          : "bg-primary-100 text-primary-800 border-primary-200 group-hover:bg-primary-200 group-hover:scale-105"
                       }`}
                     >
                       {item.badge}
                     </Badge>
                   )}
+                  <ChevronRight className="ml-2 h-4 w-4 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 relative z-10" />
                 </Link>
               );
             })}

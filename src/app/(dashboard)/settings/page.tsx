@@ -263,7 +263,7 @@ const SettingsPage = () => {
               placeholder="Confirm new password"
             />
           </div>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+          <button className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-md transition-colors">
             Update Password
           </button>
         </div>
@@ -276,7 +276,7 @@ const SettingsPage = () => {
             <label className="text-sm font-medium text-gray-700">Enable 2FA</label>
             <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
           </div>
-          <button className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+          <button className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-md transition-colors">
             Setup 2FA
           </button>
         </div>
@@ -315,12 +315,12 @@ const SettingsPage = () => {
       <div>
         <h3 className="text-lg font-semibold mb-4">Data & Privacy</h3>
         <div className="space-y-4">
-          <button className="w-full text-left p-4 border border-gray-300 rounded-lg hover:bg-gray-50">
-            <div className="text-sm font-medium text-gray-700">Download My Data</div>
+          <button className="w-full text-left p-6 border-2 border-black rounded-md hover:bg-gray-50 transition-colors">
+            <div className="text-sm font-medium text-black">Download My Data</div>
             <div className="text-sm text-gray-500">Get a copy of your data</div>
           </button>
-          <button className="w-full text-left p-4 border border-gray-300 rounded-lg hover:bg-gray-50">
-            <div className="text-sm font-medium text-gray-700">Delete My Account</div>
+          <button className="w-full text-left p-6 border-2 border-black rounded-md hover:bg-gray-50 transition-colors">
+            <div className="text-sm font-medium text-black">Delete My Account</div>
             <div className="text-sm text-gray-500">Permanently delete your account and data</div>
           </button>
         </div>

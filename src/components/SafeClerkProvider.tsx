@@ -1,14 +1,15 @@
 "use client";
 
 import { ReactNode } from "react";
+import { AuthProvider } from "@/contexts/AuthContext";
 
-interface AuthProviderProps {
+interface SafeClerkProviderProps {
   children: ReactNode;
 }
 
-// Simple provider that just renders children since we're using custom authentication
-const AuthProvider = ({ children }: AuthProviderProps) => {
-  return <>{children}</>;
+// Wrapper that provides the AuthContext
+const SafeClerkProvider = ({ children }: SafeClerkProviderProps) => {
+  return <AuthProvider>{children}</AuthProvider>;
 };
 
-export default AuthProvider;
+export default SafeClerkProvider;

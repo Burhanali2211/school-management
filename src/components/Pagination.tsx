@@ -77,8 +77,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
         <button
           disabled={!hasPrev}
           onClick={() => changePage(page - 1)}
-          className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-xl hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm hover:shadow-md"
-          style={{ minHeight: '44px', minWidth: '44px' }} // Ensure 44px minimum touch target
+          className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-xl hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm hover:shadow-md" // Ensure 44px minimum touch target
           aria-label="Go to previous page"
         >
           <ChevronLeft className="w-4 h-4 sm:mr-1" />
@@ -100,8 +99,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
                   page === pageNum
                     ? 'bg-primary-500 text-white shadow-md hover:shadow-lg'
                     : 'text-neutral-600 hover:bg-neutral-50 border border-neutral-300 shadow-sm hover:shadow-md'
-                }`}
-                style={{ minHeight: '44px', minWidth: '44px' }} // Ensure 44px minimum touch target
+                }`} // Ensure 44px minimum touch target
                 aria-label={`Go to page ${pageNum}`}
                 aria-current={page === pageNum ? 'page' : undefined}
               >
@@ -115,8 +113,7 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
         <button
           disabled={!hasNext}
           onClick={() => changePage(page + 1)}
-          className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-xl hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm hover:shadow-md"
-          style={{ minHeight: '44px', minWidth: '44px' }} // Ensure 44px minimum touch target
+          className="flex items-center px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-xl hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors shadow-sm hover:shadow-md" // Ensure 44px minimum touch target
           aria-label="Go to next page"
         >
           <span className="hidden sm:inline">Next</span>

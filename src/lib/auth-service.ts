@@ -33,55 +33,68 @@ export async function createSession(
   ipAddress?: string,
   userAgent?: string
 ): Promise<string> {
-  const expiresAt = new Date(Date.now() + SESSION_DURATION);
-  
-  // Create JWT token with timestamp for uniqueness
-  const token = jwt.sign(
-    {
-      userId: user.id,
-      userType: user.userType,
-      username: user.username,
-      timestamp: Date.now(),
-    },
-    JWT_SECRET,
-    { expiresIn: "24h" }
-  );
+  try {
+    const expiresAt = new Date(Date.now() + SESSION_DURATION);
+    
+    // Create JWT token with timestamp for uniqueness
+    // Using the same format as edge validation
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        userType: user.userType,
+        username: user.username,
+        timestamp: Date.now(),
+      },
+      JWT_SECRET,
+      { 
+        algorithm: 'HS256',
+        expiresIn: "24h" 
+      }
+    );
 
-  // Check if a session with this token already exists, delete it first
-  const existingSession = await prisma.session.findUnique({
-    where: { token },
-  });
-  
-  if (existingSession) {
-    await prisma.session.delete({
+    // Check if a session with this token already exists, delete it first
+    const existingSession = await prisma.session.findUnique({
       where: { token },
     });
+    
+    if (existingSession) {
+      await prisma.session.delete({
+        where: { token },
+      });
+    }
+
+    // Store session in database
+    const session = await prisma.session.create({
+      data: {
+        userId: user.id,
+        userType: user.userType,
+        token,
+        expiresAt,
+        ipAddress,
+        userAgent,
+      },
+    });
+
+    // Log the login
+    try {
+      await logAudit(user.id, user.userType, "LOGIN", "Session", session.id, null, ipAddress, userAgent);
+    } catch (error) {
+      console.error("Failed to log audit:", error);
+    }
+
+    // Set cookie
+    cookies().set("session-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: expiresAt,
+    });
+
+    return token;
+  } catch (error) {
+    console.error("Failed to create session:", error);
+    throw error;
   }
-
-  // Store session in database
-  const session = await prisma.session.create({
-    data: {
-      userId: user.id,
-      userType: user.userType,
-      token,
-      expiresAt,
-      ipAddress,
-      userAgent,
-    },
-  });
-
-  // Log the login
-  await logAudit(user.id, user.userType, "LOGIN", "Session", session.id, null, ipAddress, userAgent);
-
-  // Set cookie
-  cookies().set("session-token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    expires: expiresAt,
-  });
-
-  return token;
 }
 
 export async function validateSession(token?: string): Promise<SessionData | null> {
@@ -211,12 +224,12 @@ export async function authenticateUser(
   username: string,
   password: string,
   ipAddress?: string,
-  userAgent?: string
-): Promise<{ user: AuthUser; token: string } | null> {
+  userAgent?: string,
+  expectedUserType?: string
+): Promise<{ user: AuthUser; token: string; sessionId: string; expiresAt: Date } | null> {
   // Try to find user in different tables based on username
   let user: AuthUser | null = null;
   let userType: UserType | null = null;
-  let hashedPassword: string | null = null;
 
   // Check Admin
   const admin = await prisma.admin.findUnique({
@@ -224,16 +237,19 @@ export async function authenticateUser(
   });
   
   if (admin) {
-    user = {
-      id: admin.id,
-      username: admin.username,
-      userType: UserType.ADMIN,
-      name: "Admin",
-      surname: "User",
-    };
-    userType = UserType.ADMIN;
-    // For demo purposes, admin password is "admin123"
-    hashedPassword = await bcrypt.hash("admin123", 10);
+    // Verify password for admin
+    const isValidPassword = await bcrypt.compare(password, admin.password);
+    if (isValidPassword) {
+      user = {
+        id: admin.id,
+        username: admin.username,
+        userType: UserType.ADMIN,
+        name: admin.name || "Admin",
+        surname: admin.surname || "User",
+        email: admin.email,
+      };
+      userType = UserType.ADMIN;
+    }
   }
 
   // Check Teacher
@@ -243,17 +259,19 @@ export async function authenticateUser(
     });
     
     if (teacher) {
-      user = {
-        id: teacher.id,
-        username: teacher.username,
-        userType: UserType.TEACHER,
-        email: teacher.email,
-        name: teacher.name,
-        surname: teacher.surname,
-      };
-      userType = UserType.TEACHER;
-      // For demo purposes, teacher password is their username + "123"
-      hashedPassword = await bcrypt.hash(username + "123", 10);
+      // Verify password for teacher
+      const isValidPassword = await bcrypt.compare(password, teacher.password);
+      if (isValidPassword) {
+        user = {
+          id: teacher.id,
+          username: teacher.username,
+          userType: UserType.TEACHER,
+          email: teacher.email,
+          name: teacher.name,
+          surname: teacher.surname,
+        };
+        userType = UserType.TEACHER;
+      }
     }
   }
 
@@ -264,17 +282,19 @@ export async function authenticateUser(
     });
     
     if (student) {
-      user = {
-        id: student.id,
-        username: student.username,
-        userType: UserType.STUDENT,
-        email: student.email,
-        name: student.name,
-        surname: student.surname,
-      };
-      userType = UserType.STUDENT;
-      // For demo purposes, student password is their username + "123"
-      hashedPassword = await bcrypt.hash(username + "123", 10);
+      // Verify password for student
+      const isValidPassword = await bcrypt.compare(password, student.password);
+      if (isValidPassword) {
+        user = {
+          id: student.id,
+          username: student.username,
+          userType: UserType.STUDENT,
+          email: student.email,
+          name: student.name,
+          surname: student.surname,
+        };
+        userType = UserType.STUDENT;
+      }
     }
   }
 
@@ -285,43 +305,59 @@ export async function authenticateUser(
     });
     
     if (parent) {
-      user = {
-        id: parent.id,
-        username: parent.username,
-        userType: UserType.PARENT,
-        email: parent.email,
-        name: parent.name,
-        surname: parent.surname,
-      };
-      userType = UserType.PARENT;
-      // For demo purposes, parent password is their username + "123"
-      hashedPassword = await bcrypt.hash(username + "123", 10);
+      // Verify password for parent
+      const isValidPassword = await bcrypt.compare(password, parent.password);
+      if (isValidPassword) {
+        user = {
+          id: parent.id,
+          username: parent.username,
+          userType: UserType.PARENT,
+          email: parent.email,
+          name: parent.name,
+          surname: parent.surname,
+        };
+        userType = UserType.PARENT;
+      }
     }
   }
 
-  if (!user || !hashedPassword) {
+  if (!user) {
     return null;
   }
 
-  // Verify password (for demo, we're comparing with predefined patterns)
-  let isValidPassword = false;
-  
-  if (userType === UserType.ADMIN && password === "admin123") {
-    isValidPassword = true;
-  } else if (password === username + "123") {
-    isValidPassword = true;
-  }
-
-  if (!isValidPassword) {
-    // Log failed login attempt
-    await logAudit(user.id, user.userType, "LOGIN_FAILED", "Session", undefined, null, ipAddress, userAgent);
+  // Validate user type if expected type is provided
+  if (expectedUserType && userType !== expectedUserType) {
+    console.log(`User type mismatch: expected ${expectedUserType}, got ${userType}`);
+    // Log failed login attempt due to user type mismatch
+    try {
+      await logAudit(user.id, user.userType, "LOGIN_FAILED", "Session", undefined, { reason: "User type mismatch" }, ipAddress, userAgent);
+    } catch (error) {
+      console.error("Failed to log audit:", error);
+    }
     return null;
   }
+
+  // Password verification is now handled in each user type check above
 
   // Create session
-  const token = await createSession(user, ipAddress, userAgent);
+  try {
+    const token = await createSession(user, ipAddress, userAgent);
+    
+    // Get session details for response
+    const session = await prisma.session.findUnique({
+      where: { token },
+    });
 
-  return { user, token };
+    return { 
+      user, 
+      token, 
+      sessionId: session?.id || '',
+      expiresAt: session?.expiresAt || new Date(Date.now() + SESSION_DURATION)
+    };
+  } catch (error) {
+    console.error("Failed to create session:", error);
+    return null;
+  }
 }
 
 // Get current user
@@ -409,15 +445,18 @@ export function hasPermission(
       "*": ["*"], // Admin has all permissions
     },
     [UserType.TEACHER]: {
-      students: ["read"],
+      students: ["read", "create", "update"],
       classes: ["read", "update"],
-      lessons: ["read", "update", "create"],
+      lessons: ["read", "update", "create", "delete"],
       exams: ["read", "update", "create", "delete"],
       assignments: ["read", "update", "create", "delete"],
       results: ["read", "update", "create"],
       attendance: ["read", "update", "create"],
       announcements: ["read"],
       events: ["read"],
+      teachers: ["read"],
+      subjects: ["read"],
+      parents: ["read"],
     },
     [UserType.STUDENT]: {
       profile: ["read", "update"],
@@ -428,18 +467,26 @@ export function hasPermission(
       attendance: ["read"],
       announcements: ["read"],
       events: ["read"],
+      students: ["read"], // Can view other students in same class
     },
     [UserType.PARENT]: {
       children: ["read"],
+      students: ["read"], // Can view their children
       attendance: ["read"],
       results: ["read"],
       announcements: ["read"],
       events: ["read"],
       fees: ["read"],
+      teachers: ["read"],
+      classes: ["read"],
     },
   };
 
   const userPermissions = permissions[userType];
+  
+  if (!userPermissions) {
+    return false; // No permissions defined for this user type
+  }
   
   if (userPermissions["*"]?.includes("*")) {
     return true; // User has all permissions

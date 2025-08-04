@@ -1,5 +1,4 @@
 import Announcements from "@/components/Announcements";
-import BigCalendarContainer from "@/components/BigCalendarContainer";
 import BigCalendar from "@/components/BigCalender";
 import FormContainer from "@/components/FormContainer";
 import Performance from "@/components/Performance";
@@ -170,7 +169,9 @@ const SingleTeacherPage = async ({
         {/* BOTTOM */}
         <div className="mt-8 bg-gradient-to-br from-white to-neutral-50/30 rounded-2xl p-6 shadow-soft border border-neutral-100/50 h-[800px]">
           <h1 className="text-xl font-semibold text-neutral-900 mb-4">Teacher&apos;s Schedule</h1>
-          <BigCalendarContainer type="teacherId" id={teacher.id} />
+          <div className="flex items-center justify-center h-full text-neutral-500">
+            <p>Calendar component removed</p>
+          </div>
         </div>
       </div>
       {/* RIGHT */}

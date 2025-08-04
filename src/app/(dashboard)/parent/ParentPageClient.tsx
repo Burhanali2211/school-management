@@ -1,7 +1,7 @@
 "use client";
 
 import Announcements from "@/components/Announcements";
-import BigCalendarContainer from "@/components/BigCalendarContainer";
+
 import { Card } from "@/components/ui/card";
 import { Calendar, Heart, Users } from "lucide-react";
 
@@ -49,7 +49,10 @@ const ParentPageClient = ({ students }: ParentPageClientProps) => {
                     <p className="text-secondary-500 text-sm">Class schedule and activities</p>
                   </div>
                 </div>
-                <BigCalendarContainer type="classId" id={student.classId} />
+                <div className="bg-white border border-neutral-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-neutral-900 mb-4">Calendar</h3>
+                  <p className="text-neutral-600">Calendar component removed for performance optimization.</p>
+                </div>
               </Card>
             ))
           ) : (

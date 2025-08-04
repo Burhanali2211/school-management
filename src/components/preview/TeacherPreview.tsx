@@ -66,6 +66,7 @@ interface Teacher {
     name: string;
     grade?: {
       level: number;
+      name: string;
     };
     _count?: {
       students: number;
@@ -554,7 +555,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
                           <p className="font-medium text-secondary-900 truncate">{classItem.name}</p>
                           <div className="flex items-center gap-2 text-xs text-secondary-500">
                         {classItem.grade && (
-                          <span>Grade {classItem.grade.level}</span>
+                          <span>{classItem.grade.name}</span>
                         )}
                         {classItem._count?.students && (
                           <>

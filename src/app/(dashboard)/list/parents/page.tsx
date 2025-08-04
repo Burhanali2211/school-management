@@ -1,8 +1,6 @@
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Parent, Prisma, Student } from "@prisma/client";
-import { getAuthUser } from "@/lib/auth-utils";
-import { UserType } from "@prisma/client";
 import ParentsPageClient from "./ParentsPageClient";
 
 export type ParentList = Parent & {
@@ -14,8 +12,6 @@ const ParentListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  const user = await getAuthUser();
-  const isAdmin = user?.userType === UserType.ADMIN;
 
   const { page, search, studentCount, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
@@ -44,7 +40,7 @@ const ParentListPage = async ({
   }
 
   // Fetch data with enhanced statistics
-  const [data, count, parentStats] = await prisma.$transaction([
+  const [data, count, parentStats, availableStudents] = await prisma.$transaction([
     prisma.parent.findMany({
       where: query,
       include: {
@@ -63,6 +59,17 @@ const ParentListPage = async ({
     prisma.parent.aggregate({
       _count: { id: true },
       where: {}
+    }),
+    // Get all students for parent assignment
+    // We'll filter orphaned students in the client component
+    prisma.student.findMany({
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        parentId: true,
+      },
+      orderBy: { name: "asc" },
     })
   ]);
 
@@ -75,11 +82,11 @@ const ParentListPage = async ({
   return (
     <ParentsPageClient
       data={data}
-      isAdmin={isAdmin}
       totalParents={totalParents}
       parentsWithChildren={parentsWithChildren}
       totalChildren={totalChildren}
       averageChildrenPerParent={averageChildrenPerParent}
+      availableStudents={availableStudents}
     />
   );
 };

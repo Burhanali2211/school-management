@@ -15,7 +15,7 @@ const AdminPage = async ({
   try {
     await requireAdmin();
   } catch (error) {
-    redirect("/admin-login");
+    redirect("/sign-in");
   }
   return (
     <div className="space-y-8">

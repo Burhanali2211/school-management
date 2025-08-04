@@ -1,56 +1,62 @@
-import prisma from "@/lib/prisma";
-import { getAuthUser } from "@/lib/auth-utils";
-import { UserType } from "@prisma/client";
+"use client";
+
+import { useState, useEffect } from "react";
 import AnnouncementsClient from "./AnnouncementsClient";
 
-const Announcements = async () => {
-  // Get authenticated user
-  const user = await getAuthUser();
-  
-  let data: any[] = [];
-  
-  try {
-    if (!user || user.userType === UserType.ADMIN) {
-      // Admin or no user - show all announcements
-      data = await prisma.announcement.findMany({
-        take: 3,
-        orderBy: { date: "desc" },
-      });
-    } else {
-      // Role-based filtering
-      const roleConditions = {
-        [UserType.TEACHER]: {
-          OR: [
-            { classId: null }, // Global announcements
-            { class: { lessons: { some: { teacherId: user.id } } } }
-          ]
-        },
-        [UserType.STUDENT]: {
-          OR: [
-            { classId: null }, // Global announcements
-            { class: { students: { some: { id: user.id } } } }
-          ]
-        },
-        [UserType.PARENT]: {
-          OR: [
-            { classId: null }, // Global announcements
-            { class: { students: { some: { parentId: user.id } } } }
-          ]
-        },
-      };
+interface Announcement {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+  classId?: number;
+  class?: {
+    name: string;
+  };
+}
 
-      data = await prisma.announcement.findMany({
-        take: 3,
-        orderBy: { date: "desc" },
-        where: roleConditions[user.userType] || {},
-      });
+const Announcements = () => {
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  const fetchAnnouncements = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/dashboard/announcements');
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAnnouncements(data.announcements || []);
+      }
+    } catch (error) {
+      console.error('Error fetching announcements:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error fetching announcements:', error);
-    data = [];
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-lg font-semibold">Announcements</h1>
+        </div>
+        <div className="space-y-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
-  return <AnnouncementsClient announcements={data} />;
+  return <AnnouncementsClient announcements={announcements} />;
 };
 
 export default Announcements;

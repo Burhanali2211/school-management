@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: ["class"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,13 +9,61 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
       colors: {
-        // Modern Brand Colors
+        // Color Hunt Palette - #424874 as Primary
         primary: {
+          50: '#f8f9fc',
+          100: '#f1f3f9',
+          200: '#e3e7f3',
+          300: '#c7d0e7',
+          400: '#a6b1e1',
+          500: '#8b9ad8',
+          600: '#6b7bc8',
+          700: '#5a6bb8',
+          800: '#424874', // Main color
+          900: '#2d3450',
+          950: '#1a1f2e',
+        },
+        secondary: {
+          50: '#f4eeff',
+          100: '#e8ddff',
+          200: '#dcd6f7',
+          300: '#c8bff0',
+          400: '#b4a8e9',
+          500: '#a091e2',
+          600: '#8c7adb',
+          700: '#7863d4',
+          800: '#644ccd',
+          900: '#5035c6',
+          950: '#3c1ebf',
+        },
+        accent: {
+          50: '#f4eeff',
+          100: '#e8ddff',
+          200: '#dcd6f7',
+          300: '#c8bff0',
+          400: '#b4a8e9',
+          500: '#a091e2',
+          600: '#8c7adb',
+          700: '#7863d4',
+          800: '#644ccd',
+          900: '#5035c6',
+          950: '#3c1ebf',
+        },
+        neutral: {
+          50: '#f8f9fc',
+          100: '#f1f3f9',
+          200: '#e3e7f3',
+          300: '#c7d0e7',
+          400: '#a6b1e1',
+          500: '#8b9ad8',
+          600: '#6b7bc8',
+          700: '#5a6bb8',
+          800: '#424874',
+          900: '#2d3450',
+          950: '#1a1f2e',
+        },
+        success: {
           50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
@@ -25,56 +74,7 @@ const config: Config = {
           700: '#0369a1',
           800: '#075985',
           900: '#0c4a6e',
-        },
-        secondary: {
-          50: '#fafafa',
-          100: '#f4f4f5',
-          200: '#e4e4e7',
-          300: '#d4d4d8',
-          400: '#a1a1aa',
-          500: '#71717a',
-          600: '#52525b',
-          700: '#3f3f46',
-          800: '#27272a',
-          900: '#18181b',
-        },
-        accent: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
-        },
-        // Neutral Colors
-        neutral: {
-          50: '#fafafa',
-          100: '#f4f4f5',
-          200: '#e4e4e7',
-          300: '#d4d4d8',
-          400: '#a1a1aa',
-          500: '#71717a',
-          600: '#52525b',
-          700: '#3f3f46',
-          800: '#27272a',
-          900: '#18181b',
-        },
-        // Status Colors
-        success: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+          950: '#082f49',
         },
         warning: {
           50: '#fffbeb',
@@ -87,6 +87,7 @@ const config: Config = {
           700: '#b45309',
           800: '#92400e',
           900: '#78350f',
+          950: '#451a03',
         },
         error: {
           50: '#fef2f2',
@@ -99,56 +100,22 @@ const config: Config = {
           700: '#b91c1c',
           800: '#991b1b',
           900: '#7f1d1d',
+          950: '#450a0a',
         },
-        // Background Colors
-        background: {
-          light: '#ffffff',
-          default: '#f8fafc',
-          dark: '#f1f5f9',
-        },
-              },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
-        '128': '32rem',
-        '4.5': '1.125rem',
-        '5.5': '1.375rem',
-      },
-      screens: {
-        'xs': '475px',
-        '3xl': '1600px',
-      },
-      borderRadius: {
-        'xl': '1rem',
-        '2xl': '1.5rem',
-        '3xl': '2rem',
       },
       boxShadow: {
-        'soft': '0 2px 8px rgba(0, 0, 0, 0.04)',
-        'medium': '0 4px 16px rgba(0, 0, 0, 0.08)',
-        'strong': '0 8px 32px rgba(0, 0, 0, 0.12)',
+        'soft': '0 2px 15px -3px rgba(66, 72, 116, 0.1), 0 4px 20px -2px rgba(66, 72, 116, 0.1)',
+        'elevated': '0 10px 25px -3px rgba(66, 72, 116, 0.1), 0 4px 6px -2px rgba(66, 72, 116, 0.05)',
+        'glow': '0 0 20px rgba(66, 72, 116, 0.15)',
       },
-      animation: {
-        'fade-in': 'fadeIn 0.3s ease-in-out',
-        'slide-in': 'slideIn 0.3s ease-in-out',
-        'bounce-subtle': 'bounceSubtle 0.6s ease-in-out',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideIn: {
-          '0%': { transform: 'translateY(-10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        bounceSubtle: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-5px)' },
-        },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
   },
   plugins: [],
 };
+
 export default config;

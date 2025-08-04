@@ -1,7 +1,6 @@
 "use client";
 
 import Announcements from "@/components/Announcements";
-import BigCalendarContainer from "@/components/BigCalendarContainer";
 import { Card } from "@/components/ui/card";
 import { Calendar, Users } from "lucide-react";
 
@@ -37,7 +36,9 @@ const TeacherPageClient = ({ userId }: TeacherPageClientProps) => {
                 <p className="text-secondary-500 text-sm">Your classes and lessons</p>
               </div>
             </div>
-            <BigCalendarContainer type="teacherId" id={userId} />
+            <div className="flex items-center justify-center h-64 text-secondary-500">
+              <p>Calendar component removed</p>
+            </div>
           </Card>
         </div>
 

@@ -2,6 +2,7 @@
 
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
+import { useState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +29,33 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = taskSchema.parse(row.original);
+  const [task, setTask] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const parsedTask = taskSchema.parse(row.original);
+      setTask(parsedTask);
+      setError(null);
+    } catch (err) {
+      console.error("Schema validation error:", err);
+      setError("Invalid data format");
+      setTask(null);
+    }
+  }, [row.original]);
+
+  if (error || !task) {
+    return (
+      <Button
+        variant="ghost"
+        className="flex h-8 w-8 p-0"
+        disabled
+      >
+        <DotsHorizontalIcon className="h-4 w-4" />
+        <span className="sr-only">Error loading menu</span>
+      </Button>
+    );
+  }
 
   return (
     <DropdownMenu

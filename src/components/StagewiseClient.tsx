@@ -6,8 +6,9 @@ export default function StagewiseClient() {
   const initialized = useRef(false);
 
   useEffect(() => {
+    // Disabled for now to prevent 404 errors
     // Only initialize in development mode and on client side
-    if (process.env.NODE_ENV === "development" && !initialized.current) {
+    if (false && process.env.NODE_ENV === "development" && !initialized.current) {
       if (typeof window !== "undefined" && !window.__STAGEWISE_INITIALIZED__) {
         console.log("StagewiseClient: Starting initialization...");
         

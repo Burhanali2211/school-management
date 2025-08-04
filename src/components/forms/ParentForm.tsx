@@ -4,33 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { z } from "zod";
+import { parentSchema, ParentSchema } from "@/lib/formValidationSchemas";
 import { useFormState } from "react-dom";
+import { createParent, updateParent } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
-const parentSchema = z.object({
-  id: z.string().optional(),
-  username: z.string().min(3, { message: "Username must be at least 3 characters long!" }),
-  name: z.string().min(1, { message: "First name is required!" }),
-  surname: z.string().min(1, { message: "Last name is required!" }),
-  email: z.string().email({ message: "Invalid email address!" }).optional().or(z.literal("")),
-  phone: z.string().min(1, { message: "Phone is required!" }),
-  address: z.string().min(1, { message: "Address is required!" }),
-});
-
-type ParentSchema = z.infer<typeof parentSchema>;
-
-// Mock actions - you can replace these with actual actions later
-const createParent = async (prevState: any, data: ParentSchema) => {
-  console.log("Creating parent:", data);
-  return { success: true, error: false };
-};
-
-const updateParent = async (prevState: any, data: ParentSchema) => {
-  console.log("Updating parent:", data);
-  return { success: true, error: false };
-};
 
 const ParentForm = ({
   type,
@@ -49,6 +27,7 @@ const ParentForm = ({
     formState: { errors },
   } = useForm<ParentSchema>({
     resolver: zodResolver(parentSchema),
+    defaultValues: data || {},
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,6 +74,11 @@ const ParentForm = ({
         Parent Information
       </span>
       <div className="flex justify-between flex-wrap gap-4">
+        {/* Hidden ID field for updates */}
+        {data?.id && (
+          <input type="hidden" {...register("id")} value={data.id} />
+        )}
+        
         <InputField
           label="Username"
           name="username"
@@ -137,16 +121,6 @@ const ParentForm = ({
           register={register}
           error={errors.address}
         />
-        {data && (
-          <InputField
-            label="Id"
-            name="id"
-            defaultValue={data?.id}
-            register={register}
-            error={errors?.id}
-            hidden
-          />
-        )}
       </div>
       {state.error && (
         <div className="bg-error-50 border border-error-200 text-error-700 px-4 py-3 rounded-lg">

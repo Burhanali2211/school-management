@@ -44,7 +44,7 @@ const SubjectListPage = async ({
   }
 
   // Fetch data with enhanced statistics
-  const [data, count, subjectStats] = await prisma.$transaction([
+  const [data, count, subjectStats, availableTeachers] = await prisma.$transaction([
     prisma.subject.findMany({
       where: query,
       include: {
@@ -64,6 +64,15 @@ const SubjectListPage = async ({
     prisma.subject.aggregate({
       _count: { id: true },
       where: {}
+    }),
+    // Get available teachers for subject assignment
+    prisma.teacher.findMany({
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+      },
+      orderBy: { name: "asc" },
     })
   ]);
 
@@ -81,6 +90,7 @@ const SubjectListPage = async ({
       subjectsWithTeachers={subjectsWithTeachers}
       totalTeachers={totalTeachers}
       totalLessons={totalLessons}
+      availableTeachers={availableTeachers}
     />
   );
 };

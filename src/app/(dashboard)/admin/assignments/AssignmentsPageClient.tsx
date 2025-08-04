@@ -7,7 +7,7 @@ import { StatsCard } from "@/components/ui/stats-card";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import FormContainer from "@/components/FormContainer";
@@ -197,6 +197,10 @@ export default function AssignmentsPageClient() {
     }
   };
 
+  const handleDeleteAssignment = (assignment: Assignment) => {
+    handleDelete(assignment.id);
+  };
+
   const handleEdit = (assignment: Assignment) => {
     setEditingAssignment(assignment);
     setShowForm(true);
@@ -217,7 +221,7 @@ export default function AssignmentsPageClient() {
   const columns = [
     {
       key: "title",
-      label: "Assignment Title",
+      header: "Assignment Title",
       render: (assignment: Assignment) => (
         <div>
           <div className="font-medium">{assignment.title}</div>
@@ -227,7 +231,7 @@ export default function AssignmentsPageClient() {
     },
     {
       key: "lesson",
-      label: "Lesson & Class",
+      header: "Lesson & Class",
       render: (assignment: Assignment) => (
         <div>
           <div className="font-medium">{assignment.lesson.name}</div>
@@ -237,7 +241,7 @@ export default function AssignmentsPageClient() {
     },
     {
       key: "teacher",
-      label: "Teacher",
+      header: "Teacher",
       render: (assignment: Assignment) => (
         <div>
           <div className="font-medium">
@@ -249,7 +253,7 @@ export default function AssignmentsPageClient() {
     },
     {
       key: "dates",
-      label: "Dates",
+      header: "Dates",
       render: (assignment: Assignment) => (
         <div className="text-sm">
           <div><strong>Start:</strong> {formatDate(assignment.startDate)}</div>
@@ -259,7 +263,7 @@ export default function AssignmentsPageClient() {
     },
     {
       key: "status",
-      label: "Status",
+      header: "Status",
       render: (assignment: Assignment) => {
         const { status, color } = getAssignmentStatus(assignment.startDate, assignment.dueDate);
         return (
@@ -271,7 +275,7 @@ export default function AssignmentsPageClient() {
     },
     {
       key: "submissions",
-      label: "Submissions",
+      header: "Submissions",
       render: (assignment: Assignment) => (
         <div className="text-sm">
           <div className="font-medium">{assignment.results.length} submissions</div>
@@ -289,8 +293,8 @@ export default function AssignmentsPageClient() {
     <div className="space-y-6">
       <PageHeader
         title="Assignments Management"
-        description="Manage assignments, deadlines, and track submissions"
-        action={
+        subtitle="Manage assignments, deadlines, and track submissions"
+        actions={
           <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Add Assignment
@@ -303,26 +307,26 @@ export default function AssignmentsPageClient() {
         <StatsCard
           title="Total Assignments"
           value={stats.totalAssignments}
-          icon={FileText}
-          trend={{ value: 12, isPositive: true }}
+          icon="book-open"
+          trend={{ value: 12, label: "vs last month", isPositive: true }}
         />
         <StatsCard
           title="Active Assignments"
           value={stats.activeAssignments}
-          icon={Clock}
-          trend={{ value: 5, isPositive: true }}
+          icon="calendar"
+          trend={{ value: 5, label: "vs last month", isPositive: true }}
         />
         <StatsCard
           title="Overdue Assignments"
           value={stats.overdueAssignments}
-          icon={AlertCircle}
-          trend={{ value: 2, isPositive: false }}
+          icon="award"
+          trend={{ value: 2, label: "vs last month", isPositive: false }}
         />
         <StatsCard
           title="Completion Rate"
           value={`${stats.completionRate}%`}
-          icon={Users}
-          trend={{ value: 8, isPositive: true }}
+          icon="users"
+          trend={{ value: 8, label: "vs last month", isPositive: true }}
         />
       </div>
 
@@ -342,51 +346,67 @@ export default function AssignmentsPageClient() {
           <Select
             value={selectedStatus}
             onValueChange={setSelectedStatus}
-            placeholder="Filter by status"
           >
-            <option value="">All Status</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="active">Active</option>
-            <option value="overdue">Overdue</option>
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Status</SelectItem>
+              <SelectItem value="upcoming">Upcoming</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="overdue">Overdue</SelectItem>
+            </SelectContent>
           </Select>
 
           <Select
             value={selectedClass}
             onValueChange={setSelectedClass}
-            placeholder="Filter by class"
           >
-            <option value="">All Classes</option>
-            {classes.map((cls) => (
-              <option key={cls.id} value={cls.id.toString()}>
-                {cls.name}
-              </option>
-            ))}
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by class" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Classes</SelectItem>
+              {classes.map((cls) => (
+                <SelectItem key={cls.id} value={cls.id.toString()}>
+                  {cls.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
 
           <Select
             value={selectedTeacher}
             onValueChange={setSelectedTeacher}
-            placeholder="Filter by teacher"
           >
-            <option value="">All Teachers</option>
-            {teachers.map((teacher) => (
-              <option key={teacher.id} value={teacher.id}>
-                {teacher.name} {teacher.surname}
-              </option>
-            ))}
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by teacher" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Teachers</SelectItem>
+              {teachers.map((teacher) => (
+                <SelectItem key={teacher.id} value={teacher.id}>
+                  {teacher.name} {teacher.surname}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
 
           <Select
             value={selectedSubject}
             onValueChange={setSelectedSubject}
-            placeholder="Filter by subject"
           >
-            <option value="">All Subjects</option>
-            {subjects.map((subject) => (
-              <option key={subject.id} value={subject.id.toString()}>
-                {subject.name}
-              </option>
-            ))}
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by subject" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Subjects</SelectItem>
+              {subjects.map((subject) => (
+                <SelectItem key={subject.id} value={subject.id.toString()}>
+                  {subject.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
 
           <Button
@@ -412,8 +432,10 @@ export default function AssignmentsPageClient() {
           data={filteredAssignments}
           columns={columns}
           loading={loading}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+          actions={{
+            edit: handleEdit,
+            delete: handleDeleteAssignment
+          }}
           emptyMessage="No assignments found"
         />
       </Card>
@@ -421,21 +443,11 @@ export default function AssignmentsPageClient() {
       {/* Form Modal */}
       {showForm && (
         <FormContainer
-          title={editingAssignment ? "Edit Assignment" : "Add New Assignment"}
-          onClose={() => {
-            setShowForm(false);
-            setEditingAssignment(null);
-          }}
-        >
-          <AssignmentForm
-            initialData={editingAssignment}
-            onSuccess={handleFormSuccess}
-            onCancel={() => {
-              setShowForm(false);
-              setEditingAssignment(null);
-            }}
-          />
-        </FormContainer>
+          table="assignment"
+          type={editingAssignment ? "update" : "create"}
+          data={editingAssignment}
+          id={editingAssignment?.id}
+        />
       )}
     </div>
   );

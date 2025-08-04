@@ -208,9 +208,8 @@ const TeachersPageClient = ({
           {isAdmin && (
             <Button 
               onClick={handleAddTeacher}
-              className="bg-blue-600 hover:bg-blue-700"
+              leftIcon={<Plus className="w-4 h-4" />}
             >
-              <Plus className="w-4 h-4 mr-2" />
               Add Teacher
             </Button>
           )}

@@ -4,10 +4,10 @@ import { BellIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface Announcement {
-  id: string;
+  id: string | number;
   title: string;
   description: string;
-  date: Date;
+  date: string | Date;
 }
 
 interface AnnouncementsClientProps {
@@ -15,6 +15,22 @@ interface AnnouncementsClientProps {
 }
 
 const AnnouncementsClient = ({ announcements }: AnnouncementsClientProps) => {
+  const formatDate = (dateValue: string | Date): string => {
+    try {
+      const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+      
+      // Check if the date is valid
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+      
+      return new Intl.DateTimeFormat("en-GB").format(date);
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
+  };
+
   return (
     <Card className="h-fit">
       <div className="flex items-center justify-between mb-6">
@@ -46,7 +62,7 @@ const AnnouncementsClient = ({ announcements }: AnnouncementsClientProps) => {
                 <div className="flex items-start justify-between">
                   <h3 className="font-semibold text-secondary-900 mb-2">{announcement.title}</h3>
                   <span className="text-xs text-secondary-500 bg-white rounded-full px-2 py-1">
-                    {new Intl.DateTimeFormat("en-GB").format(announcement.date)}
+                    {formatDate(announcement.date)}
                   </span>
                 </div>
                 <p className="text-sm text-secondary-600 line-clamp-2">{announcement.description}</p>

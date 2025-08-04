@@ -6,12 +6,18 @@ import ClassesPageClient from "@/components/classes/ClassesPageClient";
 
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Class, Prisma, Teacher } from "@prisma/client";
+import { Class, Prisma, Teacher, Grade } from "@prisma/client";
 import Image from "next/image";
 import { getAuthUser } from "@/lib/auth-utils";
 import { UserType } from "@prisma/client";
 
-type ClassList = Class & { supervisor: Teacher | null };
+type ClassList = Class & { 
+  supervisor: Teacher | null;
+  grade: Grade & { name: string };
+  _count: {
+    students: number;
+  };
+};
 
 const ClassListPage = async ({
   searchParams,
@@ -19,63 +25,49 @@ const ClassListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
 
-const user = await getAuthUser();
+  const user = await getAuthUser();
   const isAdmin = user?.userType === UserType.ADMIN;
 
+  const columns = [
+    {
+      header: "Class Name",
+      accessor: "name",
+    },
+    {
+      header: "Grade",
+      accessor: "grade",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Capacity",
+      accessor: "capacity",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Supervisor",
+      accessor: "supervisor",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Actions",
+      accessor: "action",
+    },
+  ];
 
-const columns = [
-  {
-    header: "Class Name",
-    accessor: "name",
-  },
-  {
-    header: "Grade",
-    accessor: "grade",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Capacity",
-    accessor: "capacity",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Supervisor",
-    accessor: "supervisor",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
-];
-
-
-
-  const { page, sortBy, sortOrder, grade, supervisor, capacity, status, ...queryParams } = searchParams;
+  const { page, sortBy, sortOrder, grade, supervisor, capacity, status, search, ...queryParams } = searchParams;
 
   const p = page ? parseInt(page) : 1;
 
   // Build query conditions
   const query: Prisma.ClassWhereInput = {};
 
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "supervisorId":
-            query.supervisorId = value;
-            break;
-          case "search":
-            query.OR = [
-              { name: { contains: value, mode: "insensitive" } },
-              { supervisor: { name: { contains: value, mode: "insensitive" } } },
-            ];
-            break;
-          default:
-            break;
-        }
-      }
-    }
+  // Handle search
+  if (search) {
+    query.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { supervisor: { name: { contains: search, mode: "insensitive" } } },
+      { supervisor: { surname: { contains: search, mode: "insensitive" } } },
+    ];
   }
 
   // Handle grade filter
@@ -106,6 +98,11 @@ const columns = [
     }
   }
 
+  // Handle status filter (if implemented)
+  if (status) {
+    // Add status filtering logic here if needed
+  }
+
   // Build order by clause
   let orderBy: Prisma.ClassOrderByWithRelationInput = { id: "desc" };
 
@@ -134,49 +131,83 @@ const columns = [
     }
   }
 
-  const [data, count, availableGrades, availableTeachers] = await prisma.$transaction([
-    prisma.class.findMany({
-      where: query,
-      include: {
-        supervisor: true,
-        grade: true,
-        _count: {
-          select: { students: true }
-        }
-      },
-      orderBy,
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1),
-    }),
-    prisma.class.count({ where: query }),
-    prisma.class.findMany({
-      select: { gradeId: true, grade: { select: { level: true } } },
-      distinct: ['gradeId'],
-      orderBy: { grade: { level: "asc" } }
-    }),
-    prisma.teacher.findMany({
-      select: { id: true, name: true },
-      orderBy: { name: "asc" }
-    }),
-  ]);
+  try {
+    const [data, count, availableGrades, availableTeachers] = await prisma.$transaction([
+      prisma.class.findMany({
+        where: query,
+        include: {
+          supervisor: {
+            select: {
+              id: true,
+              name: true,
+              surname: true,
+              img: true,
+            }
+          },
+          grade: {
+            select: {
+              id: true,
+              level: true,
+              name: true,
+            }
+          },
+          _count: {
+            select: { students: true }
+          }
+        },
+        orderBy,
+        take: ITEM_PER_PAGE,
+        skip: ITEM_PER_PAGE * (p - 1),
+      }),
+      prisma.class.count({ where: query }),
+      prisma.grade.findMany({
+        select: { id: true, level: true, name: true },
+        orderBy: { level: "asc" }
+      }),
+      prisma.teacher.findMany({
+        select: { id: true, name: true, surname: true },
+        orderBy: { name: "asc" }
+      }),
+    ]);
 
-  return (
-    <ClassesPageClient
-      isAdmin={isAdmin}
-      availableGrades={availableGrades.map(g => ({ level: g.grade.level }))}
-      availableTeachers={availableTeachers}
-    >
-      {/* LIST */}
-      <ClassesTableWithPreview
-        classes={data}
-        columns={columns}
+    return (
+      <ClassesPageClient
         isAdmin={isAdmin}
-      />
+        availableGrades={availableGrades}
+        availableTeachers={availableTeachers}
+      >
+        {/* LIST */}
+        <ClassesTableWithPreview
+          classes={data}
+          columns={columns}
+          isAdmin={isAdmin}
+        />
 
-      {/* PAGINATION */}
-      <Pagination page={p} count={count} />
-    </ClassesPageClient>
-  );
+        {/* PAGINATION */}
+        <Pagination page={p} count={count} />
+      </ClassesPageClient>
+    );
+  } catch (error) {
+    console.error("Error fetching classes:", error);
+    
+    return (
+      <ClassesPageClient
+        isAdmin={isAdmin}
+        availableGrades={[]}
+        availableTeachers={[]}
+      >
+        <div className="text-center py-12">
+          <div className="w-12 h-12 text-red-400 mx-auto mb-4">
+            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <p className="text-red-500 text-lg font-medium">Error loading classes</p>
+          <p className="text-red-400 text-sm mt-2">Please try refreshing the page</p>
+        </div>
+      </ClassesPageClient>
+    );
+  }
 };
 
 export default ClassListPage;

@@ -1,266 +1,178 @@
-import { Day, PrismaClient, UserSex } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
 const prisma = new PrismaClient();
 
 async function main() {
-  // DELETE ALL DATA (in reverse dependency order)
+  console.log('🌱 Starting database seeding...');
+
+  // Clear existing data
+  console.log('🧹 Clearing existing data...');
+  await prisma.auditLog.deleteMany();
+  await prisma.session.deleteMany();
+  await prisma.userPreferences.deleteMany();
   await prisma.result.deleteMany();
   await prisma.attendance.deleteMany();
-  await prisma.fee.deleteMany();
-  await prisma.event.deleteMany();
-  await prisma.announcement.deleteMany();
-  await prisma.exam.deleteMany();
   await prisma.assignment.deleteMany();
+  await prisma.exam.deleteMany();
   await prisma.lesson.deleteMany();
   await prisma.student.deleteMany();
+  await prisma.parent.deleteMany();
+  await prisma.teacher.deleteMany();
+  await prisma.admin.deleteMany();
   await prisma.section.deleteMany();
   await prisma.class.deleteMany();
-  await prisma.parent.deleteMany();
   await prisma.subject.deleteMany();
-  await prisma.teacher.deleteMany();
   await prisma.grade.deleteMany();
   await prisma.school.deleteMany();
-  await prisma.admin.deleteMany();
-  
-  // Delete all sessions and other auth-related data
-  await prisma.session.deleteMany();
-  await prisma.auditLog.deleteMany();
-  await prisma.userPreferences.deleteMany();
-  
-  // Reset sequences
-  await prisma.$executeRaw`ALTER SEQUENCE "Grade_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "Class_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "Subject_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "Lesson_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "Fee_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "Exam_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "Assignment_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "Result_id_seq" RESTART WITH 1`;
-  // ADMIN
-  await prisma.admin.create({
+
+  // Create School
+  console.log('🏫 Creating school...');
+  const school = await prisma.school.create({
     data: {
-      id: "superadmin",
-      username: "superadmin",
-    },
-  });
-  await prisma.admin.create({
-    data: {
-      id: "admin1",
-      username: "admin1",
-    },
-  });
-  await prisma.admin.create({
-    data: {
-      id: "admin2",
-      username: "admin2",
+      name: 'Govt. Higher Secondary School Khanda',
+      address: 'Khanda, Sonipat, Haryana, India',
+      phone: '+91-1234567890',
+      email: 'admin@schoolkhanda.edu.in',
     },
   });
 
-  // GRADE
-  for (let i = 1; i <= 6; i++) {
-    await prisma.grade.create({
-      data: {
-        level: i,
-      },
-    });
-  }
+  // Create Grades
+  console.log('📚 Creating grades...');
+  const grades = await Promise.all([
+    prisma.grade.create({ data: { name: 'Class 1', level: 1, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 2', level: 2, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 3', level: 3, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 4', level: 4, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 5', level: 5, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 6', level: 6, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 7', level: 7, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 8', level: 8, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 9', level: 9, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 10', level: 10, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 11', level: 11, schoolId: school.id } }),
+    prisma.grade.create({ data: { name: 'Class 12', level: 12, schoolId: school.id } }),
+  ]);
 
-  // CLASS
-  for (let i = 1; i <= 6; i++) {
-    await prisma.class.create({
-      data: {
-        name: `${i}A`, 
-        gradeId: i, 
-        capacity: Math.floor(Math.random() * (20 - 15 + 1)) + 15,
-      },
-    });
-  }
+  // Create Classes
+  console.log('🏫 Creating classes...');
+  const classes = await Promise.all([
+    prisma.class.create({ data: { name: 'Class 1 - Section A', capacity: 30, gradeId: grades[0].id, schoolId: school.id } }),
+    prisma.class.create({ data: { name: 'Class 2 - Section A', capacity: 30, gradeId: grades[1].id, schoolId: school.id } }),
+    prisma.class.create({ data: { name: 'Class 3 - Section A', capacity: 30, gradeId: grades[2].id, schoolId: school.id } }),
+    prisma.class.create({ data: { name: 'Class 4 - Section A', capacity: 30, gradeId: grades[3].id, schoolId: school.id } }),
+    prisma.class.create({ data: { name: 'Class 5 - Section A', capacity: 30, gradeId: grades[4].id, schoolId: school.id } }),
+  ]);
 
-  // SUBJECT
-  const subjectData = [
-    { name: "Mathematics" },
-    { name: "Science" },
-    { name: "English" },
-    { name: "History" },
-    { name: "Geography" },
-    { name: "Physics" },
-    { name: "Chemistry" },
-    { name: "Biology" },
-    { name: "Computer Science" },
-    { name: "Art" },
-  ];
+  // Create Sections
+  console.log('📋 Creating sections...');
+  const sections = await Promise.all([
+    prisma.section.create({ data: { name: 'Section A', capacity: 15, classId: classes[0].id, schoolId: school.id } }),
+    prisma.section.create({ data: { name: 'Section B', capacity: 15, classId: classes[0].id, schoolId: school.id } }),
+    prisma.section.create({ data: { name: 'Section A', capacity: 15, classId: classes[1].id, schoolId: school.id } }),
+    prisma.section.create({ data: { name: 'Section B', capacity: 15, classId: classes[1].id, schoolId: school.id } }),
+    prisma.section.create({ data: { name: 'Section A', capacity: 15, classId: classes[2].id, schoolId: school.id } }),
+  ]);
 
-  for (const subject of subjectData) {
-    await prisma.subject.create({ data: subject });
-  }
+  // Create Subjects
+  console.log('📖 Creating subjects...');
+  const subjects = await Promise.all([
+    prisma.subject.create({ data: { name: 'Mathematics' } }),
+    prisma.subject.create({ data: { name: 'Science' } }),
+    prisma.subject.create({ data: { name: 'English' } }),
+    prisma.subject.create({ data: { name: 'Hindi' } }),
+    prisma.subject.create({ data: { name: 'Social Studies' } }),
+    prisma.subject.create({ data: { name: 'Physics' } }),
+    prisma.subject.create({ data: { name: 'Chemistry' } }),
+    prisma.subject.create({ data: { name: 'Biology' } }),
+    prisma.subject.create({ data: { name: 'Computer Science' } }),
+    prisma.subject.create({ data: { name: 'Physical Education' } }),
+  ]);
 
-  // TEACHER
-  for (let i = 1; i <= 15; i++) {
-    await prisma.teacher.create({
-      data: {
-        id: `teacher${i}`, // Unique ID for the teacher
-        username: `teacher${i}`,
-        name: `TName${i}`,
-        surname: `TSurname${i}`,
-        email: `teacher${i}@example.com`,
-        phone: `123-456-789${i}`,
-        address: `Address${i}`,
-        bloodType: "A+",
-        sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        subjects: { connect: [{ id: (i % 10) + 1 }] }, 
-        classes: { connect: [{ id: (i % 6) + 1 }] }, 
-        birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 30)),
-      },
-    });
-  }
+  // Create Admin with password
+  console.log('👨‍💼 Creating admin...');
+  const adminPassword = await bcrypt.hash('admin123', 10);
+  const admin = await prisma.admin.create({
+    data: {
+      id: 'admin1',
+      username: 'admin1',
+      password: adminPassword,
+      name: 'Admin',
+      surname: 'User',
+      email: 'admin@schoolkhanda.edu.in',
+    },
+  });
 
-  // LESSON
-  for (let i = 1; i <= 30; i++) {
-    await prisma.lesson.create({
-      data: {
-        name: `Lesson${i}`, 
-        day: Day[
-          Object.keys(Day)[
-            Math.floor(Math.random() * Object.keys(Day).length)
-          ] as keyof typeof Day
-        ], 
-        startTime: new Date(new Date().setHours(new Date().getHours() + 1)), 
-        endTime: new Date(new Date().setHours(new Date().getHours() + 3)), 
-        subjectId: (i % 10) + 1, 
-        classId: (i % 6) + 1, 
-        teacherId: `teacher${(i % 15) + 1}`, 
-      },
-    });
-  }
+  // Create Teachers with passwords
+  console.log('👨‍🏫 Creating teachers...');
+  const teacherPassword = await bcrypt.hash('teacher1123', 10);
+  const teacher = await prisma.teacher.create({
+    data: {
+      id: 'teacher1',
+      username: 'teacher1',
+      password: teacherPassword,
+      name: 'John',
+      surname: 'Smith',
+      email: 'teacher1@school.edu',
+      phone: '+91-9876543210',
+      address: 'Teacher Address, Khanda, Sonipat',
+      bloodType: 'A+',
+      sex: 'MALE',
+      birthday: new Date('1985-05-15'),
+    },
+  });
 
-  // PARENT
-  for (let i = 1; i <= 25; i++) {
-    await prisma.parent.create({
-      data: {
-        id: `parentId${i}`,
-        username: `parentId${i}`,
-        name: `PName ${i}`,
-        surname: `PSurname ${i}`,
-        email: `parent${i}@example.com`,
-        phone: `123-456-789${i}`,
-        address: `Address${i}`,
-      },
-    });
-  }
+  // Create Parent with password
+  console.log('👨‍👩‍👧‍👦 Creating parent...');
+  const parentPassword = await bcrypt.hash('parent1123', 10);
+  const parent = await prisma.parent.create({
+    data: {
+      id: 'parent1',
+      username: 'parent1',
+      password: parentPassword,
+      name: 'Robert',
+      surname: 'Johnson',
+      email: 'parent1@example.com',
+      phone: '+91-9876543211',
+      address: 'Parent Address, Khanda, Sonipat',
+    },
+  });
 
-  // STUDENT
-  for (let i = 1; i <= 50; i++) {
-    await prisma.student.create({
-      data: {
-        id: `student${i}`, 
-        username: `student${i}`, 
-        name: `SName${i}`,
-        surname: `SSurname ${i}`,
-        email: `student${i}@example.com`,
-        phone: `987-654-321${i}`,
-        address: `Address${i}`,
-        bloodType: "O-",
-        sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        parentId: `parentId${Math.ceil(i / 2) % 25 || 25}`, 
-        gradeId: (i % 6) + 1, 
-        classId: (i % 6) + 1, 
-        birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 10)),
-      },
-    });
-  }
+  // Create Student with password
+  console.log('👨‍🎓 Creating student...');
+  const studentPassword = await bcrypt.hash('student1123', 10);
+  const student = await prisma.student.create({
+    data: {
+      id: 'student1',
+      username: 'student1',
+      password: studentPassword,
+      name: 'Alice',
+      surname: 'Johnson',
+      email: 'student1@school.edu',
+      phone: '+91-9876543212',
+      address: 'Student Address, Khanda, Sonipat',
+      bloodType: 'O+',
+      sex: 'FEMALE',
+      birthday: new Date('2010-08-20'),
+      parentId: parent.id,
+      classId: classes[0].id,
+      gradeId: grades[0].id,
+    },
+  });
 
-  // EXAM
-  for (let i = 1; i <= 10; i++) {
-    await prisma.exam.create({
-      data: {
-        title: `Exam ${i}`, 
-        startTime: new Date(new Date().setHours(new Date().getHours() + 1)), 
-        endTime: new Date(new Date().setHours(new Date().getHours() + 2)), 
-        lessonId: (i % 30) + 1, 
-      },
-    });
-  }
-
-  // ASSIGNMENT
-  for (let i = 1; i <= 10; i++) {
-    await prisma.assignment.create({
-      data: {
-        title: `Assignment ${i}`, 
-        startDate: new Date(new Date().setHours(new Date().getHours() + 1)), 
-        dueDate: new Date(new Date().setDate(new Date().getDate() + 1)), 
-        lessonId: (i % 30) + 1, 
-      },
-    });
-  }
-
-  // RESULT
-  for (let i = 1; i <= 10; i++) {
-    await prisma.result.create({
-      data: {
-        score: 90, 
-        studentId: `student${i}`, 
-        ...(i <= 5 ? { examId: i } : { assignmentId: i - 5 }), 
-      },
-    });
-  }
-
-  // ATTENDANCE
-  for (let i = 1; i <= 10; i++) {
-    await prisma.attendance.create({
-      data: {
-        date: new Date(), 
-        present: true, 
-        studentId: `student${i}`, 
-        lessonId: (i % 30) + 1, 
-      },
-    });
-  }
-
-  // EVENT
-  for (let i = 1; i <= 5; i++) {
-    await prisma.event.create({
-      data: {
-        title: `Event ${i}`, 
-        description: `Description for Event ${i}`, 
-        startTime: new Date(new Date().setHours(new Date().getHours() + 1)), 
-        endTime: new Date(new Date().setHours(new Date().getHours() + 2)), 
-        classId: (i % 5) + 1, 
-      },
-    });
-  }
-
-  // ANNOUNCEMENT
-  for (let i = 1; i <= 5; i++) {
-    await prisma.announcement.create({
-      data: {
-        title: `Announcement ${i}`, 
-        description: `Description for Announcement ${i}`, 
-        date: new Date(), 
-        classId: (i % 5) + 1, 
-      },
-    });
-  }
-
-  // FEES
-  for (let i = 1; i <= 20; i++) {
-    await prisma.fee.create({
-      data: {
-        studentId: `student${i}`,
-        amount: Math.floor(Math.random() * 1000) + 500, // Random amount between 500-1500
-        dueDate: new Date(new Date().setDate(new Date().getDate() + 30)), // Due in 30 days
-        status: i % 3 === 0 ? 'OVERDUE' : i % 2 === 0 ? 'UNPAID' : 'PAID',
-      },
-    });
-  }
-
-  console.log("Seeding completed successfully.");
+  console.log('✅ Database seeding completed successfully!');
+  console.log('\n📋 Created Users:');
+  console.log('👨‍💼 Admin: admin1 / admin123');
+  console.log('👨‍🏫 Teacher: teacher1 / teacher1123');
+  console.log('👨‍👩‍👧‍👦 Parent: parent1 / parent1123');
+  console.log('👨‍🎓 Student: student1 / student1123');
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
+  .catch((e) => {
+    console.error('❌ Error during seeding:', e);
     process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });
