@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Generate Database
-RUN npx prisma migrate dev --name init
+# Generate Prisma Client
+RUN npx prisma generate
 
 # Build the Next.js application
 RUN npm run build
