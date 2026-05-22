@@ -30,5 +30,5 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-EXPOSE 3000
+EXPOSE 3002
 CMD ["node", "server.js"]

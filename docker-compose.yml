@@ -17,8 +17,9 @@ services:
     build: .
     container_name: nextjs_app
     ports:
-      - '3000:3000'
+      - '3002:3002'
     environment:
+      - PORT=3002
       - DATABASE_URL=postgresql://postgres:admin@postgres:5432/school_db
       - JWT_SECRET=thisisasupersecretkey123!@#
     command: sh -c "npx prisma db push && npm run seed:complete && node server.js"
