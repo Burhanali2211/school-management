@@ -63,10 +63,10 @@ export function IndianSchoolGuide({ onClose, showOnFirstVisit = false }: IndianS
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">
-              Welcome to Indian School Management System
+              Welcome to ABC School Management System
             </h3>
             <p className="text-sm text-gray-600">
-              Simplified grade system designed for Indian schools
+              Simplified grade system designed for schools
             </p>
           </div>
         </div>

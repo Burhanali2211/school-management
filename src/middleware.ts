@@ -60,6 +60,9 @@ export default async function middleware(request: NextRequest) {
   const token = getSessionFromRequest(request);
 
   if (!token) {
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
     // No token, redirect to sign-in
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
@@ -69,6 +72,11 @@ export default async function middleware(request: NextRequest) {
     const session = await validateSessionEdge(token);
 
     if (!session) {
+      if (pathname.startsWith('/api/')) {
+        const response = NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        response.cookies.delete('session-token');
+        return response;
+      }
       // Invalid session, redirect to sign-in
       const response = NextResponse.redirect(new URL('/sign-in', request.url));
       response.cookies.delete('session-token');
@@ -79,6 +87,9 @@ export default async function middleware(request: NextRequest) {
     for (const [route, allowedRoles] of Object.entries(roleRoutes)) {
       if (pathname.startsWith(route)) {
         if (!allowedRoles.includes(session.userType)) {
+          if (pathname.startsWith('/api/')) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+          }
           // User doesn't have permission for this route
           // Redirect to their appropriate dashboard
           const redirectPath = `/${session.userType.toLowerCase()}`;
@@ -99,6 +110,9 @@ export default async function middleware(request: NextRequest) {
     });
   } catch (error) {
     console.error('Middleware error:', error);
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 }
