@@ -11,7 +11,7 @@ const UserManagementPage = async () => {
   return (
     <div className="space-y-8 p-6">
       {/* HEADER */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 text-white shadow-xl">
+      <div className="bg-primary-600 rounded-2xl p-8 text-white shadow-xl">
         <div>
           <h1 className="text-3xl font-bold mb-2">User Management</h1>
           <p className="text-primary-100 text-lg">
@@ -56,7 +56,7 @@ const UserManagementPage = async () => {
       </div>
 
       {/* FEATURES LIST */}
-      <div className="bg-gradient-to-br from-white to-primary-50/30 rounded-2xl p-8 shadow-soft border border-primary-100/50">
+      <div className="bg-white/30 rounded-2xl p-8 shadow-soft border border-primary-100/50">
         <h2 className="text-2xl font-bold mb-6 text-primary-900">User Management Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>

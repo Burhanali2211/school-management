@@ -192,7 +192,7 @@ const AnnouncementPreview: React.FC<AnnouncementPreviewProps> = ({
         {announcement.author && (
           <PreviewSection title="Published By" icon={<PreviewIcons.User className="w-5 h-5" />}>
             <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center">
                 <PreviewIcons.User className="w-5 h-5 text-white" />
               </div>
               <div>

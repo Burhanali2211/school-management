@@ -55,7 +55,7 @@ export function IndianSchoolGuide({ onClose, showOnFirstVisit = false }: IndianS
   }
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+    <Card className="p-6 bg-white border-blue-200">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 rounded-lg">

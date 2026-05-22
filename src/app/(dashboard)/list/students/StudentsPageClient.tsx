@@ -320,7 +320,7 @@ const StudentsPageClient = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50/50">
+    <div className="min-h-screen bg-white/50">
       <div className="space-y-6 p-4 sm:p-6 lg:p-8 w-full">
         {/* Page Header */}
         <PageHeader

@@ -49,7 +49,7 @@ export function LoadingDots({ text = "Loading..." }: { text?: string }) {
 export function LoadingSkeleton({ className = "" }: { className?: string }) {
   return (
     <div className={`bg-neutral-200 rounded ${className}`}>
-      <div className="h-full w-full bg-gradient-to-r from-neutral-200 via-neutral-300 to-neutral-200"></div>
+      <div className="h-full w-full bg-neutral-200"></div>
     </div>
   );
 }

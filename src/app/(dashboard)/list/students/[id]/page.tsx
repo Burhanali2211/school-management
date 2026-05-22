@@ -88,7 +88,7 @@ const SingleStudentPage = async ({
           {/* STATS CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {/* ATTENDANCE CARD */}
-            <div className="bg-gradient-to-br from-white to-primary-50/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleAttendance.png"
@@ -104,7 +104,7 @@ const SingleStudentPage = async ({
             </div>
 
             {/* GRADE CARD */}
-            <div className="bg-gradient-to-br from-white to-accent-50/30 p-6 rounded-2xl shadow-soft border border-accent-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-accent-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleBranch.png"
@@ -123,7 +123,7 @@ const SingleStudentPage = async ({
             </div>
 
             {/* LESSONS CARD */}
-            <div className="bg-gradient-to-br from-white to-secondary-50/30 p-6 rounded-2xl shadow-soft border border-secondary-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-secondary-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleLesson.png"
@@ -142,7 +142,7 @@ const SingleStudentPage = async ({
             </div>
 
             {/* CLASS CARD */}
-            <div className="bg-gradient-to-br from-white to-success-50/30 p-6 rounded-2xl shadow-soft border border-success-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-success-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleClass.png"

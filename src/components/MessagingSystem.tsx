@@ -377,7 +377,7 @@ const MessagingSystem = ({ className = "" }: MessagingSystemProps) => {
   }
 
   return (
-    <div className={`bg-gradient-to-br from-white to-primary-50/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex-1 ${className}`}>
+    <div className={`bg-white/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex-1 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">

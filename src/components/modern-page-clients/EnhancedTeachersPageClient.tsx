@@ -287,7 +287,7 @@ export function EnhancedTeachersPageClient({
             {/* Avatar and basic info */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center overflow-hidden">
+                <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center overflow-hidden">
                   {teacher.img ? (
                     <Image
                       src={teacher.img}

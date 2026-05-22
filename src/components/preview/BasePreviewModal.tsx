@@ -208,7 +208,7 @@ export const PreviewHeader: React.FC<{
   children
 }) => {
   return (
-    <div className="flex items-start gap-4 p-6 bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg mb-6">
+    <div className="flex items-start gap-4 p-6 bg-white rounded-lg mb-6">
       <PreviewImage src={image} alt={title} size="lg" />
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between">

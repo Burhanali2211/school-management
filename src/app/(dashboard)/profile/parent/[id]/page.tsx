@@ -192,7 +192,7 @@ const ParentProfilePage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
-          <div className="relative h-48 bg-gradient-to-r from-purple-600 to-pink-600 rounded-t-lg">
+          <div className="relative h-48 bg-purple-600 rounded-t-lg">
             <div className="absolute inset-0 bg-black bg-opacity-20 rounded-t-lg"></div>
             <div className="absolute bottom-6 left-6 flex items-end space-x-6">
               <div className="relative">

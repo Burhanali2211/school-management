@@ -72,7 +72,7 @@ const TeachersTableWithPreview: React.FC<TeachersTableWithPreviewProps> = ({
       onClick={(e) => handleRowClick(item, e)}
     >
       <TableCell className="flex items-center gap-4 p-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center">
           <GraduationCap className="w-6 h-6 text-white" />
         </div>
         <div className="flex flex-col">

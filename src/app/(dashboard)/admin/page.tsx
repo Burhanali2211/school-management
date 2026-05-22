@@ -20,7 +20,7 @@ const AdminPage = async ({
   return (
     <div className="space-y-8">
       {/* DASHBOARD HEADER */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 text-white shadow-xl">
+      <div className="bg-primary-600 rounded-2xl p-8 text-white shadow-xl">
         <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
         <p className="text-primary-100 text-lg">Welcome back! Here's what's happening at your school today.</p>
       </div>
@@ -40,12 +40,12 @@ const AdminPage = async ({
           {/* MIDDLE CHARTS */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* COUNT CHART */}
-            <div className="lg:col-span-1 h-[450px] bg-gradient-to-br from-white to-primary-50/30 rounded-2xl p-6 shadow-soft border border-primary-100/50">
+            <div className="lg:col-span-1 h-[450px] bg-white/30 rounded-2xl p-6 shadow-soft border border-primary-100/50">
               <h2 className="text-lg font-semibold mb-4 text-primary-900">Students (Boys/Girls)</h2>
               <CountChart boys={550} girls={450} />
             </div>
             {/* ATTENDANCE CHART */}
-            <div className="lg:col-span-2 h-[450px] bg-gradient-to-br from-white to-accent-50/30 rounded-2xl p-6 shadow-soft border border-accent-100/50">
+            <div className="lg:col-span-2 h-[450px] bg-white/30 rounded-2xl p-6 shadow-soft border border-accent-100/50">
               <h2 className="text-lg font-semibold mb-4 text-accent-900">Weekly Attendance</h2>
               <AttendanceChart data={[
                 { name: "Mon", present: 950, absent: 50 },
@@ -58,7 +58,7 @@ const AdminPage = async ({
           </div>
 
           {/* BOTTOM CHART */}
-          <div className="h-[500px] bg-gradient-to-br from-white to-secondary-50/30 rounded-2xl p-6 shadow-soft border border-secondary-100/50">
+          <div className="h-[500px] bg-white/30 rounded-2xl p-6 shadow-soft border border-secondary-100/50">
             <h2 className="text-lg font-semibold mb-4 text-secondary-900">Finance Overview</h2>
             <FinanceChart data={[
               { name: "Jan", income: 120000, expense: 90000 },
@@ -79,7 +79,7 @@ const AdminPage = async ({
 
         {/* RIGHT COLUMN */}
         <div className="space-y-8">
-          <div className="bg-gradient-to-br from-white to-neutral-50/30 rounded-2xl p-6 shadow-soft border border-neutral-100/50">
+          <div className="bg-white/30 rounded-2xl p-6 shadow-soft border border-neutral-100/50">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-neutral-900">Upcoming Events</h2>
               <span className="text-sm text-neutral-500 cursor-pointer">View All</span>

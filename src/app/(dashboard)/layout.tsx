@@ -35,7 +35,7 @@ function DashboardContent({
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 flex overflow-hidden">
+    <div className="h-screen bg-neutral-50 flex overflow-hidden">
       {/* Skip to main content link for accessibility */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-lg z-50">
         Skip to main content
@@ -87,7 +87,7 @@ function DashboardContent({
       {/* MAIN CONTENT - Enhanced responsive design */}
       <div className="flex-1 flex flex-col lg:ml-64">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />
-        <main id="main-content" className="flex-1 overflow-y-auto bg-gradient-to-br from-primary-50/30 via-white to-secondary-50/30" role="main">
+        <main id="main-content" className="flex-1 overflow-y-auto bg-neutral-50/30" role="main">
           {children}
         </main>
       </div>

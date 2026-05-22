@@ -36,7 +36,7 @@ export function ModernParentPreview({ parent, onClose, onEdit }: ModernParentPre
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-secondary-600 to-secondary-800 text-white p-6 rounded-t-2xl">
+        <div className="relative bg-secondary-600 text-white p-6 rounded-t-2xl">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors"
@@ -81,7 +81,7 @@ export function ModernParentPreview({ parent, onClose, onEdit }: ModernParentPre
             {stats.map((stat, index) => (
               <div
                 key={stat.label}
-                className="bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-xl p-4 text-center"
+                className="bg-white rounded-xl p-4 text-center"
               >
                 <stat.icon className="w-8 h-8 text-secondary-600 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-neutral-900">{stat.value}</p>

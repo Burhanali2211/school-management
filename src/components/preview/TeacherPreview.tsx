@@ -166,7 +166,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
               <div className="flex items-center gap-4">
                 {/* Compact Avatar */}
                 <div className="relative flex-shrink-0">
-                  <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <div className="w-20 h-20 bg-primary-500 rounded-2xl flex items-center justify-center shadow-lg">
                     <GraduationCap className="w-10 h-10 text-white" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center border-2 border-white">
@@ -231,7 +231,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
               
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="group cursor-pointer">
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200/50 hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-blue-200/50 hover:shadow-md transition-all">
                     <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-sm">
                       <Users className="w-5 h-5 text-white" />
                     </div>
@@ -243,7 +243,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
           </div>
           
                 <div className="group cursor-pointer">
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200/50 hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-green-200/50 hover:shadow-md transition-all">
                     <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-sm">
                       <GraduationCap className="w-5 h-5 text-white" />
               </div>
@@ -255,7 +255,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
         </div>
 
                 <div className="group cursor-pointer">
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200/50 hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-purple-200/50 hover:shadow-md transition-all">
                     <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shadow-sm">
                       <BookOpen className="w-5 h-5 text-white" />
             </div>
@@ -267,7 +267,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
           </div>
                 
                 <div className="group cursor-pointer">
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200/50 hover:shadow-md transition-all">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-orange-200/50 hover:shadow-md transition-all">
                     <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center shadow-sm">
                       <BarChart3 className="w-5 h-5 text-white" />
                     </div>
@@ -280,7 +280,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
               </div>
               
               {/* AI Insight Bar */}
-              <div className="mt-4 p-3 bg-gradient-to-r from-indigo-50 to-cyan-50 rounded-xl border border-indigo-200/50">
+              <div className="mt-4 p-3 bg-white rounded-xl border border-indigo-200/50">
                 <div className="flex items-center gap-2 text-xs">
                   <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse"></div>
                   <span className="font-medium text-indigo-700">AI Analysis:</span>
@@ -471,7 +471,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
 
                 {/* Statistics Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-primary-50 to-primary-100 p-4 rounded-xl border border-primary-200/50 text-center">
+                  <div className="bg-white p-4 rounded-xl border border-primary-200/50 text-center">
                     <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-3">
                       <GraduationCap className="w-6 h-6 text-white" />
                     </div>
@@ -480,7 +480,7 @@ const TeacherPreview: React.FC<TeacherPreviewProps> = ({
                     <p className="text-xs text-primary-500">Teaching Load</p>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200/50 text-center">
+                  <div className="bg-white p-4 rounded-xl border border-purple-200/50 text-center">
                     <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
                       <BookOpen className="w-6 h-6 text-white" />
                     </div>

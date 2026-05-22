@@ -52,9 +52,9 @@ const AnnouncementsClient = ({ announcements }: AnnouncementsClientProps) => {
         ) : (
           announcements.slice(0, 3).map((announcement, index) => {
             const bgColors = [
-              'bg-gradient-to-r from-blue-50 to-blue-100',
-              'bg-gradient-to-r from-purple-50 to-purple-100',
-              'bg-gradient-to-r from-green-50 to-green-100',
+              'bg-white',
+              'bg-white',
+              'bg-white',
             ];
             
             return (

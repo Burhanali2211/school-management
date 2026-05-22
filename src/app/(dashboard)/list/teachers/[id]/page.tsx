@@ -92,7 +92,7 @@ const SingleTeacherPage = async ({
           {/* STATS CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {/* ATTENDANCE CARD */}
-            <div className="bg-gradient-to-br from-white to-primary-50/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-primary-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleAttendance.png"
@@ -109,7 +109,7 @@ const SingleTeacherPage = async ({
             </div>
 
             {/* SUBJECTS CARD */}
-            <div className="bg-gradient-to-br from-white to-accent-50/30 p-6 rounded-2xl shadow-soft border border-accent-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-accent-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleBranch.png"
@@ -128,7 +128,7 @@ const SingleTeacherPage = async ({
             </div>
 
             {/* LESSONS CARD */}
-            <div className="bg-gradient-to-br from-white to-secondary-50/30 p-6 rounded-2xl shadow-soft border border-secondary-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-secondary-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleLesson.png"
@@ -147,7 +147,7 @@ const SingleTeacherPage = async ({
             </div>
 
             {/* CLASSES CARD */}
-            <div className="bg-gradient-to-br from-white to-success-50/30 p-6 rounded-2xl shadow-soft border border-success-100/50 flex items-center gap-4">
+            <div className="bg-white/30 p-6 rounded-2xl shadow-soft border border-success-100/50 flex items-center gap-4">
               <div className="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
                 <Image
                   src="/singleClass.png"
@@ -167,7 +167,7 @@ const SingleTeacherPage = async ({
           </div>
         </div>
         {/* BOTTOM */}
-        <div className="mt-8 bg-gradient-to-br from-white to-neutral-50/30 rounded-2xl p-6 shadow-soft border border-neutral-100/50 h-[800px]">
+        <div className="mt-8 bg-white/30 rounded-2xl p-6 shadow-soft border border-neutral-100/50 h-[800px]">
           <h1 className="text-xl font-semibold text-neutral-900 mb-4">Teacher&apos;s Schedule</h1>
           <div className="flex items-center justify-center h-full text-neutral-500">
             <p>Calendar component removed</p>
@@ -176,7 +176,7 @@ const SingleTeacherPage = async ({
       </div>
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-8">
-        <div className="bg-gradient-to-br from-white to-primary-50/30 rounded-2xl p-6 shadow-soft border border-primary-100/50">
+        <div className="bg-white/30 rounded-2xl p-6 shadow-soft border border-primary-100/50">
           <h1 className="text-xl font-semibold text-primary-900 mb-4">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
            <Link

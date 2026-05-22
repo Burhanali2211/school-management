@@ -162,7 +162,7 @@ const SubjectPreview: React.FC<SubjectPreviewProps> = ({
             <div className="grid gap-3">
               {subject.teachers.map((teacher) => (
                 <div key={teacher.id} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
                     <GraduationCap className="w-5 h-5 text-white" />
                   </div>
                   <div>

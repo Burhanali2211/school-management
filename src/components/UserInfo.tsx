@@ -86,7 +86,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-800 to-primary-950 rounded-full flex items-center justify-center text-white text-xl font-semibold shadow-soft">
+            <div className="w-16 h-16 bg-primary-800 rounded-full flex items-center justify-center text-white text-xl font-semibold shadow-soft">
               {user.profileImage ? (
                 <img
                   src={user.profileImage}

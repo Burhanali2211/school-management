@@ -228,7 +228,7 @@ const TeachersPageClient = ({
             <div className="relative">
               <Avatar className="w-16 h-16 border-2 border-white shadow-soft">
                 <AvatarImage src={teacher.img || undefined} alt={teacher.name} />
-                <AvatarFallback className="bg-gradient-to-br from-primary-500 to-primary-600 text-white text-lg font-semibold">
+                <AvatarFallback className="bg-primary-500 text-white text-lg font-semibold">
                   {generateInitials(teacher.name, teacher.surname)}
                 </AvatarFallback>
               </Avatar>
@@ -370,7 +370,7 @@ const TeachersPageClient = ({
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-secondary-50/30">
+    <div className="min-h-screen bg-white/30">
       <div className="container mx-auto px-4 py-8 space-y-8">
 
         {/* Enhanced Statistics Cards */}

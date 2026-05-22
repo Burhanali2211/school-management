@@ -228,7 +228,7 @@ const ParentPreview: React.FC<ParentPreviewProps> = ({
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
+          <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-blue-600 font-medium">Children</p>
@@ -238,7 +238,7 @@ const ParentPreview: React.FC<ParentPreviewProps> = ({
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
+          <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-green-600 font-medium">Avg Attendance</p>
@@ -248,7 +248,7 @@ const ParentPreview: React.FC<ParentPreviewProps> = ({
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
+          <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-purple-600 font-medium">Avg Grades</p>
@@ -258,7 +258,7 @@ const ParentPreview: React.FC<ParentPreviewProps> = ({
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg">
+          <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-orange-600 font-medium">Pending Fees</p>
@@ -397,7 +397,7 @@ const ParentPreview: React.FC<ParentPreviewProps> = ({
                 const studentPendingFees = student.fees?.filter(f => f.status !== 'PAID').reduce((sum, f) => sum + f.amount, 0) || 0;
 
                 return (
-                  <div key={student.id} className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                  <div key={student.id} className="p-4 bg-white rounded-lg">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">

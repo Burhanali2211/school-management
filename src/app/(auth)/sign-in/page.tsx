@@ -223,7 +223,7 @@ export default function SignInPage() {
         const loginInfo = {
           time: new Date().toLocaleString(),
           device: sessionInfo?.device || 'Unknown',
-          location: 'Khanda, Haryana'
+          location: 'Global Campus'
         };
         setLastLoginInfo(loginInfo);
         localStorage.setItem('lastLoginInfo', JSON.stringify(loginInfo));
@@ -299,118 +299,22 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-200 via-secondary-200 to-accent-200 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Enhanced Background Pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary-100/50 to-secondary-100/50"></div>
-        <div className="absolute top-10 left-10 w-32 h-32 bg-primary-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-secondary-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-accent-300/10 rounded-full blur-3xl"></div>
-      </div>
-
+    <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
       {/* Main Container */}
-      <div className="relative z-10 w-full max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="w-full max-w-md">
+        <div className="flex flex-col items-center">
           
-          {/* Left Side - Enhanced School Information */}
-          <div className="text-center lg:text-left space-y-10">
-            {/* School Logo and Name */}
-            <div className="space-y-8">
-              <div className="flex justify-center lg:justify-start">
-                <div className="relative">
-                  <div className="w-24 h-24 bg-gradient-to-br from-primary-600 to-primary-900 rounded-3xl p-6 shadow-2xl">
-                    <Building className="w-full h-full text-white" />
-                  </div>
-                  <div className="absolute -inset-3 bg-gradient-to-br from-primary-600/30 to-primary-900/30 rounded-3xl blur-2xl"></div>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <h1 className="text-5xl lg:text-6xl font-bold text-neutral-900 leading-tight">
-                  Govt. Higher Secondary School
-                </h1>
-                <h2 className="text-3xl lg:text-4xl font-semibold text-primary-800">
-                  Khanda
-                </h2>
-                <div className="flex items-center justify-center lg:justify-start space-x-2 text-primary-700">
-                  <Globe className="w-5 h-5" />
-                  <span className="text-lg">Khanda, Haryana, India</span>
-                </div>
-              </div>
+          {/* Header */}
+          <div className="text-center mb-8 w-full">
+            <div className="mx-auto w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center border border-primary-100 shadow-sm mb-4">
+              <Building className="w-6 h-6" />
             </div>
-
-            {/* School Description */}
-            <div className="max-w-lg mx-auto lg:mx-0">
-              <p className="text-xl text-neutral-600 leading-relaxed">
-                Empowering minds, building futures. A center of excellence in education and character development since 1985.
-              </p>
-            </div>
-
-            {/* Enhanced School Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-md mx-auto lg:mx-0">
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary-200 transition-colors">
-                  <Users className="w-8 h-8 text-primary-800" />
-                </div>
-                <div className="text-3xl font-bold text-neutral-900">1500+</div>
-                <div className="text-neutral-600">Students</div>
-              </div>
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-secondary-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-secondary-200 transition-colors">
-                  <GraduationCap className="w-8 h-8 text-secondary-600" />
-                </div>
-                <div className="text-3xl font-bold text-neutral-900">75+</div>
-                <div className="text-neutral-600">Teachers</div>
-              </div>
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-accent-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-accent-200 transition-colors">
-                  <BookOpenIcon className="w-8 h-8 text-accent-600" />
-                </div>
-                <div className="text-3xl font-bold text-neutral-900">25+</div>
-                <div className="text-neutral-600">Subjects</div>
-              </div>
-            </div>
-
-            {/* Security Features */}
-            <div className="max-w-md mx-auto lg:mx-0">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center">
-                  <SecurityIcon className="w-5 h-5 text-primary-600 mr-2" />
-                  Security Features
-                </h3>
-                <div className="space-y-3 text-sm text-neutral-600">
-                  <div className="flex items-center">
-                    <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
-                    <span>256-bit SSL encryption</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
-                    <span>Multi-factor authentication</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
-                    <span>Real-time session monitoring</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2" />
-                    <span>Audit trail logging</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-2">ABC School</h1>
+            <p className="text-neutral-600">Sign in to your account</p>
           </div>
 
-          {/* Right Side - Enhanced Login Form */}
-          <div className="flex justify-center">
-            <div className="w-full max-w-lg">
-              {/* Welcome Text */}
-              <div className="text-center mb-8">
-                <h3 className="text-4xl font-bold text-neutral-900 mb-3">Welcome Back</h3>
-                <p className="text-neutral-600 text-lg">Sign in to your account</p>
-              </div>
-
-              {/* Enhanced Login Card */}
-              <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8">
+          {/* Login Card */}
+          <div className="w-full bg-white rounded-2xl shadow-sm border border-neutral-100 p-8">
                 {/* User type selection */}
                 {!selectedUserType && (
                   <div className="mb-8">
@@ -424,8 +328,8 @@ export default function SignInPage() {
                             onClick={() => handleUserTypeSelect(type.type)}
                             className="group p-6 rounded-2xl border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-300 hover:shadow-lg"
                           >
-                            <div className={`w-12 h-12 mx-auto mb-4 p-3 rounded-xl bg-gradient-to-r ${type.color} shadow-lg`}>
-                              <Icon className="w-full h-full text-white" />
+                            <div className={`w-12 h-12 mx-auto mb-4 p-3 rounded-xl bg-primary-50 text-primary-600 border border-primary-100 shadow-sm`}>
+                              <Icon className="w-full h-full" />
                             </div>
                             <div className="text-neutral-900 text-base font-semibold mb-2">{type.label}</div>
                             <div className="text-neutral-500 text-sm mb-3">
@@ -449,7 +353,7 @@ export default function SignInPage() {
                 {/* Selected user type indicator */}
                 {selectedUserType && (
                   <div className="mb-6">
-                    <div className="flex items-center justify-between bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-4 border border-primary-200">
+                    <div className="flex items-center justify-between bg-neutral-50 rounded-2xl p-4 border border-neutral-200">
                       <div className="flex items-center space-x-4">
                         {(() => {
                           const selected = userTypes.find(t => t.type === selectedUserType);
@@ -457,8 +361,8 @@ export default function SignInPage() {
                           const Icon = selected.icon;
                           return (
                             <>
-                              <div className={`w-12 h-12 p-3 rounded-xl bg-gradient-to-r ${selected.color} shadow-lg`}>
-                                <Icon className="w-full h-full text-white" />
+                              <div className={`w-12 h-12 p-3 rounded-xl bg-primary-50 text-primary-600 border border-primary-100 shadow-sm`}>
+                                <Icon className="w-full h-full" />
                               </div>
                               <div>
                                 <div className="text-neutral-900 font-semibold text-lg">{selected.label}</div>
@@ -589,7 +493,7 @@ export default function SignInPage() {
                     <button
                       type="submit"
                       disabled={isLoading || isBlocked}
-                      className="w-full bg-gradient-to-r from-primary-800 to-primary-950 hover:from-primary-900 hover:to-primary-950 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
+                      className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                     >
                       {isLoading ? (
                         <div className="flex items-center justify-center space-x-2">
@@ -646,7 +550,7 @@ export default function SignInPage() {
               {/* Enhanced Footer */}
               <div className="text-center mt-8 space-y-2">
                 <p className="text-neutral-500 text-sm">
-                  © 2024 Govt. Higher Secondary School Khanda. All rights reserved.
+                  © {new Date().getFullYear()} ABC School. All rights reserved.
                 </p>
                 <div className="flex items-center justify-center space-x-4 text-xs text-neutral-400">
                   <button 
@@ -664,8 +568,6 @@ export default function SignInPage() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
       {/* Security Info Modal */}
       {showSecurityInfo && (

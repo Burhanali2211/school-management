@@ -107,7 +107,7 @@ export function BaseForm<T extends FieldValues>({
           <Button
             type="submit"
             disabled={isSubmitting || !isValid}
-            className="min-w-[100px] bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700"
+            className="min-w-[100px] bg-primary-500 hover:from-primary-600 hover:to-primary-700"
           >
             {isSubmitting ? (
               <div className="flex items-center space-x-2">

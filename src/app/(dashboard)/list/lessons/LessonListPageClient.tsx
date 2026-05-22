@@ -38,7 +38,7 @@ const LessonListPageClient = ({ data, count, page, isAdmin }: LessonListPageClie
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+          <div className="p-3 bg-blue-500 rounded-xl shadow-lg">
             <BookOpen className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -56,7 +56,7 @@ const LessonListPageClient = ({ data, count, page, isAdmin }: LessonListPageClie
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="p-4 bg-white border-blue-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-500 rounded-lg">
               <BookOpen className="w-4 h-4 text-white" />
@@ -67,7 +67,7 @@ const LessonListPageClient = ({ data, count, page, isAdmin }: LessonListPageClie
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="p-4 bg-white border-green-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-500 rounded-lg">
               <Users className="w-4 h-4 text-white" />
@@ -80,7 +80,7 @@ const LessonListPageClient = ({ data, count, page, isAdmin }: LessonListPageClie
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="p-4 bg-white border-purple-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-500 rounded-lg">
               <Calendar className="w-4 h-4 text-white" />
@@ -122,7 +122,7 @@ const LessonListPageClient = ({ data, count, page, isAdmin }: LessonListPageClie
                 <TableRow key={lesson.id} className="hover:bg-gray-50 transition-colors">
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                         <BookOpen className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -141,7 +141,7 @@ const LessonListPageClient = ({ data, count, page, isAdmin }: LessonListPageClie
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                         <span className="text-white text-sm font-medium">
                           {lesson.teacher.name.charAt(0)}{lesson.teacher.surname.charAt(0)}
                         </span>

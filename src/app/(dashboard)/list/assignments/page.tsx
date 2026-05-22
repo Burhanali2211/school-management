@@ -136,7 +136,7 @@ const isAdmin = user?.userType === UserType.ADMIN;
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
+          <div className="p-3 bg-green-500 rounded-xl shadow-lg">
             <FileText className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -161,7 +161,7 @@ const isAdmin = user?.userType === UserType.ADMIN;
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="p-4 bg-white border-green-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-500 rounded-lg">
               <FileText className="w-4 h-4 text-white" />
@@ -172,7 +172,7 @@ const isAdmin = user?.userType === UserType.ADMIN;
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+        <Card className="p-4 bg-white border-red-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-red-500 rounded-lg">
               <AlertTriangle className="w-4 h-4 text-white" />
@@ -185,7 +185,7 @@ const isAdmin = user?.userType === UserType.ADMIN;
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+        <Card className="p-4 bg-white border-orange-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-orange-500 rounded-lg">
               <Clock className="w-4 h-4 text-white" />
@@ -204,7 +204,7 @@ const isAdmin = user?.userType === UserType.ADMIN;
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="p-4 bg-white border-blue-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-500 rounded-lg">
               <Users className="w-4 h-4 text-white" />
@@ -243,7 +243,7 @@ const isAdmin = user?.userType === UserType.ADMIN;
                   <TableRow key={assignment.id} className="hover:bg-gray-50 transition-colors">
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                        <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
                           <FileText className="w-5 h-5 text-white" />
                         </div>
                         <div>
@@ -267,7 +267,7 @@ const isAdmin = user?.userType === UserType.ADMIN;
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {assignment.lesson.teacher.name.charAt(0)}{assignment.lesson.teacher.surname.charAt(0)}
                           </span>

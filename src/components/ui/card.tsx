@@ -41,7 +41,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       default: "bg-white border border-neutral-200 shadow-soft",
       elevated: "bg-white shadow-medium hover:shadow-strong",
       outlined: "bg-white border-2 border-neutral-200 hover:border-neutral-300",
-      gradient: "bg-gradient-to-br from-white to-primary-50/30 border border-primary-100/50 shadow-soft",
+      gradient: "bg-white/30 border border-primary-100/50 shadow-soft",
     };
 
     const paddings = {

@@ -17,7 +17,7 @@ export default function AuthLayout({
   showLogo = true 
 }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen relative bg-slate-900 flex items-center justify-center p-4">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -inset-10 opacity-20">
@@ -41,7 +41,7 @@ export default function AuthLayout({
         {showLogo && (
           <div className="text-center mb-8">
             <div className="relative mx-auto mb-6">
-              <div className="w-20 h-20 mx-auto bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-4 shadow-2xl">
+              <div className="w-20 h-20 mx-auto bg-blue-500 rounded-2xl p-4 shadow-2xl">
                 <Image
                   src="/logo.png"
                   alt="School Logo"
@@ -50,7 +50,7 @@ export default function AuthLayout({
                   className="w-full h-full object-contain filter brightness-0 invert"
                 />
               </div>
-              <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 blur-xl"></div>
+              <div className="absolute -inset-2 bg-blue-500 rounded-2xl opacity-20 blur-xl"></div>
             </div>
             <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
               {title}
