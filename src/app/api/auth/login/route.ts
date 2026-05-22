@@ -3,7 +3,7 @@ import { authenticateUser } from "@/lib/auth-service";
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password, userType, deviceInfo } = await request.json();
+    const { username, password, userType, deviceInfo, rememberMe } = await request.json();
 
     if (!username || !password) {
       return NextResponse.json(
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     };
 
-    const result = await authenticateUser(username, password, ipAddress, userAgent, userType);
+    const result = await authenticateUser(username, password, ipAddress, userAgent, userType, rememberMe);
 
     if (!result) {
       return NextResponse.json(
@@ -49,13 +49,19 @@ export async function POST(request: NextRequest) {
     });
 
     // Set secure session cookie
-    response.cookies.set("session-token", result.token, {
+    const cookieOptions: any = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 24 * 60 * 60, // 24 hours
       path: "/",
-    });
+    };
+    
+    // If rememberMe is checked, persist for 30 days. Otherwise, let it expire when browser closes.
+    if (rememberMe) {
+      cookieOptions.maxAge = 30 * 24 * 60 * 60; // 30 days
+    }
+
+    response.cookies.set("session-token", result.token, cookieOptions);
 
     return response;
   } catch (error) {

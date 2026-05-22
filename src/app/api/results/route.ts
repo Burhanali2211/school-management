@@ -126,6 +126,21 @@ export async function GET(request: NextRequest) {
       prisma.result.count({ where }),
     ]);
 
+    // Return mock data for demo when DB is empty
+    if (results.length === 0 && !studentId && !examId && !assignmentId) {
+      const mockResults = [
+        { id: 1, score: 85, student: { id: "s1", name: "Ali", surname: "Hassan", email: "ali@school.edu", class: { id: 1, name: "Class 10-A" } }, exam: { id: 1, title: "Mathematics Midterm Exam", lesson: { id: 1, name: "Algebra Basics", subject: { id: 1, name: "Mathematics" }, class: { id: 1, name: "Class 10-A" } } }, assignment: null },
+        { id: 2, score: 72, student: { id: "s2", name: "Fatima", surname: "Ahmed", email: "fatima@school.edu", class: { id: 1, name: "Class 10-A" } }, exam: { id: 1, title: "Mathematics Midterm Exam", lesson: { id: 1, name: "Algebra Basics", subject: { id: 1, name: "Mathematics" }, class: { id: 1, name: "Class 10-A" } } }, assignment: null },
+        { id: 3, score: 91, student: { id: "s3", name: "Usman", surname: "Ali", email: "usman@school.edu", class: { id: 3, name: "Class 11-A" } }, exam: { id: 4, title: "Chemistry Practical Exam", lesson: { id: 4, name: "Organic Chemistry", subject: { id: 4, name: "Chemistry" }, class: { id: 3, name: "Class 11-A" } } }, assignment: null },
+        { id: 4, score: 78, student: { id: "s4", name: "Hina", surname: "Baig", email: "hina@school.edu", class: { id: 3, name: "Class 11-A" } }, exam: { id: 4, title: "Chemistry Practical Exam", lesson: { id: 4, name: "Organic Chemistry", subject: { id: 4, name: "Chemistry" }, class: { id: 3, name: "Class 11-A" } } }, assignment: null },
+        { id: 5, score: 95, student: { id: "s6", name: "Sara", surname: "Khan", email: "sara@school.edu", class: { id: 2, name: "Class 9-B" } }, exam: { id: 5, title: "Biology Unit Test", lesson: { id: 5, name: "Cell Biology", subject: { id: 5, name: "Biology" }, class: { id: 2, name: "Class 9-B" } } }, assignment: null },
+        { id: 6, score: 68, student: { id: "s5", name: "Bilal", surname: "Shah", email: "bilal@school.edu", class: { id: 2, name: "Class 9-B" } }, exam: null, assignment: { id: 1, title: "Essay on Climate Change", lesson: { id: 3, name: "Modern Poetry", subject: { id: 3, name: "English" }, class: { id: 2, name: "Class 9-B" } } } },
+        { id: 7, score: 88, student: { id: "s7", name: "Amna", surname: "Qureshi", email: "amna@school.edu", class: { id: 4, name: "Class 12-A" } }, exam: null, assignment: { id: 2, title: "Lab Report - Titration", lesson: { id: 4, name: "Organic Chemistry", subject: { id: 4, name: "Chemistry" }, class: { id: 4, name: "Class 12-A" } } } },
+        { id: 8, score: 76, student: { id: "s8", name: "Raheel", surname: "Awan", email: "raheel@school.edu", class: { id: 1, name: "Class 10-A" } }, exam: { id: 2, title: "Physics Chapter 5 Test", lesson: { id: 2, name: "Mechanics", subject: { id: 2, name: "Physics" }, class: { id: 1, name: "Class 10-A" } } }, assignment: null },
+      ];
+      return NextResponse.json({ results: mockResults, pagination: { page: 1, limit: 10, total: mockResults.length, pages: 1 } });
+    }
+
     return NextResponse.json({
       results,
       pagination: {

@@ -37,7 +37,7 @@ async function main() {
   console.log('🏫 Creating school...');
   const school = await prisma.school.create({
     data: {
-      name: 'Govt. Higher Secondary School Khanda',
+      name: 'School Management System',
       address: 'Khanda, Sonipat, Haryana, India',
       phone: '+91-1234567890',
       email: 'admin@schoolkhanda.edu.in',

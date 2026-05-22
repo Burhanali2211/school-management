@@ -114,6 +114,19 @@ export async function GET(request: NextRequest) {
       prisma.assignment.count({ where }),
     ]);
 
+    // Return mock data for demo when DB is empty
+    if (assignments.length === 0 && !search && !lessonId && !classId && !teacherId) {
+      const mockAssignments = [
+        { id: 1, title: "Algebra Problem Set", startDate: new Date("2026-05-20T00:00:00"), dueDate: new Date("2026-05-27T23:59:00"), lesson: { id: 1, name: "Algebra Basics", subject: { id: 1, name: "Mathematics" }, class: { id: 1, name: "Class 10-A" }, teacher: { id: "t1", name: "Ahmad", surname: "Khan", email: "ahmad.khan@school.edu" } }, results: [{ id: 1, score: 90, student: { id: "s1", name: "Ali", surname: "Hassan" } }] },
+        { id: 2, title: "Essay on Climate Change", startDate: new Date("2026-05-18T00:00:00"), dueDate: new Date("2026-05-25T23:59:00"), lesson: { id: 3, name: "Modern Poetry", subject: { id: 3, name: "English" }, class: { id: 2, name: "Class 9-B" }, teacher: { id: "t3", name: "Omar", surname: "Farooq", email: "omar.farooq@school.edu" } }, results: [{ id: 2, score: 68, student: { id: "s5", name: "Bilal", surname: "Shah" } }] },
+        { id: 3, title: "Lab Report - Titration", startDate: new Date("2026-05-22T00:00:00"), dueDate: new Date("2026-06-01T23:59:00"), lesson: { id: 4, name: "Organic Chemistry", subject: { id: 4, name: "Chemistry" }, class: { id: 4, name: "Class 12-A" }, teacher: { id: "t4", name: "Zara", surname: "Hussain", email: "zara.hussain@school.edu" } }, results: [] },
+        { id: 4, title: "Newton's Laws Problems", startDate: new Date("2026-05-25T00:00:00"), dueDate: new Date("2026-06-03T23:59:00"), lesson: { id: 2, name: "Mechanics", subject: { id: 2, name: "Physics" }, class: { id: 1, name: "Class 10-A" }, teacher: { id: "t2", name: "Sana", surname: "Malik", email: "sana.malik@school.edu" } }, results: [] },
+        { id: 5, title: "Cell Division Diagram", startDate: new Date("2026-05-19T00:00:00"), dueDate: new Date("2026-05-26T23:59:00"), lesson: { id: 5, name: "Cell Biology", subject: { id: 5, name: "Biology" }, class: { id: 2, name: "Class 9-B" }, teacher: { id: "t5", name: "Nadia", surname: "Rahman", email: "nadia.rahman@school.edu" } }, results: [{ id: 3, score: 95, student: { id: "s6", name: "Sara", surname: "Khan" } }, { id: 4, score: 82, student: { id: "s5", name: "Bilal", surname: "Shah" } }] },
+        { id: 6, title: "Python Sorting Algorithms", startDate: new Date("2026-05-28T00:00:00"), dueDate: new Date("2026-06-07T23:59:00"), lesson: { id: 6, name: "Programming Fundamentals", subject: { id: 6, name: "Computer Science" }, class: { id: 4, name: "Class 12-A" }, teacher: { id: "t1", name: "Ahmad", surname: "Khan", email: "ahmad.khan@school.edu" } }, results: [] },
+      ];
+      return NextResponse.json({ assignments: mockAssignments, pagination: { page: 1, limit: 100, total: mockAssignments.length, pages: 1 } });
+    }
+
     return NextResponse.json({
       assignments,
       pagination: {

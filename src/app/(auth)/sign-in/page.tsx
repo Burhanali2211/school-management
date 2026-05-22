@@ -44,9 +44,7 @@ interface UserTypeOption {
   type: string;
   label: string;
   icon: React.ComponentType<any>;
-  description: string;
   color: string;
-  features: string[];
 }
 
 const userTypes: UserTypeOption[] = [
@@ -54,33 +52,25 @@ const userTypes: UserTypeOption[] = [
     type: 'ADMIN',
     label: 'Administrator',
     icon: Shield,
-    description: 'System administration and management',
-    color: 'from-primary-800 to-primary-900',
-    features: ['Full system access', 'User management', 'Reports & analytics', 'System settings']
+    color: 'bg-indigo-50 text-indigo-600 border-indigo-100 group-hover:border-indigo-300 group-hover:bg-indigo-100',
   },
   {
     type: 'TEACHER',
     label: 'Teacher',
     icon: GraduationCap,
-    description: 'Classroom and course management',
-    color: 'from-secondary-500 to-secondary-600',
-    features: ['Class management', 'Grade assignments', 'Attendance tracking', 'Communication']
+    color: 'bg-emerald-50 text-emerald-600 border-emerald-100 group-hover:border-emerald-300 group-hover:bg-emerald-100',
   },
   {
     type: 'STUDENT',
     label: 'Student',
     icon: User,
-    description: 'Access courses and assignments',
-    color: 'from-accent-500 to-accent-600',
-    features: ['View assignments', 'Check grades', 'Track attendance', 'Access resources']
+    color: 'bg-amber-50 text-amber-600 border-amber-100 group-hover:border-amber-300 group-hover:bg-amber-100',
   },
   {
     type: 'PARENT',
     label: 'Parent',
     icon: UserGroup,
-    description: 'Monitor child\'s progress',
-    color: 'from-secondary-600 to-secondary-700',
-    features: ['Monitor progress', 'View reports', 'Communication', 'Fee management']
+    color: 'bg-rose-50 text-rose-600 border-rose-100 group-hover:border-rose-300 group-hover:bg-rose-100',
   }
 ];
 
@@ -197,7 +187,8 @@ export default function SignInPage() {
           username, 
           password, 
           userType: selectedUserType,
-          deviceInfo: sessionInfo 
+          deviceInfo: sessionInfo,
+          rememberMe 
         }),
       });
 
@@ -326,23 +317,12 @@ export default function SignInPage() {
                           <button
                             key={type.type}
                             onClick={() => handleUserTypeSelect(type.type)}
-                            className="group p-6 rounded-2xl border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-300 hover:shadow-lg"
+                            className={`group flex flex-col items-center justify-center p-6 rounded-2xl border transition-all duration-200 ${type.color} bg-white`}
                           >
-                            <div className={`w-12 h-12 mx-auto mb-4 p-3 rounded-xl bg-primary-50 text-primary-600 border border-primary-100 shadow-sm`}>
-                              <Icon className="w-full h-full" />
+                            <div className="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-white shadow-sm border border-neutral-100">
+                              <Icon className="w-6 h-6" />
                             </div>
-                            <div className="text-neutral-900 text-base font-semibold mb-2">{type.label}</div>
-                            <div className="text-neutral-500 text-sm mb-3">
-                              {type.description}
-                            </div>
-                            <div className="space-y-1">
-                              {type.features.slice(0, 2).map((feature, index) => (
-                                <div key={index} className="text-xs text-neutral-400 flex items-center">
-                                  <CheckCircleIcon className="w-3 h-3 mr-1" />
-                                  {feature}
-                                </div>
-                              ))}
-                            </div>
+                            <div className="text-neutral-800 text-sm font-semibold">{type.label}</div>
                           </button>
                         );
                       })}
@@ -353,7 +333,7 @@ export default function SignInPage() {
                 {/* Selected user type indicator */}
                 {selectedUserType && (
                   <div className="mb-6">
-                    <div className="flex items-center justify-between bg-neutral-50 rounded-2xl p-4 border border-neutral-200">
+                    <div className="flex items-center justify-between bg-white rounded-2xl p-4 border border-neutral-200 shadow-sm">
                       <div className="flex items-center space-x-4">
                         {(() => {
                           const selected = userTypes.find(t => t.type === selectedUserType);
@@ -361,13 +341,10 @@ export default function SignInPage() {
                           const Icon = selected.icon;
                           return (
                             <>
-                              <div className={`w-12 h-12 p-3 rounded-xl bg-primary-50 text-primary-600 border border-primary-100 shadow-sm`}>
-                                <Icon className="w-full h-full" />
+                              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-neutral-50 border border-neutral-100">
+                                <Icon className="w-5 h-5 text-neutral-600" />
                               </div>
-                              <div>
-                                <div className="text-neutral-900 font-semibold text-lg">{selected.label}</div>
-                                <div className="text-neutral-600 text-sm">{selected.description}</div>
-                              </div>
+                              <div className="text-neutral-900 font-semibold text-base">{selected.label} Login</div>
                             </>
                           );
                         })()}

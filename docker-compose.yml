@@ -12,6 +12,11 @@ services:
       - '5434:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d school_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     
   app:
     build: .
@@ -24,7 +29,8 @@ services:
       - JWT_SECRET=thisisasupersecretkey123!@#
     command: sh -c "npx prisma db push && npm run seed:complete && node server.js"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
