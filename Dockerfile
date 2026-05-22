@@ -1,26 +1,34 @@
-# Use Node.js as the base image
-FROM node:18
-
-# Set the working directory inside the container
+# Stage 1: Dependencies
+FROM node:18-alpine AS deps
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
+COPY package.json package-lock.json ./
+# Copy prisma schema so postinstall hook works
+COPY prisma ./prisma/
+RUN npm ci
 
-# Copy package.json and package-lock.json files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
+# Stage 2: Builder
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Build the Next.js application
+# Next.js telemetry disable
+ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Stage 3: Runner
+FROM node:18-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Start the Next.js application
-CMD ["npm", "start"]
+# Copy standalone build output and static files
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+# Copy prisma to allow db push in start script
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
+EXPOSE 3000
+CMD ["node", "server.js"]

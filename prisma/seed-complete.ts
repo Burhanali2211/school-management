@@ -1,5 +1,6 @@
 
 import { PrismaClient, Day, UserType } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 // Define UserSex enum locally since it's not exported from Prisma client
 enum UserSex {
@@ -81,7 +82,7 @@ async function main() {
     data: {
       id: 'admin1',
       username: 'admin1',
-      password: 'admin123',
+      password: bcrypt.hashSync('admin123', 10),
       name: 'Admin',
       surname: 'User',
       email: 'admin@school.edu',
@@ -96,7 +97,7 @@ async function main() {
       data: {
         id: `teacher${i}`,
         username: `teacher${i}`,
-        password: `teacher${i}123`,
+        password: bcrypt.hashSync(`teacher${i}123`, 10),
         name: `Teacher${i}`,
         surname: `Surname${i}`,
         email: `teacher${i}@school.edu`,
@@ -150,7 +151,7 @@ async function main() {
       data: {
         id: `parent${i}`,
         username: `parent${i}`,
-        password: `parent${i}123`,
+        password: bcrypt.hashSync(`parent${i}123`, 10),
         name: `Parent${i}`,
         surname: `Surname${i}`,
         email: `parent${i}@email.com`,
@@ -169,7 +170,7 @@ async function main() {
       data: {
         id: `student${i}`,
         username: `student${i}`,
-        password: `student${i}123`,
+        password: bcrypt.hashSync(`student${i}123`, 10),
         name: `Student${i}`,
         surname: `Surname${i}`,
         email: `student${i}@school.edu`,

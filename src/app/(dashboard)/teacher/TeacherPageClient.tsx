@@ -36,8 +36,39 @@ const TeacherPageClient = ({ userId }: TeacherPageClientProps) => {
                 <p className="text-secondary-500 text-sm">Your classes and lessons</p>
               </div>
             </div>
-            <div className="flex items-center justify-center h-64 text-secondary-500">
-              <p>Calendar component removed</p>
+            <div className="flex flex-col gap-4 mt-4">
+              <div className="p-4 border border-neutral-200 rounded-xl bg-white shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-neutral-800">Grade 10 Mathematics</h3>
+                  <p className="text-sm text-neutral-600">Room 204</p>
+                </div>
+                <div className="text-right">
+                  <span className="block text-sm font-medium text-neutral-800">09:00 AM - 09:45 AM</span>
+                  <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full mt-1">Upcoming</span>
+                </div>
+              </div>
+              
+              <div className="p-4 border border-neutral-200 rounded-xl bg-white shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-neutral-800">Grade 11 Physics</h3>
+                  <p className="text-sm text-neutral-600">Science Lab 2</p>
+                </div>
+                <div className="text-right">
+                  <span className="block text-sm font-medium text-neutral-800">10:00 AM - 11:30 AM</span>
+                  <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full mt-1">Next</span>
+                </div>
+              </div>
+
+              <div className="p-4 border border-neutral-200 rounded-xl bg-white shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-neutral-800">Grade 9 Mathematics</h3>
+                  <p className="text-sm text-neutral-600">Room 105</p>
+                </div>
+                <div className="text-right">
+                  <span className="block text-sm font-medium text-neutral-800">12:30 PM - 01:15 PM</span>
+                  <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full mt-1">Later</span>
+                </div>
+              </div>
             </div>
           </Card>
         </div>

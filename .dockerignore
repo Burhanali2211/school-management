@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.vscode
+.cursor
+_clutter_archive
+npm-debug.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+README.md
+CLAUDE.md
+docker-compose.yml
+Dockerfile

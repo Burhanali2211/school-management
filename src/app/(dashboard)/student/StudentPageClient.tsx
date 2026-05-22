@@ -40,19 +40,60 @@ const StudentPageClient = ({ studentClass }: StudentPageClientProps) => {
                 <p className="text-secondary-500 text-sm">{studentClass.name}</p>
               </div>
             </div>
-                            <div className="bg-white border border-neutral-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-neutral-900 mb-4">Class Schedule</h3>
-                  <p className="text-neutral-600">Calendar component removed for performance optimization.</p>
+            <div className="flex flex-col gap-4 mt-4">
+              <div className="p-4 border border-neutral-200 rounded-xl bg-white shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-neutral-800">English Literature</h3>
+                  <p className="text-sm text-neutral-600">Mr. Roberts | Room 301</p>
                 </div>
+                <div className="text-right">
+                  <span className="block text-sm font-medium text-neutral-800">08:00 AM - 08:45 AM</span>
+                  <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full mt-1">Current</span>
+                </div>
+              </div>
+              
+              <div className="p-4 border border-neutral-200 rounded-xl bg-white shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-neutral-800">Mathematics</h3>
+                  <p className="text-sm text-neutral-600">Mrs. Davis | Room 204</p>
+                </div>
+                <div className="text-right">
+                  <span className="block text-sm font-medium text-neutral-800">09:00 AM - 09:45 AM</span>
+                  <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full mt-1">Next</span>
+                </div>
+              </div>
+
+              <div className="p-4 border border-neutral-200 rounded-xl bg-white shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-neutral-800">Biology</h3>
+                  <p className="text-sm text-neutral-600">Dr. Wilson | Science Lab 1</p>
+                </div>
+                <div className="text-right">
+                  <span className="block text-sm font-medium text-neutral-800">10:00 AM - 10:45 AM</span>
+                  <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full mt-1">Later</span>
+                </div>
+              </div>
+            </div>
           </Card>
         </div>
 
         {/* SIDEBAR - Takes 1/3 width */}
         <div className="space-y-8">
-                        <div className="bg-white border border-neutral-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-neutral-900 mb-4">Events</h3>
-                <p className="text-neutral-600">Event calendar removed for performance optimization.</p>
+          <div className="bg-white border border-neutral-200 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-neutral-900">Upcoming Events</h3>
+              <span className="text-sm text-neutral-500 cursor-pointer">View All</span>
+            </div>
+            <div className="space-y-4">
+              <div className="p-4 border border-neutral-200 rounded-xl bg-white shadow-sm border-l-4 border-l-primary-500">
+                <div className="flex justify-between items-center mb-1">
+                  <h4 className="font-semibold text-neutral-800">Science Fair Meeting</h4>
+                  <span className="text-xs text-neutral-500">Tomorrow 2 PM</span>
+                </div>
+                <p className="text-sm text-neutral-600">Library</p>
               </div>
+            </div>
+          </div>
           <Announcements />
         </div>
       </div>
