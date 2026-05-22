@@ -47,14 +47,14 @@ function DashboardContent({
         role="navigation"
         aria-label="Main navigation"
       >
-        <div className="flex items-center justify-center h-20 px-6 bg-gradient-to-r from-primary-800 to-primary-950 border-b border-primary-400 flex-shrink-0">
+        <div className="flex items-center justify-center h-20 px-6 bg-white border-b border-neutral-100 flex-shrink-0">
           <Link href="/" className="flex items-center space-x-3 focus-visible-ring rounded-lg p-2">
-            <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-soft">
-              <span className="text-primary-800 font-bold text-lg" aria-hidden="true">E</span>
+            <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center border border-primary-100 shadow-sm">
+              <span className="text-primary-600 font-bold text-lg" aria-hidden="true">E</span>
             </div>
             <div>
-              <h1 className="text-white font-bold text-lg tracking-wide">EduManage</h1>
-              <p className="text-primary-200 text-xs">School Management</p>
+              <h1 className="text-neutral-900 font-bold text-lg tracking-wide">EduManage</h1>
+              <p className="text-neutral-500 text-xs font-medium">School Management</p>
             </div>
           </Link>
         </div>
@@ -67,14 +67,14 @@ function DashboardContent({
       <div className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} role="dialog" aria-modal="true" aria-label="Navigation menu">
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
         <aside className="fixed inset-y-0 left-0 w-64 bg-white shadow-elevated transform transition-transform duration-300 z-50">
-          <div className="flex items-center justify-center h-20 px-6 bg-gradient-to-r from-primary-800 to-primary-950 border-b border-primary-400">
+          <div className="flex items-center justify-center h-20 px-6 bg-white border-b border-neutral-100">
             <Link href="/" className="flex items-center space-x-3 focus-visible-ring rounded-lg p-2">
-              <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-soft">
+              <div className="w-8 h-8 bg-primary-50 rounded-xl flex items-center justify-center border border-primary-100 shadow-sm">
                 <span className="text-primary-600 font-bold text-lg" aria-hidden="true">E</span>
               </div>
               <div>
-                <h1 className="text-white font-bold text-lg tracking-wide">EduManage</h1>
-                <p className="text-primary-200 text-xs">School Management</p>
+                <h1 className="text-neutral-900 font-bold text-lg tracking-wide">EduManage</h1>
+                <p className="text-neutral-500 text-xs font-medium">School Management</p>
               </div>
             </Link>
           </div>

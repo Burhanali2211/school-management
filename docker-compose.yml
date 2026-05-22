@@ -20,7 +20,8 @@ services:
       - '3000:3000'
     environment:
       - DATABASE_URL=postgresql://postgres:admin@postgres:5432/school_db
-    command: sh -c "npx prisma db push && npm run seed:complete && npm start"
+      - JWT_SECRET=thisisasupersecretkey123!@#
+    command: sh -c "npx prisma db push && npm run seed:complete && node server.js"
     depends_on:
       - postgres
 

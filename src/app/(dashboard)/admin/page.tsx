@@ -1,11 +1,12 @@
 import Announcements from "@/components/Announcements";
-import AttendanceChart from "@/components/AttendanceChart";
-import CountChart from "@/components/CountChart";
-import FinanceChart from "@/components/FinanceChart";
 import UserCard from "@/components/UserCard";
 import { requireAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
 
+const CountChart = dynamic(() => import("@/components/CountChart"), { ssr: false, loading: () => <div className="animate-pulse bg-neutral-100 rounded-xl w-full h-full min-h-[300px]"></div> });
+const AttendanceChart = dynamic(() => import("@/components/AttendanceChart"), { ssr: false, loading: () => <div className="animate-pulse bg-neutral-100 rounded-xl w-full h-full min-h-[300px]"></div> });
+const FinanceChart = dynamic(() => import("@/components/FinanceChart"), { ssr: false, loading: () => <div className="animate-pulse bg-neutral-100 rounded-xl w-full h-full min-h-[300px]"></div> });
 const AdminPage = async ({
   searchParams,
 }: {
